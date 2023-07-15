@@ -1,10 +1,10 @@
 # Databricks notebook source
 # MAGIC %md
-# MAGIC #Inside Functions
+# MAGIC #Inside include/common_functions
 
 # COMMAND ----------
 
-# MAGIC %run "/formula1/include/configuration"
+# MAGIC %run "../include/configuration"
 
 # COMMAND ----------
 
@@ -105,4 +105,5 @@ def merge_delta_data(input_df,input_db,input_table,container_path,partition_id,p
         input_df.write.mode("overwrite").partitionBy(f"{partition_id}").format("delta").saveAsTable(f"{input_db}.{input_table}")
 
 # COMMAND ----------
+
 

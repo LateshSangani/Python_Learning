@@ -4,11 +4,11 @@
 
 # COMMAND ----------
 
-# MAGIC %run "/formula1/include/configuration"
+# MAGIC %run "../include/configuration"
 
 # COMMAND ----------
 
-# MAGIC %run "/formula1/include/common_functions"
+# MAGIC %run "../include/common_functions"
 
 # COMMAND ----------
 
@@ -27,12 +27,18 @@ display(v_as_of_date)
 # COMMAND ----------
 
 # MAGIC %md
+# MAGIC #-----------------------------------READ-------------------------------------
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC # Master Data:
 # MAGIC #Read all the FULL LOAD data Sources Master table i.e Less Frequentely Modifed Data
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC #### DATA Lake Way
+# MAGIC #### READ data using python having parquest files stored ADLS
 
 # COMMAND ----------
 
@@ -55,22 +61,22 @@ display(v_as_of_date)
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC #### DELTA Lake Way
+# MAGIC #### READ data using python having parquest files stored in ADLS made by the Managed Tables from the Injection scripts
 
 # COMMAND ----------
 
-circuits_df = spark.read.format("delta").load(f"{processed_folder_path}/circuits") \
+circuits_df = spark.read.parquet(f"{processed_folder_path}/circuits") \
 .withColumnRenamed("name","circuit_name") \
 .withColumnRenamed("location","circuit_location")
 
-races_df = spark.read.format("delta").load(f"{processed_folder_path}/races") \
+races_df = spark.read.parquet(f"{processed_folder_path}/races") \
 .withColumnRenamed("name","race_name") \
 .withColumnRenamed("race_timestamp","race_date")
 
-constructor_df = spark.read.format("delta").load(f"{processed_folder_path}/constructor") \
+constructor_df = spark.read.parquet(f"{processed_folder_path}/constructor") \
 .withColumnRenamed("name","team")
 
-drivers_df = spark.read.format("delta").load(f"{processed_folder_path}/drivers") \
+drivers_df = spark.read.parquet(f"{processed_folder_path}/drivers") \
 .withColumnRenamed("name","driver_name") \
 .withColumnRenamed("number","driver_number") \
 .withColumnRenamed("nationality","driver_nationality")
@@ -78,12 +84,36 @@ drivers_df = spark.read.format("delta").load(f"{processed_folder_path}/drivers")
 # COMMAND ----------
 
 # MAGIC %md
+# MAGIC #### READ data using python having parquest files stored in ADLS made by the Managed "DELTA" Tables from the Injection scripts
+
+# COMMAND ----------
+
+#circuits_df = spark.read.format("delta").load(f"{processed_folder_path}/circuits") \
+#.withColumnRenamed("name","circuit_name") \
+#.withColumnRenamed("location","circuit_location")
+#
+#races_df = spark.read.format("delta").load(f"{processed_folder_path}/races") \
+#.withColumnRenamed("name","race_name") \
+#.withColumnRenamed("race_timestamp","race_date")
+#
+#constructor_df = spark.read.format("delta").load(f"{processed_folder_path}/constructor") \
+#.withColumnRenamed("name","team")
+#
+#drivers_df = spark.read.format("delta").load(f"{processed_folder_path}/drivers") \
+#.withColumnRenamed("name","driver_name") \
+#.withColumnRenamed("number","driver_number") \
+#.withColumnRenamed("nationality","driver_nationality")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC # Transactional Data :
 # MAGIC #Read all the INCREMENTAL LOAD data Sources Transaction table i.e Most Frequentely Modifed Data
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC #### DATA Lake Way
+# MAGIC #### READ data using python having parquest files stored ADLS
 
 # COMMAND ----------
 
@@ -104,23 +134,49 @@ drivers_df = spark.read.format("delta").load(f"{processed_folder_path}/drivers")
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC #### DELTA Lake Way
+# MAGIC #### READ data using python having parquest files stored in ADLS made by the Managed Tables from the Injection scripts
 
 # COMMAND ----------
 
-results_df = spark.read.format("delta").load(f"{processed_folder_path}/results") \
+results_df = spark.read.parquet(f"{processed_folder_path}/results") \
 .withColumnRenamed("fastestLap","fastest_lap") \
 .withColumnRenamed("time","race_time") \
 .filter(f" as_of_date = '{v_as_of_date}' ")
 
-pit_stop_df = spark.read.format("delta").load(f"{processed_folder_path}/pit_stops") \
+pit_stop_df = spark.read.parquet(f"{processed_folder_path}/pit_stops") \
 .filter(f" as_of_date = '{v_as_of_date}' ")
 
-lap_times_df = spark.read.format("delta").load(f"{processed_folder_path}/lap_times") \
+lap_times_df = spark.read.parquet(f"{processed_folder_path}/lap_times") \
 .filter(f" as_of_date = '{v_as_of_date}' ") 
 
-qualifying_df = spark.read.format("delta").load(f"{processed_folder_path}/qualifying") \
+qualifying_df = spark.read.parquet(f"{processed_folder_path}/qualifying") \
 .filter(f" as_of_date = '{v_as_of_date}' ")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC #### READ data using python having parquest files stored in ADLS made by the Managed "DELTA" Tables from the Injection scripts
+
+# COMMAND ----------
+
+#results_df = spark.read.format("delta").load(f"{processed_folder_path}/results") \
+#.withColumnRenamed("fastestLap","fastest_lap") \
+#.withColumnRenamed("time","race_time") \
+#.filter(f" as_of_date = '{v_as_of_date}' ")
+
+#pit_stop_df = spark.read.format("delta").load(f"{processed_folder_path}/pit_stops") \
+#.filter(f" as_of_date = '{v_as_of_date}' ")
+
+#lap_times_df = spark.read.format("delta").load(f"{processed_folder_path}/lap_times") \
+#.filter(f" as_of_date = '{v_as_of_date}' ") 
+
+#qualifying_df = spark.read.format("delta").load(f"{processed_folder_path}/qualifying") \
+#.filter(f" as_of_date = '{v_as_of_date}' ")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC #-----------------------------------Merge--------------------------------
 
 # COMMAND ----------
 
@@ -137,7 +193,7 @@ qualifying_df = spark.read.format("delta").load(f"{processed_folder_path}/qualif
 # here data is stored in the data frame and later display
 race_circuit_join_df = races_df.join(circuits_df,races_df.circuit_id == circuits_df.circuit_id,"inner" ) \
 .select(races_df.race_id, races_df.race_year , races_df.race_name , races_df.race_date , circuits_df.circuit_location )
-#race_circuit_join.display()
+race_circuit_join_df.display()
 
 # COMMAND ----------
 
@@ -161,6 +217,11 @@ final_df = add_ingestion_date(join_df).withColumnRenamed("ingestion_date","creat
 # COMMAND ----------
 
 # MAGIC %md
+# MAGIC #--------------------------------TEST-----------------------------------
+
+# COMMAND ----------
+
+# MAGIC %md
 # MAGIC # Test the output columns to match with Dashboard column
 
 # COMMAND ----------
@@ -171,21 +232,48 @@ display(final_df.filter("race_year = 2020 and race_name = 'Abu Dhabi Grand Prix'
 # COMMAND ----------
 
 # MAGIC %md
+# MAGIC #----------------------------------WRITE---------------------------------
+
+# COMMAND ----------
+
+# MAGIC %md
 # MAGIC # Write the results for the future reference and apply all the filteration and analysis
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC ##### Write data using python but no table creation
+
+# COMMAND ----------
+
 # full load with file creation.
-#
 # final_df.write.mode("overwrite").partitionBy('race_id').parquet(f"{presentation_folder_path}/dashboard_results")
 
 # COMMAND ----------
 
-# Write the output of the processed data in the database tables
-# it has 2 benifies , table get created and file also stored in the azure storage account as processed_db used the mounted path
+# MAGIC %md
+# MAGIC ##### Write data using python + Data Lake + Table Creation
+
+# COMMAND ----------
+
+# Write the output of the presentation_db data in the database tables
+# it has 2 benifies , table get created and file also stored in the azure storage account as presentation_db used the mounted path
 # full load with table and file creation.
 #
-# final_df.write.mode("overwrite").partitionBy('race_id').format("parquet").saveAsTable("presentation_db.dashboard_results")
+final_df.write.mode("overwrite").partitionBy('race_id').format("parquet").saveAsTable("presentation_db.dashboard_results")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ##### Write data using python + Delta Lake + Table Creation 
+
+# COMMAND ----------
+
+# Write the output of the presentation_db data in the database tables
+# it has 2 benifies , table get created and file also stored in the azure storage account as presentation_db used the mounted path
+# full load with table and file creation.
+#
+# final_df.write.mode("overwrite").format("delta").saveAsTable("presentation_db.dashboard_results")
 
 # COMMAND ----------
 
@@ -208,16 +296,26 @@ display(final_df.filter("race_year = 2020 and race_name = 'Abu Dhabi Grand Prix'
 
 # The driver_name cannot be the primary key but the combination of the driver_name and race_id makes the unique record. Becuase as per the data, each race has unique driver name. 
 # The race_id is supporting for the partition but here in our case its conributing for the Priamry key Uniqueness also ( so lucky )
-input_db="presentation_db"
-input_table="dashboard_results"
-partition_id="race_id"
-primary_key="driver_name"
-merge_delta_data(final_df,input_db,input_table,presentation_folder_path,partition_id,primary_key)
+#input_db="presentation_db"
+#input_table="dashboard_results"
+#partition_id="race_id"
+#primary_key="driver_name"
+#merge_delta_data(final_df,input_db,input_table,presentation_folder_path,partition_id,primary_key)
 
 # COMMAND ----------
 
-# MAGIC %sql
-# MAGIC select as_of_date,count(*) from presentation_db.dashboard_results group by as_of_date;
+#%sql
+#select as_of_date,count(*) from presentation_db.dashboard_results group by as_of_date;
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ##### Plain Python read
+
+# COMMAND ----------
+
+# df = spark.read.parquet(f"{presentation_folder_path}/dashboard_results")
+# df.display()
 
 # COMMAND ----------
 
@@ -226,7 +324,8 @@ merge_delta_data(final_df,input_db,input_table,presentation_folder_path,partitio
 
 # COMMAND ----------
 
-# df = spark.read.parquet(f"{presentation_folder_path}/dashboard_results")
+df = spark.read.parquet(f"{presentation_folder_path}/dashboard_results")
+df.display()
 
 # COMMAND ----------
 
@@ -236,11 +335,5 @@ merge_delta_data(final_df,input_db,input_table,presentation_folder_path,partitio
 # COMMAND ----------
 
 # test and confirm the data is stored in the readble format
-df = spark.read.format("delta").load(f"{presentation_folder_path}/dashboard_results/")
-
-# COMMAND ----------
-
-df.display()
-
-# COMMAND ----------
-
+# df = spark.read.format("delta").load(f"{presentation_folder_path}/dashboard_results/")
+# df.display()

@@ -10,11 +10,11 @@
 
 # COMMAND ----------
 
-# MAGIC %run "/formula1/include/configuration"
+# MAGIC %run "../include/configuration"
 
 # COMMAND ----------
 
-# MAGIC %run "/formula1/include/common_functions"
+# MAGIC %run "../include/common_functions"
 
 # COMMAND ----------
 
@@ -57,7 +57,7 @@ display(dbutils.fs.mounts())
 # COMMAND ----------
 
 # MAGIC %fs
-# MAGIC ls /mnt/databrickscourcedl/raw
+# MAGIC ls /mnt/datasourceformula1/raw
 
 # COMMAND ----------
 
@@ -276,13 +276,13 @@ display(circuites_final_test)
 # COMMAND ----------
 
 # save the file in the new processed folder location
-#circuites_final_df.write.parquet(f"{processed_folder_path}/circuits")
+# circuites_final_df.write.parquet(f"{processed_folder_path}/circuits")
 # line 2 is commented because it will fail with multiple rerun.
 
 # COMMAND ----------
 
 # MAGIC %fs
-# MAGIC ls /mnt/databrickscourcedl/processed/circuits
+# MAGIC ls /mnt/datasourceformula1/processed/circuits
 
 # COMMAND ----------
 
@@ -295,7 +295,7 @@ display(df)
 
 # COMMAND ----------
 
-# Re-running the entire note book fails the write statement has path already present
+## Re-running the entire note book fails the write statement has path already present
 # add the mode option to overwrite the new existing file
 circuites_final_df.write.mode("overwrite").parquet(f"{processed_folder_path}/circuits/")
 
@@ -324,4 +324,5 @@ display(df)
 dbutils.notebook.exit("success")
 
 # COMMAND ----------
+
 

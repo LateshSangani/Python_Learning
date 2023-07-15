@@ -9,11 +9,11 @@
 
 # COMMAND ----------
 
-# MAGIC %run "/formula1/include/configuration"
+# MAGIC %run "../include/configuration"
 
 # COMMAND ----------
 
-# MAGIC %run "/formula1/include/common_functions"
+# MAGIC %run "../include/common_functions"
 
 # COMMAND ----------
 
@@ -33,12 +33,13 @@ sql_df = spark.read.parquet(f"{presentation_folder_path}/dashboard_results")
 
 # COMMAND ----------
 
+# sql_df.createTempView("v_dashboard_results")
 sql_df.createOrReplaceTempView("v_dashboard_results")
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC # Reading SQL from the Python %sql cells
+# MAGIC # Approch 1 : Reading SQL from the SQL cells
 
 # COMMAND ----------
 
@@ -68,11 +69,16 @@ sql_df.createOrReplaceTempView("v_dashboard_results")
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC # Reading SQL from the Python Cell
+# MAGIC # Approch 2 : Reading SQL from the Python Cell
 
 # COMMAND ----------
 
 sql_df = spark.sql("select * from v_dashboard_results")
+
+# COMMAND ----------
+
+sql_df = spark.sql("select * from v_dashboard_results where race_year = 2020")
+sql_df.display()
 
 # COMMAND ----------
 
@@ -83,10 +89,4 @@ sql_df = spark.sql("select * from v_dashboard_results")
 
 p_race_year = 2020
 sql_df = spark.sql(f"select * from v_dashboard_results where race_year = {p_race_year}")
-
-# COMMAND ----------
-
 sql_df.display()
-
-# COMMAND ----------
-

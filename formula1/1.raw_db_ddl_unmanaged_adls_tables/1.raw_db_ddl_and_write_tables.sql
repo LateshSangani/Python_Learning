@@ -9,11 +9,11 @@
 
 -- COMMAND ----------
 
--- MAGIC %run "/formula1/include/configuration"
+-- MAGIC %run "../include/configuration"
 
 -- COMMAND ----------
 
--- MAGIC %run "/formula1/include/common_functions"
+-- MAGIC %run "../include/common_functions"
 
 -- COMMAND ----------
 
@@ -22,17 +22,25 @@
 
 -- COMMAND ----------
 
-# add the input parameter of widget
-# the input parameter can be used to filter the data or store the extra column
-# the default value is 2099-01-01  , but it can be anything we defined.
-dbutils.widgets.text("p_as_of_date","2099-01-01")
-v_as_of_date = dbutils.widgets.get("p_as_of_date")
-display(v_as_of_date)
+-- MAGIC %python
+-- MAGIC #add the input parameter of widget
+-- MAGIC #the input parameter can be used to filter the data or store the extra column
+-- MAGIC #the default value is 2099-01-01  , but it can be anything we defined.
+-- MAGIC dbutils.widgets.text("p_as_of_date","2099-01-01")
+-- MAGIC v_as_of_date = dbutils.widgets.get("p_as_of_date")
+-- MAGIC display(v_as_of_date)
 
 -- COMMAND ----------
 
 -- MAGIC %md
 -- MAGIC # Prapare the new Fresh database to stored the Raw Information
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ##### database made inside  of the default databricks location
+-- MAGIC
+-- MAGIC ##### dbfs:/user/hive/warehouse/
 
 -- COMMAND ----------
 
@@ -47,7 +55,24 @@ DESC DATABASE raw_db;
 -- COMMAND ----------
 
 -- MAGIC %md
--- MAGIC ## 1) RAW TABLE raw_db.circuits from CSV file
+-- MAGIC ## Setup of all the UNMANGED Tables where data will stored in the ADLS storage not in the databricks storage
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ##### NOTE : In this case this unmanaged option will not valid as it stored the data in the databricks storage fixed path.
+-- MAGIC ##### df.write.mode("overwrite").format("csv").option("path",f"{raw_folder_path}/circuites.csv/").saveAsTable("raw_db.circuites")
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ## 1) RAW TABLE raw_db.circuits from plain CSV file
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ###### note : The "options" section tell from where to read the file and write in the table
+-- MAGIC ######        but the "location" section tell where to write the content 
 
 -- COMMAND ----------
 
@@ -64,7 +89,8 @@ alt int,
 url string
 )
 USING CSV
-OPTIONS(path "/mnt/databrickscourcedl/raw/circuits.csv", header true);
+OPTIONS(path "/mnt/datasourceformula1/raw/circuits.csv", header true);
+--LOCATION "/mnt/datasourceformula1/raw/circuits";
 
 -- COMMAND ----------
 
@@ -73,7 +99,7 @@ select * from raw_db.circuits;
 -- COMMAND ----------
 
 -- MAGIC %md
--- MAGIC ## 2) RAW TABLE raw_db.races from CSV file
+-- MAGIC ## 2) RAW TABLE raw_db.races from plain CSV file
 
 -- COMMAND ----------
 
@@ -90,7 +116,7 @@ time string,
 url string
 )
 USING CSV
-OPTIONS(path "/mnt/databrickscourcedl/raw/races.csv", header true);
+OPTIONS(path "/mnt/datasourceformula1/raw/races.csv", header true);
 
 -- COMMAND ----------
 
@@ -99,7 +125,7 @@ select * from raw_db.races
 -- COMMAND ----------
 
 -- MAGIC %md
--- MAGIC ## 3) RAW TABLE raw_db.constructors from JSON file
+-- MAGIC ## 3) RAW TABLE raw_db.constructors from single line JSON file
 
 -- COMMAND ----------
 
@@ -113,7 +139,7 @@ nationality STRING,
 url STRING
 )
 USING JSON
-OPTIONS(path "/mnt/databrickscourcedl/raw/constructors.json");
+OPTIONS(path "/mnt/datasourceformula1/raw/constructors.json");
 
 -- COMMAND ----------
 
@@ -122,7 +148,7 @@ select * from raw_db.constructors;
 -- COMMAND ----------
 
 -- MAGIC %md
--- MAGIC ## 4) RAW TABLE raw_db.drivers from JSON file array
+-- MAGIC ## 4) RAW TABLE raw_db.drivers from single line JSON file but multiple values
 
 -- COMMAND ----------
 
@@ -139,7 +165,7 @@ nationality STRING,
 url STRING
 )
 USING JSON
-OPTIONS(path "/mnt/databrickscourcedl/raw/drivers.json");
+OPTIONS(path "/mnt/datasourceformula1/raw/drivers.json");
 
 -- COMMAND ----------
 
@@ -148,7 +174,7 @@ select * from raw_db.drivers;
 -- COMMAND ----------
 
 -- MAGIC %md
--- MAGIC ## 5) RAW TABLE raw_db.results from JSON file
+-- MAGIC ## 5) RAW TABLE raw_db.results from single line JSON file
 
 -- COMMAND ----------
 
@@ -175,7 +201,7 @@ fastestLapSpeed STRING,
 statusId INT
 )
 USING JSON
-OPTIONS(path "/mnt/databrickscourcedl/raw/results.json");
+OPTIONS(path "/mnt/datasourceformula1/raw/results.json");
 
 -- COMMAND ----------
 
@@ -184,7 +210,7 @@ select * from  raw_db.results;
 -- COMMAND ----------
 
 -- MAGIC %md
--- MAGIC ## 6) RAW TABLE raw_db.pit_stops from JSON Multiline file
+-- MAGIC ## 6) RAW TABLE raw_db.pit_stops from SINGLE JSON Multiline file
 
 -- COMMAND ----------
 
@@ -200,7 +226,7 @@ duration STRING,
 milliseconds INT
 )
 USING JSON
-OPTIONS(path "/mnt/databrickscourcedl/raw/pit_stops.json" , multiLine true);
+OPTIONS(path "/mnt/datasourceformula1/raw/pit_stops.json" , multiLine true);
 
 -- COMMAND ----------
 
@@ -225,7 +251,7 @@ time string,
 milliseconds int
 )
 USING CSV
-OPTIONS(path "/mnt/databrickscourcedl/raw/lap_times/", header true);
+OPTIONS(path "/mnt/datasourceformula1/raw/lap_times/", header true);
 
 -- COMMAND ----------
 
@@ -252,11 +278,12 @@ q2 STRING,
 q3 STRING
 )
 USING JSON
-OPTIONS(path "/mnt/databrickscourcedl/raw/qualifying/" , multiLine true);
+OPTIONS(path "/mnt/datasourceformula1/raw/qualifying/" , multiLine true);
 
 -- COMMAND ----------
 
 select * from raw_db.qualifying;
 
 -- COMMAND ----------
+
 

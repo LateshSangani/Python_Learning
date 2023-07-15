@@ -16,16 +16,28 @@
 
 -- COMMAND ----------
 
--- MAGIC %run "/formula1/include/configuration"
+-- MAGIC %run "../include/configuration"
 
 -- COMMAND ----------
 
--- MAGIC %run "/formula1/include/common_functions"
+-- MAGIC %run "../include/common_functions"
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ##### database made inside  of the ADLS location
+-- MAGIC
+-- MAGIC ##### dbfs:/mnt/datasourceformula1/processed
+
+-- COMMAND ----------
+
+CREATE DATABASE IF NOT EXISTS processed_db
+LOCATION "/mnt/datasourceformula1/processed";
 
 -- COMMAND ----------
 
 --we can make the database under the provide databricks mount point location which is pointing to the Azure Gen2 storage account
---dbfs:/mnt/databrickscourcedl/processed
+--dbfs:/mnt/datasourceformula1/processed
 DESC DATABASE processed_db;
 
 -- COMMAND ----------
@@ -53,14 +65,19 @@ DESC DATABASE processed_db;
 -- COMMAND ----------
 
 -- MAGIC %python
--- MAGIC circuits_df = spark.read.format("delta").load(f"{processed_folder_path}/circuits")
--- MAGIC races_df = spark.read.format("delta").load(f"{processed_folder_path}/races")
--- MAGIC constructor_df = spark.read.format("delta").load(f"{processed_folder_path}/constructor")
--- MAGIC drivers_df = spark.read.format("delta").load(f"{processed_folder_path}/drivers")
--- MAGIC results_df = spark.read.format("delta").load(f"{processed_folder_path}/results")
--- MAGIC pit_stop_df = spark.read.format("delta").load(f"{processed_folder_path}/pit_stops")
--- MAGIC lap_times_df = spark.read.format("delta").load(f"{processed_folder_path}/lap_times")
--- MAGIC qualifying_df = spark.read.format("delta").load(f"{processed_folder_path}/qualifying")
+-- MAGIC #circuits_df = spark.read.format("delta").load(f"{processed_folder_path}/circuits")
+-- MAGIC #races_df = spark.read.format("delta").load(f"{processed_folder_path}/races")
+-- MAGIC #constructor_df = spark.read.format("delta").load(f"{processed_folder_path}/constructor")
+-- MAGIC #drivers_df = spark.read.format("delta").load(f"{processed_folder_path}/drivers")
+-- MAGIC #results_df = spark.read.format("delta").load(f"{processed_folder_path}/results")
+-- MAGIC #pit_stop_df = spark.read.format("delta").load(f"{processed_folder_path}/pit_stops")
+-- MAGIC #lap_times_df = spark.read.format("delta").load(f"{processed_folder_path}/lap_times")
+-- MAGIC #qualifying_df = spark.read.format("delta").load(f"{processed_folder_path}/qualifying")
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC # SQL : Read all the processed data from database 
 
 -- COMMAND ----------
 
@@ -68,7 +85,6 @@ DESC DATABASE processed_db;
 -- MAGIC ## 1) PROCESSED TABLE processed_db.circuits from Parquet file
 
 -- COMMAND ----------
-
 
 select * from processed_db.circuits;
 
@@ -79,7 +95,7 @@ select * from processed_db.circuits;
 
 -- COMMAND ----------
 
-select * from processed_db.races
+select * from processed_db.races;
 
 -- COMMAND ----------
 
@@ -106,7 +122,7 @@ select * from processed_db.drivers;
 
 -- COMMAND ----------
 
-select * from  processed_db.results;
+select * from processed_db.results;
 
 -- COMMAND ----------
 
@@ -134,6 +150,3 @@ select * from processed_db.lap_times;
 -- COMMAND ----------
 
 select * from processed_db.qualifying;
-
--- COMMAND ----------
-

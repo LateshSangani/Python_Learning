@@ -10,11 +10,11 @@
 
 -- COMMAND ----------
 
--- MAGIC %run "/formula1/include/configuration"
+-- MAGIC %run "../include/configuration"
 
 -- COMMAND ----------
 
--- MAGIC %run "/formula1/include/common_functions"
+-- MAGIC %run "../include/common_functions"
 
 -- COMMAND ----------
 
@@ -83,45 +83,60 @@ SHOW TABLES IN default;
 -- COMMAND ----------
 
 
---READ:
+----------------------------------------------------READ--------------------------------------------------
+--1) READ Python Code
 --read the data in the python datafrom from the Data files
 --python_df = spark.read.parquet(f"{presentation_folder_path}/dashboard_results/")
+--python_df = spark.read.csv(f"{raw_folder_path}/races.csv/")
+--python_df = spark.read.json(f"{raw_folder_path}/drivers.json/")
 --
---read the data in the python dataframe from sql views or tables
+--2) READ SQL from SQL
+--read the data in the SQL cells from the sql views or tables
+--select * from v_dashboard_results
+--select * from global_temp.gv_dashboard_results
+--
+--3) READ SQL from Python
+--read the data in the python cells from sql views or tables
 --python_df = spark.sql("select * from v_dashboard_results")
 --python_df = spark.sql("select * from global_temp.gv_dashboard_results")
 --
---
---WRITE:
+----------------------------------------------------WRITE--------------------------------------------------
+--4) WRITE Python to Python Code:
 --write the python dataframe data in the storage location
 --python_df.write.mode("overwrite").parquet(f"{presentation_folder_path}/dashboard_results")
 --
---write the python dataframe data in the SQL views
---python_df.createOrReplaceTempView("v_dashboard_results")
---python_df.createOrReplaceGlobalTempView("gv_dashboard_results")
---
---write the python dataframe data in the SQL tables
+--5) Write Python to SQL Managed Table
+--write the python dataframe data in the SQL Managed tables
 --python_df.write.format("parquet").saveAsTable("demo.dashboard_results")
 --
---write the SQL table data in the another SQL tables
+--6) Write SQL to SQL UnManaged Table
+--write the SQL table data in the another SQL Managed tables
 --CREATE TABLE demo.dashboard_results_filtered AS SELECT * FROM demo.dashboard_results WHERE race_year = 2020;
 --
---write the python dataframe data in the SQL EXTERNAL tables
---python_df.write.format("parquet").option("path",f"{presentation_folder_path}/dashboard_results_external_table/").saveAsTable("demo.dashboard_results_external_table")
+--7) Write Python to SQL UN-Managed Table
+--write the python dataframe data in the SQL UNMANAGED EXTERNAL tables but databricks storage path location
+--python_df.write.format("parquet").option("path",f"{presentation_folder_path}/dashboard_results/").saveAsTable("demo.dashboard_results")
 --
---write the python SQL extenal table data in the another SQL EXTERNAL table.
---CREATE PARQUET EXTERNAL Table 
+--8) Write SQL to SQL UN-Managed Table
+--write the python dataframe data in the SQL UNMANAGED EXTERNAL tables but ADLS storage path location
+--CREATE EXTERNAL Table USING CSV|parquet|JSON LOCATION/OPTION
 --INSERT INTO NEW_TABLE SELECT * FROM OLD_TABLE
+--
+----------------------------------------------------VIEW--------------------------------------------------
+--9) Create SQL view by Python
+--python_df.createOrReplaceTempView("v_dashboard_results")   
+--python_df.createOrReplaceGlobalTempView("gv_dashboard_results")  
+--No option for the permenant view creation
+--
+--10) Create SQL view by SQL
+--CREATE OR REPLACE TEMP VIEW v_dashboard_results AS SELECT * FROM TABLE_NAME WHERE ..
+--CREATE OR REPLACE GLOBAL TEMP VIEW v_dashboard_results AS SELECT * FROM TABLE_NAME WHERE ..
+--CREATE OR REPLACE VIEW v_dashboard_results AS SELECT * FROM TABLE_NAME WHERE .. 
 
 -- COMMAND ----------
 
 -- MAGIC %md
--- MAGIC # READ : Read the dataframe first to make all the below list of the tables and views
-
--- COMMAND ----------
-
--- MAGIC %python
--- MAGIC dashboard_result_df = spark.read.parquet(f"{presentation_folder_path}/dashboard_results/")
+-- MAGIC ## ----------Managed Table Total 2 Options----------
 
 -- COMMAND ----------
 
@@ -135,7 +150,8 @@ SHOW TABLES IN default;
 
 -- COMMAND ----------
 
--- to make the code re-runnable the mode("overwrite") is required
+-- MAGIC %md
+-- MAGIC ##### to make the code re-runnable the mode("overwrite") is required
 
 -- COMMAND ----------
 
@@ -152,11 +168,11 @@ SHOW TABLES;
 
 -- COMMAND ----------
 
-DESC dashboard_results;
+DESC demo.dashboard_results;
 
 -- COMMAND ----------
 
-DESC EXTENDED dashboard_results;
+DESC EXTENDED demo.dashboard_results;
 
 -- COMMAND ----------
 
@@ -191,6 +207,11 @@ DROP TABLE demo.dashboard_results_filtered;
 -- COMMAND ----------
 
 SHOW TABLES;
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ## ----------UnManaged Table 2 Options----------
 
 -- COMMAND ----------
 
@@ -252,13 +273,44 @@ created_date TIMESTAMP
 )
 USING parquet
 --LOCATION "{presentation_folder_path}/dashboard_results_filtered"              not working python vaiable in the sql
-LOCATION "/mnt/databrickscourcedl/presentation/dashboard_results_filtered";
+LOCATION "/mnt/datasourceformula1/presentation/dashboard_results_filtered";
 
 -- COMMAND ----------
 
 --load the data in the empty table
 INSERT INTO demo.dashboard_results_filtered
-SELECT * FROM demo.dashboard_results_external_table WHERE race_year = 2020;
+(
+race_year,
+race_name,
+race_date,
+circuit_location,
+driver_name,
+driver_number,
+driver_nationality,
+team,
+grid,
+fastest_lap,
+race_time,
+points,
+position,
+created_date
+)
+SELECT 
+race_year,
+race_name,
+race_date,
+circuit_location,
+driver_name,
+driver_number,
+driver_nationality,
+team,
+grid,
+fastest_lap,
+race_time,
+points,
+position,
+created_date
+FROM demo.dashboard_results_external_table WHERE race_year = 2020;
 
 -- COMMAND ----------
 
@@ -365,6 +417,3 @@ select * from demo.pv_dashboard_results;
 -- COMMAND ----------
 
 SHOW TABLES IN demo;
-
--- COMMAND ----------
-

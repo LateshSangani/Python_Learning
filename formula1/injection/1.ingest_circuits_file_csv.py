@@ -6,8 +6,8 @@
 
 # Include the common file to export the common variable and functions.
 # The filename without extention is fine
-# "/formula1/include/configuration"
-# "/formula1/include/common_functions"
+# "/Repos/sangani.sangita@gmail.com/Python_Learning/formula1/include/configuration"
+# "/Repos/sangani.sangita@gmail.com/Python_Learning/formula1/include/common_functions"
 
 # COMMAND ----------
 
@@ -16,11 +16,11 @@
 
 # COMMAND ----------
 
-# MAGIC %run "/formula1/include/configuration"
+# MAGIC %run "../include/configuration"
 
 # COMMAND ----------
 
-# MAGIC %run "/formula1/include/common_functions"
+# MAGIC %run "../include/common_functions"
 
 # COMMAND ----------
 
@@ -81,6 +81,8 @@ circuits_schema = StructType(fields=[StructField("circuitId", IntegerType(), Fal
 # COMMAND ----------
 
 # use the circuits_schema while reading the dataframe from the CSV file.
+# By default the header is set to false and spark consider the header has data record. The True skip the header 1st record.
+# If schema is not assigned by default all the rows will be consider the string. hence STRUCT gives the valid data type defination
 circuits_df = spark.read \
 .option("header" ,True) \
 .schema(circuits_schema) \
@@ -88,6 +90,7 @@ circuits_df = spark.read \
 
 # COMMAND ----------
 
+#circuits_df.show()  poor display 
 display(circuits_df)
 
 # COMMAND ----------
@@ -137,9 +140,8 @@ display(circuites_final_df)
 
 # COMMAND ----------
 
-# save the file in the new processed folder location
-# line 3 is commented because it will fail with multiple rerun.
-# circuites_final_df.write.parquet(f"{processed_folder_path}/circuits")
+# MAGIC %md
+# MAGIC ##### Write data using python but no table creation
 
 # COMMAND ----------
 
@@ -150,24 +152,34 @@ display(circuites_final_df)
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ##### full load with Data Lake
+# MAGIC ##### Write data using python + Data Lake + Table Creation
 
 # COMMAND ----------
 
 # Write the output of the processed data in the database tables
 # it has 2 benifies , table get created and file also stored in the azure storage account as processed_db used the mounted path
-# circuites_final_df.write.mode("overwrite").format("parquet").saveAsTable("processed_db.circuits")
+circuites_final_df.write.mode("overwrite").format("parquet").saveAsTable("processed_db.circuits")
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ##### full load with Delta Lake
+# MAGIC ##### Write data using python + Delta Lake + Table Creation 
 
 # COMMAND ----------
 
 # Write the output of the processed data in the database tables
 # it has 2 benifies , table get created and file also stored in the azure storage account as processed_db used the mounted path
-circuites_final_df.write.mode("overwrite").format("delta").saveAsTable("processed_db.circuits")
+# circuites_final_df.write.mode("overwrite").format("delta").saveAsTable("processed_db.circuits")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ##### Plain Python read
+
+# COMMAND ----------
+
+# df = spark.read.parquet(f"{processed_folder_path}/circuits")
+# display(df)
 
 # COMMAND ----------
 
@@ -176,7 +188,8 @@ circuites_final_df.write.mode("overwrite").format("delta").saveAsTable("processe
 
 # COMMAND ----------
 
-# df = spark.read.parquet(f"{processed_folder_path}/circuits")
+ df = spark.read.parquet(f"{processed_folder_path}/circuits")
+ display(df)
 
 # COMMAND ----------
 
@@ -186,11 +199,8 @@ circuites_final_df.write.mode("overwrite").format("delta").saveAsTable("processe
 # COMMAND ----------
 
 # confirm the data is stored well and read all the files
-df = spark.read.format("delta").load(f"{processed_folder_path}/circuits")
-
-# COMMAND ----------
-
-display(df)
+# df = spark.read.format("delta").load(f"{processed_folder_path}/circuits")
+# display(df)
 
 # COMMAND ----------
 

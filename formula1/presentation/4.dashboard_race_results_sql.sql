@@ -8,11 +8,11 @@ USE processed_db;
 
 -- COMMAND ----------
 
--- MAGIC %run "/formula1/include/configuration"
+-- MAGIC %run "../include/configuration"
 
 -- COMMAND ----------
 
--- MAGIC %run "/formula1/include/common_functions"
+-- MAGIC %run "../include/common_functions"
 
 -- COMMAND ----------
 
@@ -28,6 +28,32 @@ USE processed_db;
 -- MAGIC dbutils.widgets.text("p_as_of_date","2099-01-01")
 -- MAGIC v_as_of_date = dbutils.widgets.get("p_as_of_date")
 -- MAGIC display(v_as_of_date)
+
+-- COMMAND ----------
+
+
+
+-- COMMAND ----------
+
+CREATE TABLE IF NOT EXISTS presentation_db.calculated_race_results_sql
+USING PARQUET
+AS
+SELECT a.race_year, c.name as constructor_name , d.driver_id , d.name driver_name , r.race_id , r.position , r.points as actual_points,
+11 - r.position as calculated_points
+FROM processed_db.results r 
+JOIN processed_db.drivers d ON (r.driver_id = d.driver_id)
+JOIN processed_db.constructor c ON (r.constructor_id = c.constructor_id)
+JOIN processed_db.races a ON (r.race_id = a.race_id)
+WHERE r.position <= 10
+AND r.as_of_date = "2021-03-21";
+
+-- COMMAND ----------
+
+select * from presentation_db.calculated_race_results_sql;
+
+-- COMMAND ----------
+
+--drop table presentation_db.calculated_race_results_sql;
 
 -- COMMAND ----------
 
@@ -83,4 +109,5 @@ VALUES (race_year,constructor_name,driver_id,driver_name,race_id,position,actual
 select count(*) from presentation_db.calculated_race_results_sql
 
 -- COMMAND ----------
+
 

@@ -1,14 +1,19 @@
 # Databricks notebook source
 # MAGIC %md
+# MAGIC ## Pre-requsit : all the injection files should be laoded and data stored in the processed folder
+
+# COMMAND ----------
+
+# MAGIC %md
 # MAGIC # Load Run time configuration
 
 # COMMAND ----------
 
-# MAGIC %run "/formula1/include/configuration"
+# MAGIC %run "../include/configuration"
 
 # COMMAND ----------
 
-# MAGIC %run "/formula1/include/common_functions"
+# MAGIC %run "../include/common_functions"
 
 # COMMAND ----------
 
@@ -18,23 +23,24 @@
 # COMMAND ----------
 
 # Two DF join with filter condition , rename of the same column name in the same DataFrame , 
-circuites_df = spark.read.parquet(f"{processed_folder_path}/circuits").filter("circuit_id < 79").withColumnRenamed("name","circuit_name")
+circuites_df = spark.read.parquet(f"{processed_folder_path}/circuits").where("circuit_id < 79").withColumnRenamed("name","circuit_name")
 races_df = spark.read.parquet(f"{processed_folder_path}/races").filter("race_year = 2019").withColumnRenamed("name","race_name")
 
 # COMMAND ----------
 
 # By default the JOIN condition is the inner
-# If we dont pass the third parameter , the join function will access the value has inner
+# If we dont pass the third parameter , the join function will consider the default value as inner
 # Here the combine output of the both dataframe is coming and circuit_id gets duplicated
+# == is written as its Python code
 races_circuites_df = circuites_df.join(races_df,circuites_df.circuit_id == races_df.circuit_id,"inner" )
 # another way to display the output.
 races_circuites_df.display()
 
 # COMMAND ----------
 
-# If data is not requried to store , just want to see it then show() will also help
+# If data is not requried to store , just want to see it then show() or display() will also help
 circuites_df.join(races_df,circuites_df.circuit_id == races_df.circuit_id,"inner" ) \
-.select(circuites_df.circuit_name , circuites_df.location , circuites_df.country , races_df.race_name , races_df.round).show()
+.select(circuites_df.circuit_name , circuites_df.location , circuites_df.country , races_df.race_name , races_df.round).display()
 
 # COMMAND ----------
 
@@ -91,6 +97,7 @@ display(races_circuites_df)
 
 # MAGIC %md
 # MAGIC # Cross Join
+# MAGIC #### keyword crossJoin
 
 # COMMAND ----------
 
@@ -106,6 +113,7 @@ display(races_circuites_df)
 
 # MAGIC %md
 # MAGIC # Semi Join  
+# MAGIC ##### its inner join + all the MATCHED data of left DF + all the columns of the left DF OUTPUT
 
 # COMMAND ----------
 
@@ -123,6 +131,7 @@ display(races_circuites_df)
 
 # MAGIC %md
 # MAGIC # Anti Join
+# MAGIC ##### its inner join + all NON MATCH data of left DF + all the columns of the left DF OUTPUT
 
 # COMMAND ----------
 
@@ -137,4 +146,5 @@ races_circuites_df = circuites_df.join(races_df,circuites_df.circuit_id == races
 display(races_circuites_df)
 
 # COMMAND ----------
+
 

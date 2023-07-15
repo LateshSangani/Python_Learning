@@ -9,6 +9,3 @@
 # MAGIC from global_temp.gv_dashboard_results
 # MAGIC group by race_year
 # MAGIC order by race_year desc
-
-# COMMAND ----------
-

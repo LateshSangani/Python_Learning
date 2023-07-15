@@ -6,8 +6,8 @@
 
 # Include the common files to export the common variable and functions.
 # The filename without extention is fine
-# "/formula1/include/configuration"
-# "/formula1/include/common_functions"
+# "/Repos/sangani.sangita@gmail.com/Python_Learning/formula1/include/configuration"
+# "/Repos/sangani.sangita@gmail.com/Python_Learning/formula1/include/common_functions"
 
 # COMMAND ----------
 
@@ -16,11 +16,11 @@
 
 # COMMAND ----------
 
-# MAGIC %run "/formula1/include/configuration"
+# MAGIC %run "../include/configuration"
 
 # COMMAND ----------
 
-# MAGIC %run "/formula1/include/common_functions"
+# MAGIC %run "../include/common_functions"
 
 # COMMAND ----------
 
@@ -135,6 +135,11 @@ display(races_final_df)
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC ##### Write data using python but no table creation
+
+# COMMAND ----------
+
 # Re-running the entire note book fails the write statement has path already present
 # add the mode option to overwrite the new existing file
 # races_final_df.write.mode("overwrite").partitionBy("race_year").parquet(f"{processed_folder_path}/races")
@@ -142,22 +147,34 @@ display(races_final_df)
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ##### full load with data lake
+# MAGIC ##### Write data using python + Data Lake + Table Creation
 
 # COMMAND ----------
 
 # Write the output of the processed data in the database tables
 # it has 2 benifies , table get created and file also stored in the azure storage account as processed_db used the mounted path
-# races_final_df.write.mode("overwrite").partitionBy('race_year').format("parquet").saveAsTable("processed_db.races")
+races_final_df.write.mode("overwrite").partitionBy('race_year').format("parquet").saveAsTable("processed_db.races")
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ##### full load with delta lake
+# MAGIC ##### Write data using python + Delta Lake + Table Creation 
 
 # COMMAND ----------
 
-races_final_df.write.mode("overwrite").partitionBy('race_year').format("delta").saveAsTable("processed_db.races")
+# Write the output of the processed data in the database tables
+# it has 2 benifies , table get created and file also stored in the azure storage account as processed_db used the mounted path
+# races_final_df.write.mode("overwrite").partitionBy('race_year').format("delta").saveAsTable("processed_db.races")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ##### Plain Python read
+
+# COMMAND ----------
+
+# df = spark.read.parquet(f"{processed_folder_path}/races")
+# display(df)
 
 # COMMAND ----------
 
@@ -166,7 +183,8 @@ races_final_df.write.mode("overwrite").partitionBy('race_year').format("delta").
 
 # COMMAND ----------
 
-# df = spark.read.parquet(f"{processed_folder_path}/races")
+df = spark.read.parquet(f"{processed_folder_path}/races")
+display(df)
 
 # COMMAND ----------
 
@@ -176,11 +194,8 @@ races_final_df.write.mode("overwrite").partitionBy('race_year').format("delta").
 # COMMAND ----------
 
 # confirm the data is stored well and read all the files
-df = spark.read.format("delta").load(f"{processed_folder_path}/races")
-
-# COMMAND ----------
-
-display(df)
+# df = spark.read.format("delta").load(f"{processed_folder_path}/races")
+# display(df)
 
 # COMMAND ----------
 

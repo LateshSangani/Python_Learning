@@ -10,7 +10,7 @@
 # MAGIC - %fs    -> file system
 # MAGIC - %sh    -> shell command
 # MAGIC - %md    -> mark down
-# MAGIC 
+# MAGIC
 # MAGIC ####### The more details about the md documentation is defined here : https://www.markdownguide.org/cheat-sheet/#basic-synta
 
 # COMMAND ----------

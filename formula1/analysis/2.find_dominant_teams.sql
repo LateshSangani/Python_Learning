@@ -3,7 +3,7 @@ USE presentation_db;
 
 -- COMMAND ----------
 
-select * from presentation_db.calculated_race_results limit 10;
+select * from presentation_db.calculated_race_results_sql limit 10;
 
 -- COMMAND ----------
 
@@ -15,7 +15,7 @@ count(1) as total_races,
 sum(calculated_points) as total_points,
 avg(calculated_points) as avg_points,
 sum(calculated_points)/count(1) as derived_average
-from presentation_db.calculated_race_results
+from presentation_db.calculated_race_results_sql
 group by constructor_name
 having total_races >= 100
 order by avg_points desc;
@@ -27,7 +27,7 @@ select constructor_name ,
 count(1) as total_races,
 sum(calculated_points) as total_points,
 avg(calculated_points) as avg_points
-from presentation_db.calculated_race_results
+from presentation_db.calculated_race_results_sql
 where race_year BETWEEN 2011 AND 2020
 group by constructor_name
 having total_races >= 100
@@ -40,11 +40,8 @@ select constructor_name ,
 count(1) as total_races,
 sum(calculated_points) as total_points,
 avg(calculated_points) as avg_points
-from presentation_db.calculated_race_results
+from presentation_db.calculated_race_results_sql
 where race_year BETWEEN 2001 AND 2010
 group by constructor_name
 having total_races >= 100
 order by total_points desc;
-
--- COMMAND ----------
-

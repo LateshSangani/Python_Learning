@@ -16,11 +16,16 @@
 
 -- COMMAND ----------
 
--- MAGIC %run "/formula1/include/configuration"
+-- MAGIC %run "../include/configuration"
 
 -- COMMAND ----------
 
--- MAGIC %run "/formula1/include/common_functions"
+-- MAGIC %run "../include/common_functions"
+
+-- COMMAND ----------
+
+CREATE DATABASE IF NOT EXISTS presentation_db
+LOCATION "/mnt/datasourceformula1/presentation";
 
 -- COMMAND ----------
 
@@ -48,9 +53,9 @@ DESC DATABASE presentation_db
 -- COMMAND ----------
 
 -- MAGIC %python
--- MAGIC dashboard_results_df = spark.read.format("delta").load(f"{presentation_folder_path}/dashboard_results")
--- MAGIC dashboard_standings_df = spark.read.format("delta").load(f"{presentation_folder_path}/dashboard_standings")
--- MAGIC dashboard_constructor_df = spark.read.format("delta").load(f"{presentation_folder_path}/dashboard_constructor")
+-- MAGIC #dashboard_results_df = spark.read.format("delta").load(f"{presentation_folder_path}/dashboard_results")
+-- MAGIC #dashboard_standings_df = spark.read.format("delta").load(f"{presentation_folder_path}/dashboard_standings")
+-- MAGIC #dashboard_constructor_df = spark.read.format("delta").load(f"{presentation_folder_path}/dashboard_constructor")
 
 -- COMMAND ----------
 
@@ -80,4 +85,5 @@ select * from presentation_db.dashboard_constructor;
 select * from presentation_db.dashboard_standings;
 
 -- COMMAND ----------
+
 

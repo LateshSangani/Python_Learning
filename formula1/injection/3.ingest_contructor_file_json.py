@@ -6,8 +6,8 @@
 
 # Include the common files to export the common variable and functions.
 # The filename without extention is fine
-# "/formula1/include/configuration"
-# "/formula1/include/common_functions"
+# "/Repos/sangani.sangita@gmail.com/Python_Learning/formula1/include/configuration"
+# "/Repos/sangani.sangita@gmail.com/Python_Learning/formula1/include/common_functions"
 
 # COMMAND ----------
 
@@ -16,11 +16,11 @@
 
 # COMMAND ----------
 
-# MAGIC %run "/formula1/include/configuration"
+# MAGIC %run "../include/configuration"
 
 # COMMAND ----------
 
-# MAGIC %run "/formula1/include/common_functions"
+# MAGIC %run "../include/common_functions"
 
 # COMMAND ----------
 
@@ -104,27 +104,45 @@ display(constructor_final_df)
 
 # COMMAND ----------
 
-#constructor_final_df.write.mode("overwrite").parquet(f"{processed_folder_path}/constructor")
+# MAGIC %md
+# MAGIC ##### Write data using python but no table creation
+
+# COMMAND ----------
+
+# constructor_final_df.write.mode("overwrite").parquet(f"{processed_folder_path}/constructor")
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ##### full load with data lake
+# MAGIC ##### Write data using python + Data Lake + Table Creation
 
 # COMMAND ----------
 
 # Write the output of the processed data in the database tables
 # it has 2 benifies , table get created and file also stored in the azure storage account as processed_db used the mounted path
-# constructor_final_df.write.mode("overwrite").format("parquet").saveAsTable("processed_db.constructor")
+constructor_final_df.write.mode("overwrite").format("parquet").saveAsTable("processed_db.constructor")
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ##### full load with delta lake
+# MAGIC ##### Write data using python + Delta Lake + Table Creation 
+# MAGIC
 
 # COMMAND ----------
 
-constructor_final_df.write.mode("overwrite").format("delta").saveAsTable("processed_db.constructor")
+# Write the output of the processed data in the database tables
+# it has 2 benifies , table get created and file also stored in the azure storage account as processed_db used the mounted path
+# constructor_final_df.write.mode("overwrite").format("delta").saveAsTable("processed_db.constructor")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ##### Plain Python read
+
+# COMMAND ----------
+
+ # df = spark.read.parquet(f"{processed_folder_path}/constructor")
+ # display(df)
 
 # COMMAND ----------
 
@@ -133,7 +151,8 @@ constructor_final_df.write.mode("overwrite").format("delta").saveAsTable("proces
 
 # COMMAND ----------
 
-# df = spark.read.parquet(f"{processed_folder_path}/constructor")
+ df = spark.read.parquet(f"{processed_folder_path}/constructor")
+ display(df)
 
 # COMMAND ----------
 
@@ -143,11 +162,8 @@ constructor_final_df.write.mode("overwrite").format("delta").saveAsTable("proces
 # COMMAND ----------
 
 # test and confirm the data is stored in the readble format
-df = spark.read.format("delta").load(f"{processed_folder_path}/constructor")
-
-# COMMAND ----------
-
-display(df)
+# df = spark.read.format("delta").load(f"{processed_folder_path}/constructor")
+# display(df)
 
 # COMMAND ----------
 

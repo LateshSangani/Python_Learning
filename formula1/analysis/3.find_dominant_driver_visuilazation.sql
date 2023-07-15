@@ -14,7 +14,20 @@ USE presentation_db;
 
 -- COMMAND ----------
 
-select * from presentation_db.calculated_race_results limit 10;
+select * from presentation_db.calculated_race_results_sql limit 10;
+
+-- COMMAND ----------
+
+select driver_name , 
+count(1) as total_races,
+sum(calculated_points) as total_points,
+avg(calculated_points) as avg_points,
+sum(calculated_points)/count(1) as derived_average,
+rank() over(order by avg(calculated_points) desc ) driver_rank
+from presentation_db.calculated_race_results_sql
+group by driver_name
+having total_races >= 50
+order by avg_points desc
 
 -- COMMAND ----------
 
@@ -31,7 +44,7 @@ sum(calculated_points) as total_points,
 avg(calculated_points) as avg_points,
 sum(calculated_points)/count(1) as derived_average,
 rank() over(order by avg(calculated_points) desc ) driver_rank
-from presentation_db.calculated_race_results
+from presentation_db.calculated_race_results_sql
 group by driver_name
 having total_races >= 50
 --order by avg_points desc;
@@ -51,27 +64,15 @@ select
   sum(calculated_points) as total_points,
   avg(calculated_points) as avg_points,
   sum(calculated_points) / count(1) as derived_average
-from
-  presentation_db.calculated_race_results
-where
-  driver_name in (
-    select
-      driver_name
-    from
-      v_dominant_driver
-    where
-      driver_rank < 11
-  )
-group by
-  race_year,
-  driver_name
-order by
-  race_year,
-  avg_points desc;
+from presentation_db.calculated_race_results_sql
+where driver_name in ( select driver_name from v_dominant_driver where driver_rank < 11)
+group by race_year,driver_name
+order by race_year,avg_points desc;
 
 -- COMMAND ----------
 
 -- visivulized the top 10 drivers by bar chart
+-- visivulized the top 10 drivers by Line chart
 select
   race_year,
   driver_name,
@@ -79,23 +80,10 @@ select
   sum(calculated_points) as total_points,
   avg(calculated_points) as avg_points,
   sum(calculated_points) / count(1) as derived_average
-from
-  presentation_db.calculated_race_results
-where
-  driver_name in (
-    select
-      driver_name
-    from
-      v_dominant_driver
-    where
-      driver_rank < 11
-  )
-group by
-  race_year,
-  driver_name
-order by
-  race_year,
-  avg_points desc;
+from presentation_db.calculated_race_results_sql
+where driver_name in ( select driver_name from v_dominant_driver where driver_rank < 11)
+group by race_year,driver_name
+order by race_year,avg_points desc;
 
 -- COMMAND ----------
 
@@ -107,23 +95,7 @@ select
   sum(calculated_points) as total_points,
   avg(calculated_points) as avg_points,
   sum(calculated_points) / count(1) as derived_average
-from
-  presentation_db.calculated_race_results
-where
-  driver_name in (
-    select
-      driver_name
-    from
-      v_dominant_driver
-    where
-      driver_rank < 11
-  )
-group by
-  race_year,
-  driver_name
-order by
-  race_year,
-  avg_points desc;
-
--- COMMAND ----------
-
+from presentation_db.calculated_race_results_sql
+where driver_name in ( select driver_name from v_dominant_driver where driver_rank < 11)
+group by race_year,driver_name
+order by race_year,avg_points desc;

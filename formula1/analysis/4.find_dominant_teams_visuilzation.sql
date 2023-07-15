@@ -9,13 +9,13 @@ USE presentation_db;
 
 -- COMMAND ----------
 
--- MAGIC 
+-- MAGIC
 -- MAGIC %md
 -- MAGIC ## The dashboard is prepared for the below Graphs and same can be see from the below URL : https://adb-2643165434444923.3.azuredatabricks.net/?o=2643165434444923#notebook/373281774929696/dashboard/373281774929718/present
 
 -- COMMAND ----------
 
-select * from presentation_db.calculated_race_results limit 10;
+select * from presentation_db.calculated_race_results_sql limit 10;
 
 -- COMMAND ----------
 
@@ -31,7 +31,7 @@ sum(calculated_points) as total_points,
 avg(calculated_points) as avg_points,
 sum(calculated_points)/count(1) as derived_average,
 rank() over(order by avg(calculated_points) desc ) team_rank
-from presentation_db.calculated_race_results
+from presentation_db.calculated_race_results_sql
 group by constructor_name
 having total_races >= 100
 --order by avg_points desc;
@@ -48,7 +48,7 @@ select race_year,constructor_name ,
 count(1) as total_races,
 sum(calculated_points) as total_points,
 avg(calculated_points) as avg_points
-from presentation_db.calculated_race_results
+from presentation_db.calculated_race_results_sql
 where constructor_name in ( select constructor_name from v_dominant_team where team_rank < 5)
 group by race_year,constructor_name
 order by race_year,avg_points desc;
@@ -60,10 +60,11 @@ select race_year,constructor_name ,
 count(1) as total_races,
 sum(calculated_points) as total_points,
 avg(calculated_points) as avg_points
-from presentation_db.calculated_race_results
+from presentation_db.calculated_race_results_sql
 where constructor_name in ( select constructor_name from v_dominant_team where team_rank < 5)
 group by race_year,constructor_name
 order by race_year,avg_points desc;
 
 -- COMMAND ----------
+
 

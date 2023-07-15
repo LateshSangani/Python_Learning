@@ -6,8 +6,8 @@
 
 # Include the common files to export the common variable and functions.
 # The filename without extention is fine
-# "/formula1/include/configuration"
-# "/formula1/include/common_functions"
+# "/Repos/sangani.sangita@gmail.com/Python_Learning/formula1/include/configuration"
+# "/Repos/sangani.sangita@gmail.com/Python_Learning/formula1/include/common_functions"
 
 # COMMAND ----------
 
@@ -16,11 +16,11 @@
 
 # COMMAND ----------
 
-# MAGIC %run "/formula1/include/configuration"
+# MAGIC %run "../include/configuration"
 
 # COMMAND ----------
 
-# MAGIC %run "/formula1/include/common_functions"
+# MAGIC %run "../include/common_functions"
 
 # COMMAND ----------
 
@@ -53,10 +53,6 @@ display(v_as_of_date)
 # COMMAND ----------
 
 display(dbutils.fs.mounts())
-
-# COMMAND ----------
-
-
 
 # COMMAND ----------
 
@@ -126,27 +122,44 @@ display(drivers_final_df)
 
 # COMMAND ----------
 
-# drivers_final_df.write.mode("overwrite").parquet(f"{processed_folder_path}/drivers")
+# MAGIC %md
+# MAGIC ##### Write data using python but no table creation
+
+# COMMAND ----------
+
+ # drivers_final_df.write.mode("overwrite").parquet(f"{processed_folder_path}/drivers")
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ##### full load with data lake
+# MAGIC ##### Write data using python + Data Lake + Table Creation
 
 # COMMAND ----------
 
 # Write the output of the processed data in the database tables
 # it has 2 benifies , table get created and file also stored in the azure storage account as processed_db used the mounted path
-# drivers_final_df.write.mode("overwrite").format("parquet").saveAsTable("processed_db.drivers")
+drivers_final_df.write.mode("overwrite").format("parquet").saveAsTable("processed_db.drivers")
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ##### full load with delta lake
+# MAGIC ##### Write data using python + Delta Lake + Table Creation 
 
 # COMMAND ----------
 
-drivers_final_df.write.mode("overwrite").format("delta").saveAsTable("processed_db.drivers")
+# Write the output of the processed data in the database tables
+# it has 2 benifies , table get created and file also stored in the azure storage account as processed_db used the mounted path
+# drivers_final_df.write.mode("overwrite").format("delta").saveAsTable("processed_db.drivers")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ##### Plain Python read
+
+# COMMAND ----------
+
+# df = spark.read.parquet(f"{processed_folder_path}/drivers")
+# display(df)
 
 # COMMAND ----------
 
@@ -155,7 +168,8 @@ drivers_final_df.write.mode("overwrite").format("delta").saveAsTable("processed_
 
 # COMMAND ----------
 
-# df = spark.read.parquet(f"{processed_folder_path}/drivers")
+df = spark.read.parquet(f"{processed_folder_path}/drivers")
+display(df)
 
 # COMMAND ----------
 
@@ -165,11 +179,8 @@ drivers_final_df.write.mode("overwrite").format("delta").saveAsTable("processed_
 # COMMAND ----------
 
 # test and confirm the data is stored in the readble format
-df = spark.read.format("delta").load(f"{processed_folder_path}/drivers")
-
-# COMMAND ----------
-
-display(df)
+# df = spark.read.format("delta").load(f"{processed_folder_path}/drivers")
+# display(df)
 
 # COMMAND ----------
 

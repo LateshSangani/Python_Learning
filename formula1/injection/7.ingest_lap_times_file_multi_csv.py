@@ -6,8 +6,8 @@
 
 # Include the common files to export the common variable and functions.
 # The filename without extention is fine
-# "/formula1/include/configuration"
-# "/formula1/include/common_functions"
+# "/Repos/sangani.sangita@gmail.com/Python_Learning/formula1/include/configuration"
+# "/Repos/sangani.sangita@gmail.com/Python_Learning/formula1/include/common_functions"
 
 # COMMAND ----------
 
@@ -16,11 +16,11 @@
 
 # COMMAND ----------
 
-# MAGIC %run "/formula1/include/configuration"
+# MAGIC %run "../include/configuration"
 
 # COMMAND ----------
 
-# MAGIC %run "/formula1/include/common_functions"
+# MAGIC %run "../include/common_functions"
 
 # COMMAND ----------
 
@@ -113,17 +113,36 @@ display(lap_times_final)
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC ##### Write data using python but no table creation
+
+# COMMAND ----------
+
 # full load with file creation.
-#
 # lap_times_final.write.mode("overwrite").partitionBy('race_id').parquet(f"{processed_folder_path}/lap_times")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ##### Write data using python + Data Lake + Table Creation
 
 # COMMAND ----------
 
 # Write the output of the processed data in the database tables
 # it has 2 benifies , table get created and file also stored in the azure storage account as processed_db used the mounted path
 # full load with table and file creation.
-#
-# lap_times_final.write.mode("overwrite").partitionBy('race_id').format("parquet").saveAsTable("processed_db.lap_times")
+lap_times_final.write.mode("overwrite").partitionBy('race_id').format("parquet").saveAsTable("processed_db.lap_times")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ##### Write data using python + Delta Lake + Table Creation 
+
+# COMMAND ----------
+
+# Write the output of the processed data in the database tables
+# it has 2 benifies , table get created and file also stored in the azure storage account as processed_db used the mounted path
+# lap_times_final.write.mode("overwrite").format("delta").saveAsTable("processed_db.lap_times")
 
 # COMMAND ----------
 
@@ -145,16 +164,27 @@ display(lap_times_final)
 # COMMAND ----------
 
 # I choosen the wrong primary key and some data can be duplicate
-input_db="processed_db"
-input_table="lap_times"
-partition_id="race_id"
-primary_key="driver_id"
-merge_delta_data(lap_times_final,input_db,input_table,processed_folder_path,partition_id,primary_key)
+# input_db="processed_db"
+# input_table="lap_times"
+# partition_id="race_id"
+# primary_key="driver_id"
+# merge_delta_data(lap_times_final,input_db,input_table,processed_folder_path,partition_id,primary_key)
 
 # COMMAND ----------
 
-# MAGIC %sql
-# MAGIC select as_of_date,count(*) from processed_db.lap_times group by as_of_date;
+# %sql
+# select as_of_date,count(*) from processed_db.lap_times group by as_of_date;
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ##### Plain Python read
+# MAGIC
+
+# COMMAND ----------
+
+# df = spark.read.parquet(f"{processed_folder_path}/lap_times")
+# display(df)
 
 # COMMAND ----------
 
@@ -163,7 +193,8 @@ merge_delta_data(lap_times_final,input_db,input_table,processed_folder_path,part
 
 # COMMAND ----------
 
-# df = spark.read.parquet(f"{processed_folder_path}/lap_times")
+df = spark.read.parquet(f"{processed_folder_path}/lap_times")
+display(df)
 
 # COMMAND ----------
 
@@ -173,15 +204,8 @@ merge_delta_data(lap_times_final,input_db,input_table,processed_folder_path,part
 # COMMAND ----------
 
 # test and confirm the data is stored in the readble format
-df = spark.read.format("delta").load(f"{processed_folder_path}/lap_times")
-
-# COMMAND ----------
-
-
-
-# COMMAND ----------
-
-display(df)
+# df = spark.read.format("delta").load(f"{processed_folder_path}/lap_times")
+# display(df)
 
 # COMMAND ----------
 

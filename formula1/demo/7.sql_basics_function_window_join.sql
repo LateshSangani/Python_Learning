@@ -12,24 +12,50 @@ SELECT CURRENT_DATABASE()
 
 -- COMMAND ----------
 
-USE processed_db
-
--- COMMAND ----------
-
-SHOW TABLES;
-
--- COMMAND ----------
-
-
+SHOW TABLES IN raw_db;
 
 -- COMMAND ----------
 
 --default display of the records is 1000, but for analyis purpose keep the number less for the less computation.
-SELECT * FROM processed_db.drivers limit 10;
+select * from raw_db.circuits limit 10;
+select * from raw_db.races limit 10;
+select * from raw_db.constructor limit 10;
+select * from raw_db.drivers limit 10;
+select * from raw_db.results limit 10;
+select * from raw_db.pit_stops limit 10;
+select * from raw_db.lap_times limit 10;
+select * from raw_db.qualifying limit 10;
 
 -- COMMAND ----------
 
-desc processed_db.drivers;
+SHOW TABLES IN processed_db;
+
+-- COMMAND ----------
+
+--default display of the records is 1000, but for analyis purpose keep the number less for the less computation.
+select * from processed_db.circuits limit 10;
+select * from processed_db.races limit 10;
+select * from processed_db.constructor limit 10;
+select * from processed_db.drivers limit 10;
+select * from processed_db.results limit 10;
+select * from processed_db.pit_stops limit 10;
+select * from processed_db.lap_times limit 10;
+select * from processed_db.qualifying limit 10;
+
+-- COMMAND ----------
+
+SHOW TABLES IN presentation_db;
+
+-- COMMAND ----------
+
+--default display of the records is 1000, but for analyis purpose keep the number less for the less computation.
+select * from presentation_db.dashboard_constructor limit 10;
+select * from presentation_db.dashboard_results limit 10;
+select * from presentation_db.dashboard_standings limit 10;
+
+-- COMMAND ----------
+
+--desc <DBNAME>.<TABLE_NAME>;
 
 -- COMMAND ----------
 
@@ -39,21 +65,46 @@ desc processed_db.drivers;
 --do sorting in descending
 select dob as date_of_birth ,name 
 from processed_db.drivers 
-where nationality = 'British' and dob > '1990-01-01'
+where nationality = 'British' 
+and dob > '1990-01-01'
 order by dob desc ;
 
 -- COMMAND ----------
 
 select *
-from  drivers
+from  processed_db.drivers
 order by nationality ASC, dob DESC;
 
 -- COMMAND ----------
 
 select dob , name , nationality
-from  drivers
+from  processed_db.drivers
 where (nationality = 'British' and dob > '1990-01-01') or nationality = 'Indian'
 order by dob desc
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC # SQL Aggregrate Functions
+
+-- COMMAND ----------
+
+select nationality,count(*) as total_count,max(dob) as min_dob , min(dob) as max_dob , avg(number) as avg_number, sum(number) as sum_number
+from  processed_db.drivers
+group by nationality
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC # GROUP BY and HAVING
+
+-- COMMAND ----------
+
+select nationality,count(*)
+from processed_db.drivers
+group by nationality
+having count(*) > 100
+order by nationality;
 
 -- COMMAND ----------
 
@@ -67,26 +118,15 @@ from processed_db.drivers;
 
 -- COMMAND ----------
 
-select split(name,' ') , 
+select name,
+dob,
+split(name,' ') , 
 split(name,' ')[0] as first_name, 
 split(name,' ')[1] as last_name , 
-date_format(dob,'dd-MM-yyyy') as data_of_birth,
+date_format(dob,'dd-MM-yyyy') as data_of_birth,  --stored formate is YYYY-MM-DD
 date_format(date_add(dob,365),'dd-MM-yyyy') as dob_modified, 
 current_timestamp() as datatime
 from processed_db.drivers;
-
--- COMMAND ----------
-
-select max(dob),min(dob),count(*),sum(number),avg(number) from processed_db.drivers;
-
--- COMMAND ----------
-
-select nationality,count(*)
-from processed_db.drivers
-group by nationality
-having count(*) > 100
-order by nationality;
-
 
 -- COMMAND ----------
 
@@ -190,7 +230,7 @@ ON (d_2018.driver_name = d_2020.driver_name)
 -- COMMAND ----------
 
 -- MAGIC %md
--- MAGIC ### SEMI JOIN   -> Inner join but only left table output will comes up
+-- MAGIC ### SEMI JOIN   -> Inner join but only left table column name output will comes up
 
 -- COMMAND ----------
 
@@ -202,7 +242,7 @@ ON (d_2018.driver_name = d_2020.driver_name)
 -- COMMAND ----------
 
 -- MAGIC %md
--- MAGIC ###  ANTI JOIN : Left Over data of the Left table i.e. presentation_db.v_driver_standings_2018
+-- MAGIC ###  ANTI JOIN : Inner Join + Over data of the Left table i.e. presentation_db.v_driver_standings_2018
 
 -- COMMAND ----------
 
@@ -233,6 +273,3 @@ where d_2018.driver_name = d_2020.driver_name);
 select *
 from presentation_db.v_driver_standings_2018 d_2018
 cross join presentation_db.v_driver_standings_2020 d_2020
-
--- COMMAND ----------
-

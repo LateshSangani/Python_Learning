@@ -9,11 +9,11 @@
 
 # COMMAND ----------
 
-# MAGIC %run "/formula1/include/configuration"
+# MAGIC %run "../include/configuration"
 
 # COMMAND ----------
 
-# MAGIC %run "/formula1/include/common_functions"
+# MAGIC %run "../include/common_functions"
 
 # COMMAND ----------
 
@@ -26,7 +26,7 @@
 # MAGIC ##### the global temporary view is available out side of session , so when cluster gets de-attached or attached this view will still exists.
 # MAGIC ##### the global temporary view will be not available ,after cluster get terminated.
 # MAGIC ##### the global temporary view can be shared with other notebooks with in the session.
-# MAGIC ##### just plain createGlobalTempView also worked but its not re-runnable. the createOrReplaceGlovalTempView will make the re-runnable code
+# MAGIC ##### just plain createGlobalTempView also worked but its not re-runnable. the createOrReplaceGlobalTempView will make the re-runnable code
 
 # COMMAND ----------
 
@@ -39,12 +39,17 @@ sql_df.createOrReplaceGlobalTempView("gv_dashboard_results")  # gv : global_view
 # COMMAND ----------
 
 # MAGIC %sql
+# MAGIC SHOW TABLES;
+
+# COMMAND ----------
+
+# MAGIC %sql
 # MAGIC SHOW TABLES IN global_temp;
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Access the view from the SQL cell with %sql magic command
+# MAGIC # Approch 1 : Reading SQL from the SQL cells
 
 # COMMAND ----------
 
@@ -75,11 +80,16 @@ sql_df.createOrReplaceGlobalTempView("gv_dashboard_results")  # gv : global_view
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC # Reading SQL from the Python Cell
+# MAGIC # Approch 2 : Reading SQL from the Python Cell
 
 # COMMAND ----------
 
 sql_df = spark.sql("select * from global_temp.gv_dashboard_results")
+
+# COMMAND ----------
+
+sql_df = spark.sql(f"select * from global_temp.gv_dashboard_results where race_year = 2020")
+sql_df.display()
 
 # COMMAND ----------
 
@@ -90,10 +100,4 @@ sql_df = spark.sql("select * from global_temp.gv_dashboard_results")
 
 p_race_year = 2020
 sql_df = spark.sql(f"select * from global_temp.gv_dashboard_results where race_year = {p_race_year}")
-
-# COMMAND ----------
-
 sql_df.display()
-
-# COMMAND ----------
-
