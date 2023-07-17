@@ -9,11 +9,11 @@
 
 -- COMMAND ----------
 
--- MAGIC %run "/formula1/include/configuration"
+-- MAGIC %run "../include/configuration"
 
 -- COMMAND ----------
 
--- MAGIC %run "/formula1/include/common_functions"
+-- MAGIC %run "../include/common_functions"
 
 -- COMMAND ----------
 

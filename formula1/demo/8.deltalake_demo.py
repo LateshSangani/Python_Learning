@@ -4,11 +4,11 @@
 
 # COMMAND ----------
 
-# MAGIC %run "/formula1/include/configuration"
+# MAGIC %run "../include/configuration"
 
 # COMMAND ----------
 
-# MAGIC %run "/formula1/include/common_functions"
+# MAGIC %run "../include/common_functions"
 
 # COMMAND ----------
 
@@ -33,23 +33,56 @@ display(v_as_of_date)
 
 # MAGIC %sql
 # MAGIC CREATE DATABASE IF NOT EXISTS demo
-# MAGIC LOCATION '/mnt/databrickscourcedl/demo';
+# MAGIC LOCATION '/mnt/datasourceformula1/demo';
 
 # COMMAND ----------
 
 # MAGIC %fs
-# MAGIC ls /mnt/databrickscourcedl/demo
+# MAGIC ls /mnt/datasourceformula1/demo
 
 # COMMAND ----------
 
+from pyspark.sql.types import StructType,StructField, IntegerType , StringType , DateType , FloatType
+results_schema = StructType(fields = [StructField("resultId",IntegerType(),False),
+                                      StructField("raceId",IntegerType(),True),
+                                      StructField("driverId",IntegerType(),True),
+                                      StructField("constructorId",IntegerType(),True),
+                                      StructField("number",IntegerType(),True), 
+                                      StructField("grid",IntegerType(),True),  
+                                      StructField("position",IntegerType(),True),
+                                      StructField("positionText",StringType(),True),
+                                      StructField("positionOrder",IntegerType(),True),
+                                      StructField("points",FloatType(),True),
+                                      StructField("laps",IntegerType(),True),
+                                      StructField("time",StringType(),True),
+                                      StructField("milliseconds",IntegerType(),True),
+                                      StructField("fastestLap",IntegerType(),True),
+                                      StructField("rank",IntegerType(),True),
+                                      StructField("fastestLapTime",StringType(),True),
+                                      StructField("fastestLapSpeed",StringType(),True),
+                                      StructField("statusId",IntegerType(),True)
+])
+
+# COMMAND ----------
+
+# Note : Here inferSchema used to provide the databricks own self logic data types, If user need data types required then STRUCT is the option
+results_df = spark.read \
+.schema(results_schema) \
+.json(f"{raw_folder_path}/{v_as_of_date}/results.json")
+results_df.printSchema()
+
+# COMMAND ----------
+
+# Note : Here inferSchema used to provide the databricks own self logic data types, If user need data types required then STRUCT is the option
 results_df = spark.read \
 .option("inferSchema", True) \
-.json("/mnt/databrickscourcedl/raw/2021-03-28/results.json")
+.json(f"{raw_folder_path}/{v_as_of_date}/results.json")
+results_df.printSchema()
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC #                                                                    Data Lake Approch
+# MAGIC #                                                                    REVISION: Python + Data Lake Approch
 # MAGIC #
 # MAGIC ### WRITE : Way to write the files in storage location
 # MAGIC ##### results_df.write.mode("overwrite").partitionBy("race_id").parquet(f"{processed_folder_path}/results")
@@ -71,7 +104,7 @@ results_df = spark.read \
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## INSERT : DELTA Way to store in the form of the FILES
+# MAGIC ## INSERT : DELTA PYTHON Way to store in the form of the FILES
 
 # COMMAND ----------
 
@@ -80,23 +113,24 @@ results_df = spark.read \
 # format parquet replaced by delta
 results_df = spark.read \
 .option("inferSchema", True) \
-.json("/mnt/databrickscourcedl/raw/2021-03-28/results.json")
+.json(f"{raw_folder_path}/{v_as_of_date}/results.json")
 
-results_df.write.mode("overwrite").format("delta").save("/mnt/databrickscourcedl/demo/results_external")
+results_df.write.mode("overwrite").format("delta").save("/mnt/datasourceformula1/demo/results_files")
+# Note : here partition is not supported
 
 # COMMAND ----------
 
 # MAGIC %fs
-# MAGIC ls /mnt/databrickscourcedl/demo/results_external
+# MAGIC ls /mnt/datasourceformula1/demo/results_files
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## SELECT : DELTA Way to READ from the FILES
+# MAGIC ## SELECT : DELTA PYTHON Way to READ from the FILES
 
 # COMMAND ----------
 
-result_df = spark.read.format("delta").load("/mnt/databrickscourcedl/demo/results_external")
+result_df = spark.read.format("delta").load("/mnt/datasourceformula1/demo/results_files")
 result_df.display()
 
 # COMMAND ----------
@@ -106,13 +140,17 @@ result_df.display()
 
 # COMMAND ----------
 
+# MAGIC %sql
+# MAGIC drop table demo.results_managed
+
+# COMMAND ----------
+
 # save the data in the form of the table.
 # mode can be overwrite or append
 # format parquet replaced by delta
 results_df = spark.read \
 .option("inferSchema", True) \
-.json("/mnt/databrickscourcedl/raw/2021-03-28/results.json")
-
+.json(f"{raw_folder_path}/{v_as_of_date}/results.json")
 results_df.write.mode("overwrite").partitionBy("raceId").format("delta").saveAsTable("demo.results_managed")
 
 # COMMAND ----------
@@ -139,14 +177,21 @@ results_df.write.mode("overwrite").partitionBy("raceId").format("delta").saveAsT
 
 results_df = spark.read \
 .option("inferSchema", True) \
-.json("/mnt/databrickscourcedl/raw/2021-03-28/results.json")
+.json(f"{raw_folder_path}/{v_as_of_date}/results.json")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ##### NOTE: The external DELTA table creation need to mandatroy PARQUET files , hence the files from the RAW container was not able to read
+# MAGIC #####  Hence the results_files already made Parquet files reading
 
 # COMMAND ----------
 
 # MAGIC %sql
 # MAGIC CREATE TABLE demo.results_external
 # MAGIC USING DELTA
-# MAGIC LOCATION "/mnt/databrickscourcedl/demo/results_external"
+# MAGIC LOCATION "/mnt/datasourceformula1/demo/results_files"
+# MAGIC --Here paratition is not supported
 
 # COMMAND ----------
 
@@ -161,7 +206,12 @@ results_df = spark.read \
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## UPDATE : DELTA Way to UPDATE of the MANAGED TABLE
+# MAGIC ##### UPDATE , DELETE.. all the later operation only possible in the DELTA tables
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## UPDATE : DELTA Way to UPDATE of the MANAGED TABLE Using SQL
 
 # COMMAND ----------
 
@@ -169,19 +219,33 @@ results_df = spark.read \
 # MAGIC UPDATE demo.results_managed
 # MAGIC SET POINTS = 11-POSITION
 # MAGIC WHERE POSITION <= 10;
-# MAGIC 
+# MAGIC
 # MAGIC SELECT * FROM demo.results_managed WHERE POSITION <= 10;
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## UPDATE : DELTA Way to UPDATE of the FILES
+# MAGIC ## UPDATE : DELTA Way to UPDATE of the UNMANAGED(EXTERNAL) TABLE Using SQL
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC UPDATE demo.results_external
+# MAGIC SET POINTS = 11-POSITION
+# MAGIC WHERE POSITION <= 10;
+# MAGIC
+# MAGIC SELECT * FROM demo.results_external WHERE POSITION <= 10;
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## UPDATE : DELTA Way to UPDATE of the FILES Using Python
 
 # COMMAND ----------
 
 # NOTE : The file is being updated here is the part of the TABLE only , just this is Python Way
 from delta.tables import DeltaTable
-deleteTable = DeltaTable.forPath(spark,"/mnt/databrickscourcedl/demo/results_managed/")
+deleteTable = DeltaTable.forPath(spark,"/mnt/datasourceformula1/demo/results_files/")
 deleteTable.update( "POSITION <= 10",{"POINTS" : "21-POSITION"} )
 
 # COMMAND ----------
@@ -192,12 +256,12 @@ deleteTable.update( "POSITION <= 10",{"POINTS" : "21-POSITION"} )
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## DELETE : DELTA Way for DELETE of the MANAGED TABLE
+# MAGIC ## DELETE : DELTA Way for DELETE of the SQL MANAGED TABLE
 
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC select count(1) from demo.results_managed;  --before delete
+# MAGIC select count(1) from demo.results_managed WHERE POSITION >= 10;  --before delete
 
 # COMMAND ----------
 
@@ -207,29 +271,49 @@ deleteTable.update( "POSITION <= 10",{"POINTS" : "21-POSITION"} )
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC select count(1) from demo.results_managed; --after delete
+# MAGIC select count(1) from demo.results_managed  WHERE POSITION >= 10; --after delete
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## DELETE : DELTA Way for DELETE from the files
+# MAGIC ## DELETE : DELTA Way for DELETE of the SQL UNMANAGED(EXTERNAL) TABLE
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC select count(1) from demo.results_external  WHERE POSITION >= 10; --Before delete
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC delete from demo.results_external WHERE POSITION >= 10;
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC select count(1) from demo.results_external  WHERE POSITION >= 10; --after delete
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ## DELETE : DELTA Way for DELETE from the using python from the files
 
 # COMMAND ----------
 
 # NOTE : The file is being updated here is the part of the TABLE only , just this is Python Way
 from delta.tables import DeltaTable
-deleteTable = DeltaTable.forPath(spark,"/mnt/databrickscourcedl/demo/results_managed/")
+deleteTable = DeltaTable.forPath(spark,"/mnt/datasourceformula1/demo/results_files/")
 deleteTable.delete( "POINTS <= 0" )
 
 # COMMAND ----------
 
-# MAGIC %sql
-# MAGIC select count(1) from demo.results_managed; --after delete
+result_df = spark.read.format("delta").load("/mnt/datasourceformula1/demo/results_files").filter("POINTS <= 0")
+result_df.display()
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## MERGE : DELTA Way for MERGE of the MANAGED TABLE
+# MAGIC ## MERGE : DELTA Way for MERGE of the SQL way MANAGED and UNMANAGED TABLE
 
 # COMMAND ----------
 
@@ -246,7 +330,7 @@ deleteTable.delete( "POINTS <= 0" )
 # Read half and partial data for TESTING purpose of the Merge opetion to add or update data.
 drivers_day1_df = spark.read \
 .option("inferSchema",True) \
-.json("/mnt/databrickscourcedl/raw/2021-03-28/drivers.json") \
+.json("/mnt/datasourceformula1/raw/2021-03-28/drivers.json") \
 .filter("driverId <= 10") \
 .select("driverId","dob","name.forename","name.surname")
 
@@ -271,7 +355,7 @@ drivers_day1_df.createOrReplaceTempView("drivers_day1")
 from pyspark.sql.functions import  upper
 drivers_day2_df = spark.read \
 .option("inferSchema",True) \
-.json("/mnt/databrickscourcedl/raw/2021-03-28/drivers.json") \
+.json("/mnt/datasourceformula1/raw/2021-03-28/drivers.json") \
 .filter("driverId BETWEEN 6 AND 15") \
 .select("driverId","dob",upper("name.forename").alias("forename"),upper("name.surname").alias("surname"))
 
@@ -295,7 +379,7 @@ drivers_day2_df.createOrReplaceTempView("drivers_day2")
 
 drivers_day3_df = spark.read \
 .option("inferSchema",True) \
-.json("/mnt/databrickscourcedl/raw/2021-03-28/drivers.json") \
+.json("/mnt/datasourceformula1/raw/2021-03-28/drivers.json") \
 .filter("driverId BETWEEN 1 AND 5 OR driverId BETWEEN 16 AND 20") \
 .select("driverId","dob",upper("name.forename").alias("forename"),upper("name.surname").alias("surname"))
 
@@ -336,8 +420,8 @@ drivers_day3_df.createOrReplaceTempView("drivers_day3")
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC MERGE INTO demo.drivers_merge target     --  < 10
-# MAGIC USING drivers_day1 upd
+# MAGIC MERGE INTO demo.drivers_merge target--write table     
+# MAGIC USING drivers_day1 upd --read table
 # MAGIC ON target.driverId = upd.driverId
 # MAGIC WHEN MATCHED THEN 
 # MAGIC UPDATE SET target.dob = upd.dob,
@@ -379,7 +463,7 @@ drivers_day3_df.createOrReplaceTempView("drivers_day3")
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## MERGE : DELTA Way for MERGE of the FILES
+# MAGIC ## MERGE : DELTA Way for MERGE of data using Python on the the FILES
 
 # COMMAND ----------
 
@@ -390,10 +474,12 @@ drivers_day3_df.createOrReplaceTempView("drivers_day3")
 
 #driverId BETWEEN 1 AND 5 OR driverId BETWEEN 16 AND 20
 from delta.tables import DeltaTable
-deltaTable = DeltaTable.forPath(spark,"/mnt/databrickscourcedl/demo/drivers_merge/")
+deltaTable = DeltaTable.forPath(spark,"/mnt/datasourceformula1/demo/drivers_merge/")
 
-deltaTable.alias("target").merge(drivers_day3_df.alias("upd"),"target.driverId = upd.driverId") \
-.whenMatchedUpdate(set = {"dob" : "upd.dob" , "forename" : "upd.forename" , "surname" : "upd.surname" , "updatedDate" : "current_timestamp()" } ) \
+deltaTable.alias("target").merge(   \
+    drivers_day3_df.alias("upd"),   \
+    "target.driverId = upd.driverId") \
+.whenMatchedUpdate(set = {"dob" : "upd.dob" , "forename" : "upd.forename" , "surname" : "upd.surname" , "updatedDate" : "current_timestamp()" } )   \
 .whenNotMatchedInsert(values =
   {
       "driverId" : "upd.driverId",
@@ -428,7 +514,7 @@ deltaTable.alias("target").merge(drivers_day3_df.alias("upd"),"target.driverId =
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC SELECT * FROM demo.drivers_merge VERSION AS OF 4;
+# MAGIC SELECT * FROM demo.drivers_merge VERSION AS OF 2;
 
 # COMMAND ----------
 
@@ -438,23 +524,23 @@ deltaTable.alias("target").merge(drivers_day3_df.alias("upd"),"target.driverId =
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC SELECT * FROM demo.drivers_merge TIMESTAMP AS OF "2022-12-26T11:03:48.000+0000";  --version 1 timestamp data
+# MAGIC SELECT * FROM demo.drivers_merge TIMESTAMP AS OF "2023-07-17T08:05:40.000+0000";  --version 1 timestamp data
 
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC SELECT * FROM demo.drivers_merge TIMESTAMP AS OF "2022-12-26T11:37:33.000+0000";  --version 4 timestamp data
+# MAGIC SELECT * FROM demo.drivers_merge TIMESTAMP AS OF "2023-07-17T08:05:40.000+0000";  --version 4 timestamp data
 
 # COMMAND ----------
 
 # version 1 timestamp
-df = spark.read.format("delta").option("timestampAsOf", "2022-12-26T11:03:48.000+0000").load("/mnt/databrickscourcedl/demo/drivers_merge/")
+df = spark.read.format("delta").option("timestampAsOf", "2023-07-17T08:05:40.000+0000").load("/mnt/datasourceformula1/demo/drivers_merge/")
 df.display()
 
 # COMMAND ----------
 
 # version 4 timestamp
-df = spark.read.format("delta").option("timestampAsOf", "2022-12-26T11:37:33.000+0000").load("/mnt/databrickscourcedl/demo/drivers_merge/")
+df = spark.read.format("delta").option("timestampAsOf", "2023-07-17 06:27:26").load("/mnt/databrickscourcedl/demo/results_files/")
 df.display()
 
 # COMMAND ----------
@@ -466,12 +552,12 @@ df.display()
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ##### by default the vacuum delete less than 7 days of the data
+# MAGIC ##### by default the vacuum delete older than 7 days of the data
 
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC VACUUM demo.drivers.merge;
+# MAGIC VACUUM demo.drivers_merge;
 
 # COMMAND ----------
 
@@ -481,28 +567,29 @@ df.display()
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC VACUUM demo.drivers.merge RETAIN 0 HOURS;
+# MAGIC VACUUM demo.drivers_merge RETAIN 0 HOURS;
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ##### force to overwrite the vacuum 168 hours policy
+# MAGIC ##### force to overwrite the vacuum 168 hours policy ( SET spark.databricks.delta.retentionDurationCheck.enabled = false; )
 
 # COMMAND ----------
 
 # MAGIC %sql
 # MAGIC SET spark.databricks.delta.retentionDurationCheck.enabled = false;
-# MAGIC VACUUM demo.drivers.merge RETAIN 0 HOURS;
+# MAGIC VACUUM demo.drivers_merge RETAIN 0 HOURS;
 
 # COMMAND ----------
 
 # MAGIC %md
 # MAGIC ##### the vacuum deleted the all the history of the data but the current data will still present
-# MAGIC ##### we can see the past history logs but now we cannot see the data in the select querry VERSION clause
+# MAGIC ##### we can see the past history logs but now we cannot see the data in the select query VERSION clause
 
 # COMMAND ----------
 
-select * from demo.drivers.merge;
+# MAGIC %sql
+# MAGIC select * from demo.drivers_merge;
 
 # COMMAND ----------
 
@@ -512,7 +599,7 @@ select * from demo.drivers.merge;
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC SELECT * FROM demo.drivers_merge TIMESTAMP AS OF "2022-12-26T11:03:48.000+0000";  --version 1 timestamp data
+# MAGIC SELECT * FROM demo.drivers_merge TIMESTAMP AS OF "2023-07-17T08:05:40.000+0000";  --version 4 timestamp data
 
 # COMMAND ----------
 
@@ -534,7 +621,7 @@ select * from demo.drivers.merge;
 
 # MAGIC %sql
 # MAGIC MERGE INTO demo.drivers_merge target
-# MAGIC USING target.drivers_merge VERSION AS OF 4 source
+# MAGIC USING demo.drivers_merge VERSION AS OF 5 source
 # MAGIC ON (target.driverId = source.driverId)
 # MAGIC WHEN NOT MATCHED THEN
 # MAGIC INSERT *
@@ -571,7 +658,7 @@ select * from demo.drivers.merge;
 
 # MAGIC %md
 # MAGIC ####  this create table has prepared the new folder inside of the azure gene2 storage account
-# MAGIC ####  databrickscourcedl/demo/drivers_txn/_delta_log  , this folder holds all the HISTORY And Version information.
+# MAGIC ####  datasourceformula1/demo/drivers_txn/_delta_log  , this folder holds all the HISTORY And Version information.
 
 # COMMAND ----------
 
@@ -680,12 +767,10 @@ df.display()
 # COMMAND ----------
 
 # prepare the sample parquet file to make delta files
-df.write.format("parquet").save("/mnt/databrickscourcedl/demo/parquet_files")
+df.write.format("parquet").save("/mnt/datasourceformula1/demo/parquet_files")
 
 # COMMAND ----------
 
 # MAGIC %sql
-# MAGIC CONVERT TO DELTA parquet.`/mnt/databrickscourcedl/demo/parquet_files`;   --NOTE : Here tick symbol is used not the single quote.
-
-# COMMAND ----------
-
+# MAGIC CONVERT TO DELTA parquet.`/mnt/datasourceformula1/demo/parquet_files`;   
+# MAGIC --NOTE : Here tick symbol is used not the single quote. Its required as / is in the path of the file

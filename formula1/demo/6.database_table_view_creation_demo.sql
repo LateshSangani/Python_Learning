@@ -338,6 +338,7 @@ SHOW TABLES IN demo;
 -- COMMAND ----------
 
 -- MAGIC %python
+-- MAGIC dashboard_result_df = spark.read.parquet(f"{presentation_folder_path}/dashboard_results/")
 -- MAGIC dashboard_result_df.createOrReplaceTempView("v_dashboard_results")
 
 -- COMMAND ----------

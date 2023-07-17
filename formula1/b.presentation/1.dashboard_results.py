@@ -38,7 +38,7 @@ display(v_as_of_date)
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC #### READ data using python having parquest files stored ADLS
+# MAGIC #### READ data using python having parquet files stored ADLS
 
 # COMMAND ----------
 
@@ -65,21 +65,21 @@ display(v_as_of_date)
 
 # COMMAND ----------
 
-circuits_df = spark.read.parquet(f"{processed_folder_path}/circuits") \
-.withColumnRenamed("name","circuit_name") \
-.withColumnRenamed("location","circuit_location")
-
-races_df = spark.read.parquet(f"{processed_folder_path}/races") \
-.withColumnRenamed("name","race_name") \
-.withColumnRenamed("race_timestamp","race_date")
-
-constructor_df = spark.read.parquet(f"{processed_folder_path}/constructor") \
-.withColumnRenamed("name","team")
-
-drivers_df = spark.read.parquet(f"{processed_folder_path}/drivers") \
-.withColumnRenamed("name","driver_name") \
-.withColumnRenamed("number","driver_number") \
-.withColumnRenamed("nationality","driver_nationality")
+#circuits_df = spark.read.parquet(f"{processed_folder_path}/circuits") \
+#.withColumnRenamed("name","circuit_name") \
+#.withColumnRenamed("location","circuit_location")
+#
+#races_df = spark.read.parquet(f"{processed_folder_path}/races") \
+#.withColumnRenamed("name","race_name") \
+#.withColumnRenamed("race_timestamp","race_date")
+#
+#constructor_df = spark.read.parquet(f"{processed_folder_path}/constructor") \
+#.withColumnRenamed("name","team")
+#
+#drivers_df = spark.read.parquet(f"{processed_folder_path}/drivers") \
+#.withColumnRenamed("name","driver_name") \
+#.withColumnRenamed("number","driver_number") \
+#.withColumnRenamed("nationality","driver_nationality")
 
 # COMMAND ----------
 
@@ -88,21 +88,21 @@ drivers_df = spark.read.parquet(f"{processed_folder_path}/drivers") \
 
 # COMMAND ----------
 
-#circuits_df = spark.read.format("delta").load(f"{processed_folder_path}/circuits") \
-#.withColumnRenamed("name","circuit_name") \
-#.withColumnRenamed("location","circuit_location")
+circuits_df = spark.read.format("delta").load(f"{processed_folder_path}/circuits") \
+.withColumnRenamed("name","circuit_name") \
+.withColumnRenamed("location","circuit_location")
 #
-#races_df = spark.read.format("delta").load(f"{processed_folder_path}/races") \
-#.withColumnRenamed("name","race_name") \
-#.withColumnRenamed("race_timestamp","race_date")
+races_df = spark.read.format("delta").load(f"{processed_folder_path}/races") \
+.withColumnRenamed("name","race_name") \
+.withColumnRenamed("race_timestamp","race_date")
 #
-#constructor_df = spark.read.format("delta").load(f"{processed_folder_path}/constructor") \
-#.withColumnRenamed("name","team")
+constructor_df = spark.read.format("delta").load(f"{processed_folder_path}/constructor") \
+.withColumnRenamed("name","team")
 #
-#drivers_df = spark.read.format("delta").load(f"{processed_folder_path}/drivers") \
-#.withColumnRenamed("name","driver_name") \
-#.withColumnRenamed("number","driver_number") \
-#.withColumnRenamed("nationality","driver_nationality")
+drivers_df = spark.read.format("delta").load(f"{processed_folder_path}/drivers") \
+.withColumnRenamed("name","driver_name") \
+.withColumnRenamed("number","driver_number") \
+.withColumnRenamed("nationality","driver_nationality")
 
 # COMMAND ----------
 
@@ -138,19 +138,19 @@ drivers_df = spark.read.parquet(f"{processed_folder_path}/drivers") \
 
 # COMMAND ----------
 
-results_df = spark.read.parquet(f"{processed_folder_path}/results") \
-.withColumnRenamed("fastestLap","fastest_lap") \
-.withColumnRenamed("time","race_time") \
-.filter(f" as_of_date = '{v_as_of_date}' ")
-
-pit_stop_df = spark.read.parquet(f"{processed_folder_path}/pit_stops") \
-.filter(f" as_of_date = '{v_as_of_date}' ")
-
-lap_times_df = spark.read.parquet(f"{processed_folder_path}/lap_times") \
-.filter(f" as_of_date = '{v_as_of_date}' ") 
-
-qualifying_df = spark.read.parquet(f"{processed_folder_path}/qualifying") \
-.filter(f" as_of_date = '{v_as_of_date}' ")
+#results_df = spark.read.parquet(f"{processed_folder_path}/results") \
+#.withColumnRenamed("fastestLap","fastest_lap") \
+#.withColumnRenamed("time","race_time") \
+#.filter(f" as_of_date = '{v_as_of_date}' ")
+#
+#pit_stop_df = spark.read.parquet(f"{processed_folder_path}/pit_stops") \
+#.filter(f" as_of_date = '{v_as_of_date}' ")
+#
+#lap_times_df = spark.read.parquet(f"{processed_folder_path}/lap_times") \
+#.filter(f" as_of_date = '{v_as_of_date}' ") 
+#
+#qualifying_df = spark.read.parquet(f"{processed_folder_path}/qualifying") \
+#.filter(f" as_of_date = '{v_as_of_date}' ")
 
 # COMMAND ----------
 
@@ -159,19 +159,19 @@ qualifying_df = spark.read.parquet(f"{processed_folder_path}/qualifying") \
 
 # COMMAND ----------
 
-#results_df = spark.read.format("delta").load(f"{processed_folder_path}/results") \
-#.withColumnRenamed("fastestLap","fastest_lap") \
-#.withColumnRenamed("time","race_time") \
-#.filter(f" as_of_date = '{v_as_of_date}' ")
+results_df = spark.read.format("delta").load(f"{processed_folder_path}/results") \
+.withColumnRenamed("fastestLap","fastest_lap") \
+.withColumnRenamed("time","race_time") \
+.filter(f" as_of_date = '{v_as_of_date}' ")
 
-#pit_stop_df = spark.read.format("delta").load(f"{processed_folder_path}/pit_stops") \
-#.filter(f" as_of_date = '{v_as_of_date}' ")
+pit_stop_df = spark.read.format("delta").load(f"{processed_folder_path}/pit_stops") \
+.filter(f" as_of_date = '{v_as_of_date}' ")
 
-#lap_times_df = spark.read.format("delta").load(f"{processed_folder_path}/lap_times") \
-#.filter(f" as_of_date = '{v_as_of_date}' ") 
+lap_times_df = spark.read.format("delta").load(f"{processed_folder_path}/lap_times") \
+.filter(f" as_of_date = '{v_as_of_date}' ") 
 
-#qualifying_df = spark.read.format("delta").load(f"{processed_folder_path}/qualifying") \
-#.filter(f" as_of_date = '{v_as_of_date}' ")
+qualifying_df = spark.read.format("delta").load(f"{processed_folder_path}/qualifying") \
+.filter(f" as_of_date = '{v_as_of_date}' ")
 
 # COMMAND ----------
 
@@ -247,6 +247,7 @@ display(final_df.filter("race_year = 2020 and race_name = 'Abu Dhabi Grand Prix'
 # COMMAND ----------
 
 # full load with file creation.
+#
 # final_df.write.mode("overwrite").partitionBy('race_id').parquet(f"{presentation_folder_path}/dashboard_results")
 
 # COMMAND ----------
@@ -260,7 +261,7 @@ display(final_df.filter("race_year = 2020 and race_name = 'Abu Dhabi Grand Prix'
 # it has 2 benifies , table get created and file also stored in the azure storage account as presentation_db used the mounted path
 # full load with table and file creation.
 #
-final_df.write.mode("overwrite").partitionBy('race_id').format("parquet").saveAsTable("presentation_db.dashboard_results")
+# final_df.write.mode("overwrite").partitionBy('race_id').format("parquet").saveAsTable("presentation_db.dashboard_results")
 
 # COMMAND ----------
 
@@ -284,6 +285,7 @@ final_df.write.mode("overwrite").partitionBy('race_id').format("parquet").saveAs
 # COMMAND ----------
 
 # its fine not to capture the output dataframe becuase function has wrote now the data and now output dataframe has no use.
+#
 # overwrite_partition_data(final_df,'presentation_db','dashboard_results','race_id')
 
 # COMMAND ----------
@@ -296,16 +298,21 @@ final_df.write.mode("overwrite").partitionBy('race_id').format("parquet").saveAs
 
 # The driver_name cannot be the primary key but the combination of the driver_name and race_id makes the unique record. Becuase as per the data, each race has unique driver name. 
 # The race_id is supporting for the partition but here in our case its conributing for the Priamry key Uniqueness also ( so lucky )
-#input_db="presentation_db"
-#input_table="dashboard_results"
-#partition_id="race_id"
-#primary_key="driver_name"
-#merge_delta_data(final_df,input_db,input_table,presentation_folder_path,partition_id,primary_key)
+input_db="presentation_db"
+input_table="dashboard_results"
+partition_id="race_id"
+primary_key="target.driver_name = source.driver_name AND target.race_id = source.race_id"
+merge_delta_data(final_df,input_db,input_table,presentation_folder_path,partition_id,primary_key)
 
 # COMMAND ----------
 
-#%sql
-#select as_of_date,count(*) from presentation_db.dashboard_results group by as_of_date;
+# MAGIC %md
+# MAGIC ##### Plain SQL Read
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC select as_of_date,count(*) from presentation_db.dashboard_results group by as_of_date;
 
 # COMMAND ----------
 
@@ -324,8 +331,8 @@ final_df.write.mode("overwrite").partitionBy('race_id').format("parquet").saveAs
 
 # COMMAND ----------
 
-df = spark.read.parquet(f"{presentation_folder_path}/dashboard_results")
-df.display()
+#df = spark.read.parquet(f"{presentation_folder_path}/dashboard_results")
+#df.display()
 
 # COMMAND ----------
 
@@ -335,5 +342,5 @@ df.display()
 # COMMAND ----------
 
 # test and confirm the data is stored in the readble format
-# df = spark.read.format("delta").load(f"{presentation_folder_path}/dashboard_results/")
-# df.display()
+df = spark.read.format("delta").load(f"{presentation_folder_path}/dashboard_results/")
+df.display()

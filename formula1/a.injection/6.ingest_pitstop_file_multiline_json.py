@@ -118,6 +118,7 @@ display(pit_stop_final)
 # COMMAND ----------
 
 # full load with file creation.
+#
 # pit_stop_final.write.mode("overwrite").partitionBy('race_id').parquet(f"{processed_folder_path}/pit_stops")
 
 # COMMAND ----------
@@ -131,7 +132,7 @@ display(pit_stop_final)
 # it has 2 benifies , table get created and file also stored in the azure storage account as processed_db used the mounted path
 # full load with table and file creation.
 #
-pit_stop_final.write.mode("overwrite").partitionBy('race_id').format("parquet").saveAsTable("processed_db.pit_stops")
+# pit_stop_final.write.mode("overwrite").partitionBy('race_id').format("parquet").saveAsTable("processed_db.pit_stops")
 
 # COMMAND ----------
 
@@ -142,6 +143,7 @@ pit_stop_final.write.mode("overwrite").partitionBy('race_id').format("parquet").
 
 # Write the output of the processed data in the database tables
 # it has 2 benifies , table get created and file also stored in the azure storage account as processed_db used the mounted path
+#
 # pit_stop_final.write.mode("overwrite").format("delta").saveAsTable("processed_db.pit_stops")
 
 # COMMAND ----------
@@ -153,6 +155,7 @@ pit_stop_final.write.mode("overwrite").partitionBy('race_id').format("parquet").
 # COMMAND ----------
 
 # its fine not to capture the output dataframe becuase function has wrote now the data and now output dataframe has no use.
+#
 # overwrite_partition_data(pit_stop_final,'processed_db','pit_stops','race_id')
 
 # COMMAND ----------
@@ -163,17 +166,11 @@ pit_stop_final.write.mode("overwrite").partitionBy('race_id').format("parquet").
 
 # COMMAND ----------
 
-## I choosen the wrong primary key and some data can be duplicate
-# input_db="processed_db"
-# input_table="pit_stops"
-# partition_id="race_id"
-# primary_key="driver_id"
-# merge_delta_data(pit_stop_final,input_db,input_table,processed_folder_path,partition_id,primary_key)
-
-# COMMAND ----------
-
-# %sql
-# select as_of_date,count(*) from processed_db.pit_stops group by as_of_date;
+input_db="processed_db"
+input_table="pit_stops"
+partition_id="race_id"
+primary_key="target.race_id = source.race_id AND target.driver_id = source.driver_id AND target.stop = source.stop AND target.race_id = source.target_id"
+merge_delta_data(pit_stop_final,input_db,input_table,processed_folder_path,partition_id,primary_key)
 
 # COMMAND ----------
 
@@ -192,8 +189,8 @@ pit_stop_final.write.mode("overwrite").partitionBy('race_id').format("parquet").
 
 # COMMAND ----------
 
-df = spark.read.parquet(f"{processed_folder_path}/pit_stops")
-display(df)
+# df = spark.read.parquet(f"{processed_folder_path}/pit_stops")
+# display(df)
 
 # COMMAND ----------
 
@@ -203,8 +200,18 @@ display(df)
 # COMMAND ----------
 
 # test and confirm the data is stored in the readble format
-# df = spark.read.format("delta").load(f"{processed_folder_path}/pit_stops")
-# display(df)
+df = spark.read.format("delta").load(f"{processed_folder_path}/pit_stops")
+display(df)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ##### SQL read
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC select as_of_date,count(*) from processed_db.pit_stops group by as_of_date;
 
 # COMMAND ----------
 

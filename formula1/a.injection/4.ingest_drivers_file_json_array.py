@@ -1,6 +1,6 @@
 # Databricks notebook source
 # MAGIC %md
-# MAGIC # Ingest Constructor.json
+# MAGIC # Ingest Drivers.json
 
 # COMMAND ----------
 
@@ -35,6 +35,7 @@ dbutils.widgets.text("p_data_source","")
 v_data_source = dbutils.widgets.get("p_data_source")
 display(v_data_source)
 
+
 # COMMAND ----------
 
 # add the input parameter of widget
@@ -55,25 +56,41 @@ display(dbutils.fs.mounts())
 
 # COMMAND ----------
 
-# Prepare the schema either with STRUCT or new method written below
-# the below method use the Hive Datetypes.
-
-contructor_schema = "constructorId INT,constructorRef STRING,name STRING,nationality STRING,url STRING"
+from pyspark.sql.types import StructType,StructField, IntegerType , StringType , DateType
 
 # COMMAND ----------
 
-contructor_df = spark.read \
-.schema(contructor_schema) \
-.json(f"{raw_folder_path}/{v_as_of_date}/constructors.json")
+name_schema = StructType(fields = [StructField("forename",StringType(),True), \
+                                  StructField("surname",StringType(),True) \
+                                 
+])
 
 # COMMAND ----------
 
-display(contructor_df)
+drivers_schema = StructType(fields = [StructField("driverId",IntegerType(),False),
+                                      StructField("driverRef",StringType(),True),
+                                      StructField("number",IntegerType(),True),
+                                      StructField("code",StringType(),True),
+                                      StructField("name",name_schema,True),   # name_schema prepared in the above step.
+                                      StructField("dob",DateType(),True),
+                                      StructField("nationality",StringType(),True),
+                                      StructField("url",StringType(),True)                                 
+])
 
 # COMMAND ----------
 
-#contructor_df.schema.names
-contructor_df.printSchema()
+drivers_df = spark.read \
+.schema(drivers_schema) \
+.json(f"{raw_folder_path}/{v_as_of_date}/drivers.json")
+
+# COMMAND ----------
+
+display(drivers_df)
+
+# COMMAND ----------
+
+#drivers_df.schema.names
+drivers_df.printSchema()
 
 # COMMAND ----------
 
@@ -82,20 +99,21 @@ contructor_df.printSchema()
 
 # COMMAND ----------
 
-from pyspark.sql.functions import current_timestamp , lit
-constructor_final_df = contructor_df.withColumnRenamed("constructorId","constructor_id") \
-                                            .withColumnRenamed("constructorRef","constructor_ref") \
-                                            .drop("url") \
-                                            .withColumn("data_source",lit(v_data_source)) \
-                                            .withColumn("as_of_date",lit(v_as_of_date))
+from pyspark.sql.functions import current_timestamp , col, concat , lit
+drivers_final_df = drivers_df.withColumnRenamed("driverId","driver_id") \
+                            .withColumnRenamed("driverRef","driver_ref") \
+                            .withColumn("name",concat(col("name.forename"), lit(" ") , col("name.surname"))) \
+                            .withColumn("data_source",lit(v_data_source)) \
+                            .withColumn("as_of_date",lit(v_as_of_date)) \
+                            .drop(col("url"))
 
 # COMMAND ----------
 
-constructor_final_df = add_ingestion_date(constructor_final_df)
+drivers_final_df = add_ingestion_date(drivers_final_df)
 
 # COMMAND ----------
 
-display(constructor_final_df)
+display(drivers_final_df)
 
 # COMMAND ----------
 
@@ -109,7 +127,7 @@ display(constructor_final_df)
 
 # COMMAND ----------
 
-# constructor_final_df.write.mode("overwrite").parquet(f"{processed_folder_path}/constructor")
+ # drivers_final_df.write.mode("overwrite").parquet(f"{processed_folder_path}/drivers")
 
 # COMMAND ----------
 
@@ -120,19 +138,18 @@ display(constructor_final_df)
 
 # Write the output of the processed data in the database tables
 # it has 2 benifies , table get created and file also stored in the azure storage account as processed_db used the mounted path
-constructor_final_df.write.mode("overwrite").format("parquet").saveAsTable("processed_db.constructor")
+# drivers_final_df.write.mode("overwrite").format("parquet").saveAsTable("processed_db.drivers")
 
 # COMMAND ----------
 
 # MAGIC %md
 # MAGIC ##### Write data using python + Delta Lake + Table Creation 
-# MAGIC
 
 # COMMAND ----------
 
 # Write the output of the processed data in the database tables
 # it has 2 benifies , table get created and file also stored in the azure storage account as processed_db used the mounted path
-# constructor_final_df.write.mode("overwrite").format("delta").saveAsTable("processed_db.constructor")
+drivers_final_df.write.mode("overwrite").format("delta").saveAsTable("processed_db.drivers")
 
 # COMMAND ----------
 
@@ -141,8 +158,8 @@ constructor_final_df.write.mode("overwrite").format("parquet").saveAsTable("proc
 
 # COMMAND ----------
 
- # df = spark.read.parquet(f"{processed_folder_path}/constructor")
- # display(df)
+# df = spark.read.parquet(f"{processed_folder_path}/drivers")
+# display(df)
 
 # COMMAND ----------
 
@@ -151,8 +168,8 @@ constructor_final_df.write.mode("overwrite").format("parquet").saveAsTable("proc
 
 # COMMAND ----------
 
- df = spark.read.parquet(f"{processed_folder_path}/constructor")
- display(df)
+# df = spark.read.parquet(f"{processed_folder_path}/drivers")
+# display(df)
 
 # COMMAND ----------
 
@@ -162,8 +179,18 @@ constructor_final_df.write.mode("overwrite").format("parquet").saveAsTable("proc
 # COMMAND ----------
 
 # test and confirm the data is stored in the readble format
-# df = spark.read.format("delta").load(f"{processed_folder_path}/constructor")
-# display(df)
+df = spark.read.format("delta").load(f"{processed_folder_path}/drivers")
+display(df)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ##### SQL Read
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC select * from processed_db.drivers;
 
 # COMMAND ----------
 

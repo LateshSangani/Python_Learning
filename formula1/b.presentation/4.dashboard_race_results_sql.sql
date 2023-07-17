@@ -31,7 +31,9 @@ USE processed_db;
 
 -- COMMAND ----------
 
-
+-- MAGIC %md
+-- MAGIC ## PROBLEM :  the SQL notbook does accept the input v_as_of_date parameter , and we need to remake whole data from the old and new data partitions.
+-- MAGIC ## The Alternate solution is make the Python Notebook and run all the SQL code inside the spark.sql command
 
 -- COMMAND ----------
 
@@ -43,9 +45,7 @@ SELECT a.race_year, c.name as constructor_name , d.driver_id , d.name driver_nam
 FROM processed_db.results r 
 JOIN processed_db.drivers d ON (r.driver_id = d.driver_id)
 JOIN processed_db.constructor c ON (r.constructor_id = c.constructor_id)
-JOIN processed_db.races a ON (r.race_id = a.race_id)
-WHERE r.position <= 10
-AND r.as_of_date = "2021-03-21";
+JOIN processed_db.races a ON (r.race_id = a.race_id);
 
 -- COMMAND ----------
 
@@ -53,7 +53,7 @@ select * from presentation_db.calculated_race_results_sql;
 
 -- COMMAND ----------
 
---drop table presentation_db.calculated_race_results_sql;
+drop table presentation_db.calculated_race_results_sql;
 
 -- COMMAND ----------
 
@@ -82,13 +82,17 @@ SELECT a.race_year, c.name as constructor_name , d.driver_id , d.name driver_nam
 FROM processed_db.results r 
 JOIN processed_db.drivers d ON (r.driver_id = d.driver_id)
 JOIN processed_db.constructor c ON (r.constructor_id = c.constructor_id)
-JOIN processed_db.races a ON (r.race_id = a.race_id)
-WHERE r.position <= 10
-AND r.as_of_date = "2021-04-18";
+JOIN processed_db.races a ON (r.race_id = a.race_id);
 
 -- COMMAND ----------
 
 select count(*) from v_calculated_race_results_temp
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC #### Another Problem : For the incremental laod , we cannot make the table again and again, hence the MERGE command will help to resuse the same table.
+-- MAGIC #### But again the input parameter cannot pass and hence without table drop, the merge operation will take more time.
 
 -- COMMAND ----------
 
@@ -107,6 +111,11 @@ VALUES (race_year,constructor_name,driver_id,driver_name,race_id,position,actual
 -- COMMAND ----------
 
 select count(*) from presentation_db.calculated_race_results_sql
+
+-- COMMAND ----------
+
+-- MAGIC %md
+-- MAGIC ### Best Solution is to use the 5.dashboard_race_results_python i.e full code converted into python
 
 -- COMMAND ----------
 

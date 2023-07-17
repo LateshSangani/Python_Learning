@@ -98,12 +98,20 @@ v_result
 
 # COMMAND ----------
 
-display(v_result)
+# MAGIC %md 
+# MAGIC # confirm the results for all the tables
 
 # COMMAND ----------
 
-# MAGIC %md 
-# MAGIC # confirm the results for all the tables
+# MAGIC %sql
+# MAGIC REFRESH TABLE processed_db.circuits;
+# MAGIC REFRESH TABLE processed_db.races;
+# MAGIC REFRESH TABLE processed_db.constructor;
+# MAGIC REFRESH TABLE processed_db.drivers;
+# MAGIC REFRESH TABLE processed_db.results;
+# MAGIC REFRESH TABLE processed_db.pit_stops;
+# MAGIC REFRESH TABLE processed_db.lap_times;
+# MAGIC REFRESH TABLE processed_db.qualifying;
 
 # COMMAND ----------
 
@@ -144,3 +152,7 @@ display(v_result)
 
 # MAGIC %sql
 # MAGIC select as_of_date,count(*) from processed_db.qualifying group by as_of_date;
+
+# COMMAND ----------
+
+

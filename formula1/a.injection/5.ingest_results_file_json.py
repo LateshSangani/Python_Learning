@@ -126,6 +126,12 @@ results_final_df = add_ingestion_date(results_final_df)
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC ##### In case we get the duplicate data in that case with "dropDuplicates" function required to run and let spark decide and remove the record
+
+# COMMAND ----------
+
+# remove the duplicate data
 results_final_df = results_final_df.dropDuplicates(["race_id","driver_id"])
 
 # COMMAND ----------
@@ -145,6 +151,7 @@ display(results_final_df)
 # COMMAND ----------
 
 # full load with file creation.
+#
 # results_final_df.write.mode("overwrite").partitionBy("race_id").parquet(f"{processed_folder_path}/results")
 
 # COMMAND ----------
@@ -157,7 +164,8 @@ display(results_final_df)
 # Write the output of the processed data in the database tables
 # it has 2 benifies , table get created and file also stored in the azure storage account as processed_db used the mounted path
 # full load with table and file creation.
-results_final_df.write.mode("overwrite").partitionBy('race_id').format("parquet").saveAsTable("processed_db.results")
+#
+# results_final_df.write.mode("overwrite").partitionBy('race_id').format("parquet").saveAsTable("processed_db.results")
 
 # COMMAND ----------
 
@@ -168,7 +176,13 @@ results_final_df.write.mode("overwrite").partitionBy('race_id').format("parquet"
 
 # Write the output of the processed data in the database tables
 # it has 2 benifies , table get created and file also stored in the azure storage account as processed_db used the mounted path
-# results_final_df.write.mode("overwrite").format("delta").saveAsTable("processed_db.results")
+#
+# results_final_df.write.mode("overwrite").partitionBy('race_id').format("delta").saveAsTable("processed_db.results")
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC #------------INCREMETAL LOAD APPEND OPTION--------------------
 
 # COMMAND ----------
 
@@ -179,8 +193,8 @@ results_final_df.write.mode("overwrite").partitionBy('race_id').format("parquet"
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Solution 1 : Incremental laod ( append )  Simple but Slow Performance
-# MAGIC ### For the incremenal write with append option is not re-runnable. it will add duplicate values in the table
+# MAGIC ## Solution 1 : Incremental laod ( append )  Simple but Slow Performance (Drop of Partation)
+# MAGIC ### For the incremenal write with append option is not re-runnable. it will add duplicate values in the table if same file re-run.
 # MAGIC ### The partition has to drop in the loop before insert and check the table is present and any old partition made on it.
 
 # COMMAND ----------
@@ -188,10 +202,12 @@ results_final_df.write.mode("overwrite").partitionBy('race_id').format("parquet"
 # MAGIC %md
 # MAGIC ##### In databricks with spark sql or plain SQL their is no feature of the DELETE or TRUNCATE.
 # MAGIC ##### Spark SQL support the DROP TABLE in the sql cell
+# MAGIC ##### To append the data in the table , drop the DATA in the old partition IF found for same the same file and Let the new partition is going to be create for the same file
 
 # COMMAND ----------
 
 #for race_id_list in results_final_df.select("race_id").distinct().collect():
+    # for the first run the table processed_db.results does not present hence ALTER table will fail, It need to avoide with tableExists function
 #    if (spark._jsparkSession.catalog().tableExists("processed_db.results")):
 #        print(race_id_list.race_id)
 #        spark.sql(f"ALTER TABLE processed_db.results DROP IF EXISTS PARTITION ( race_id = {race_id_list.race_id} )")
@@ -205,13 +221,13 @@ results_final_df.write.mode("overwrite").partitionBy('race_id').format("parquet"
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Solution 2 : Incremental laod ( overwrite ) Complex but Fast Performance
+# MAGIC ## Solution 2 : Incremental laod ( overwrite ) Complex but Fast Performance ( No Drop of Partition)
 # MAGIC ### For the incremenal write with overwrite option is re-runnable but it will delete the old data.
 
 # COMMAND ----------
 
-# this tell to spark that while running the insertInto if Paration already exists then replace the VALUES only with new values coming from the dataframe.
-# So here we are not deleting the partition like we did in the Solution 1
+# this tell to spark that while running the "insertInto" if Paration already exists then replace the VALUES only with new values coming from the dataframe.
+# So here we are not dropping of the partition like we did in the Solution 1
 
 # spark.conf.set("spark.sql.sources.partitionOverwriteMode","dynamic")
 
@@ -225,9 +241,9 @@ results_final_df.write.mode("overwrite").partitionBy('race_id').format("parquet"
 
 # for the first time load the ELSE part will execute , later for all the incremental load the IF (Inset) will work
 # The question comes if same incremental load again then it will again go in the IF statment and insert the new data.
-# The solution is               spark.conf.set("spark.sql.sources.partitionOverwriteMode","dynamic")
-# this tell to spark that while running the insertInto if Paration already exists then replace the VALUES only with new values coming from the dataframe.
-# So here we are not deleting the partition like we did in the Solution 1
+# The solution is ->  spark.conf.set("spark.sql.sources.partitionOverwriteMode","dynamic")
+# this tell to spark that while running the "insertInto" if Paration already exists then replace the VALUES only with new values coming from the dataframe.
+# So here we are not deleting the partition like we did in the Solution 1 and performance gain achived.
 #
 #if (spark._jsparkSession.catalog().tableExists("processed_db.results")):
 #    results_final_df.write.mode("overwrite").insertInto("processed_db.results")
@@ -238,18 +254,20 @@ results_final_df.write.mode("overwrite").partitionBy('race_id').format("parquet"
 
 # MAGIC %md
 # MAGIC ## Solution 2 (Enhancement): Incremental laod ( overwrite ) Complex but Fast Performance (USE FUNCTIONS)
+# MAGIC ### No Drop of the partition
 # MAGIC ### For the incremenal write with overwrite option is re-runnable but it will delete the old data.
 
 # COMMAND ----------
 
 # MAGIC %md
 # MAGIC ### signiture of the functions
-# MAGIC ### CHILD : append_column(input_df,partition_id)    Output : output_df
-# MAGIC ### PARENT : overwrite_partition_data(input_df,input_db,input_table,partition_id) Output : output_df
+# MAGIC ### append_column (Inner) : append_column(input_df,partition_id)    Output : output_df
+# MAGIC ### overwrite_partition_data (Outer) : overwrite_partition_data(input_df,input_db,input_table,partition_id) Output : output_df
 
 # COMMAND ----------
 
 # its fine not to capture the output dataframe becuase function has wrote now the data and now output dataframe has no use.
+#
 # overwrite_partition_data(results_final_df,'processed_db','results','race_id')
 
 # COMMAND ----------
@@ -260,26 +278,11 @@ results_final_df.write.mode("overwrite").partitionBy('race_id').format("parquet"
 
 # COMMAND ----------
 
-#input_db="processed_db"
-#input_table="results"
-#partition_id="race_id"
-#primary_key="result_id"
-#merge_delta_data(results_final_df,input_db,input_table,processed_folder_path,partition_id,primary_key)
-
-# COMMAND ----------
-
-# %sql
-# select as_of_date,count(*) from processed_db.results group by as_of_date;
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## Check the duplicate data issue
-
-# COMMAND ----------
-
-# %sql
-# select race_id,driver_id,count(*) from processed_db.results group by race_id,driver_id having count(*) > 1;
+input_db="processed_db"
+input_table="results"
+partition_id="race_id"
+primary_key="target.result_id = source.result_id AND target.race_id = source.race_id "
+merge_delta_data(results_final_df,input_db,input_table,processed_folder_path,partition_id,primary_key)
 
 # COMMAND ----------
 
@@ -298,8 +301,8 @@ results_final_df.write.mode("overwrite").partitionBy('race_id').format("parquet"
 
 # COMMAND ----------
 
- df = spark.read.parquet(f"{processed_folder_path}/results")
- display(df)
+ #df = spark.read.parquet(f"{processed_folder_path}/results")
+ #display(df)
 
 # COMMAND ----------
 
@@ -309,8 +312,18 @@ results_final_df.write.mode("overwrite").partitionBy('race_id').format("parquet"
 # COMMAND ----------
 
 # test and confirm the data is stored in the readble format
-# df = spark.read.format("delta").load(f"{processed_folder_path}/results")
-# display(df)
+df = spark.read.format("delta").load(f"{processed_folder_path}/results")
+display(df)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ##### SQL read
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC select as_of_date,count(*) from processed_db.results group by as_of_date;
 
 # COMMAND ----------
 

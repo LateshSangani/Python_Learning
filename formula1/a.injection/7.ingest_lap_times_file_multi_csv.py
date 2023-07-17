@@ -1,6 +1,6 @@
 # Databricks notebook source
 # MAGIC %md
-# MAGIC # Ingest qualiying 
+# MAGIC # Ingest lap times folder multiple CSV files
 
 # COMMAND ----------
 
@@ -35,7 +35,6 @@ dbutils.widgets.text("p_data_source","")
 v_data_source = dbutils.widgets.get("p_data_source")
 display(v_data_source)
 
-
 # COMMAND ----------
 
 # add the input parameter of widget
@@ -48,7 +47,7 @@ display(v_as_of_date)
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Step 1 : Read the multiple json file and each file has multiple lines
+# MAGIC ## Step 1 : Read the Multiple CSV files from folder
 
 # COMMAND ----------
 
@@ -60,39 +59,31 @@ from pyspark.sql.types import StructType,StructField, IntegerType , StringType ,
 
 # COMMAND ----------
 
-qualifying_schema = StructType(fields = [StructField("qualifyId",IntegerType(),False),
-                                      StructField("raceId",IntegerType(),True),
+lap_times_schema = StructType(fields = [StructField("raceId",IntegerType(),False),
                                       StructField("driverId",IntegerType(),True),
-                                      StructField("constructorId",IntegerType(),True), 
-                                      StructField("number",IntegerType(),True),  
-                                      StructField("position",IntegerType(),True),
-                                      StructField("q1",StringType(),True),
-                                      StructField("q2",StringType(),True),
-                                      StructField("q3",StringType(),True),
+                                      StructField("lap",IntegerType(),True),
+                                      StructField("lag",IntegerType(),True), 
+                                      StructField("position",IntegerType(),True),  
+                                      StructField("time",StringType(),True),
+                                      StructField("milliseconds",IntegerType(),True)
 ])
 
 # COMMAND ----------
 
 # Providing the full folder only and no file name pattern will also work but condition is that all the files has same structure.
-qualifying_df = spark.read \
-.schema(qualifying_schema) \
-.option("multiline",True) \
-.json(f"{raw_folder_path}/{v_as_of_date}/qualifying/qualifying_split_*.json")
+lap_times_df = spark.read \
+.schema(lap_times_schema) \
+.csv(f"{raw_folder_path}/{v_as_of_date}/lap_times/lap_times_split_*.csv")
 
 # COMMAND ----------
 
 # By default spark only read the single list either JSON or CSV file.
 # Here all the colummns values are coming null
-display(qualifying_df)
+display(lap_times_df)
 
 # COMMAND ----------
 
-# check the count as data is disturbuted in the multiple files
-qualifying_df.count()
-
-# COMMAND ----------
-
-qualifying_df.printSchema()
+lap_times_df.printSchema()
 
 # COMMAND ----------
 
@@ -102,20 +93,18 @@ qualifying_df.printSchema()
 # COMMAND ----------
 
 from pyspark.sql.functions import current_timestamp , col, concat , lit
-qualifying_final = qualifying_df.withColumnRenamed("qualifyId","qualify_id") \
-                            .withColumnRenamed("raceId","race_id") \
-                            .withColumnRenamed("driverId","driver_id") \
-                            .withColumnRenamed("constructorId","constructor_id") \
-                            .withColumn("data_source",lit(v_data_source)) \
-                            .withColumn("as_of_date",lit(v_as_of_date))
+lap_times_final = lap_times_df.withColumnRenamed("raceId","race_id") \
+                              .withColumnRenamed("driverId","driver_id") \
+                              .withColumn("data_source",lit(v_data_source)) \
+                              .withColumn("as_of_date",lit(v_as_of_date))
 
 # COMMAND ----------
 
-qualifying_final = add_ingestion_date(qualifying_final)
+lap_times_final = add_ingestion_date(lap_times_final)
 
 # COMMAND ----------
 
-display(qualifying_final)
+display(lap_times_final)
 
 # COMMAND ----------
 
@@ -130,7 +119,8 @@ display(qualifying_final)
 # COMMAND ----------
 
 # full load with file creation.
-# qualifying_final.write.mode("overwrite").partitionBy('race_id').parquet(f"{processed_folder_path}/qualifying")
+#
+# lap_times_final.write.mode("overwrite").partitionBy('race_id').parquet(f"{processed_folder_path}/lap_times")
 
 # COMMAND ----------
 
@@ -142,7 +132,8 @@ display(qualifying_final)
 # Write the output of the processed data in the database tables
 # it has 2 benifies , table get created and file also stored in the azure storage account as processed_db used the mounted path
 # full load with table and file creation.
-qualifying_final.write.mode("overwrite").partitionBy('race_id').format("parquet").saveAsTable("processed_db.qualifying")
+#
+# lap_times_final.write.mode("overwrite").partitionBy('race_id').format("parquet").saveAsTable("processed_db.lap_times")
 
 # COMMAND ----------
 
@@ -153,7 +144,8 @@ qualifying_final.write.mode("overwrite").partitionBy('race_id').format("parquet"
 
 # Write the output of the processed data in the database tables
 # it has 2 benifies , table get created and file also stored in the azure storage account as processed_db used the mounted path
-# qualifying_final.write.mode("overwrite").format("delta").saveAsTable("processed_db.qualifying")
+#
+# lap_times_final.write.mode("overwrite").partitionBy('race_id').format("delta").saveAsTable("processed_db.lap_times")
 
 # COMMAND ----------
 
@@ -164,7 +156,8 @@ qualifying_final.write.mode("overwrite").partitionBy('race_id').format("parquet"
 # COMMAND ----------
 
 # its fine not to capture the output dataframe becuase function has wrote now the data and now output dataframe has no use.
-# overwrite_partition_data(qualifying_final,'processed_db','qualifying','race_id')
+#
+# overwrite_partition_data(lap_times_final,'processed_db','lap_times','race_id')
 
 # COMMAND ----------
 
@@ -174,25 +167,21 @@ qualifying_final.write.mode("overwrite").partitionBy('race_id').format("parquet"
 
 # COMMAND ----------
 
-#input_db="processed_db"
-#input_table="qualifying"
-#partition_id="race_id"
-#primary_key="qualify_id"
-#merge_delta_data(qualifying_final,input_db,input_table,processed_folder_path,partition_id,primary_key)
-
-# COMMAND ----------
-
-#%sql
-#select as_of_date,count(*) from processed_db.qualifying group by as_of_date;
+input_db="processed_db"
+input_table="lap_times"
+partition_id="race_id"
+primary_key="target.race_id = source.race_id AND target.driver_id = source.driver_id AND target.lap = source.lap"
+merge_delta_data(lap_times_final,input_db,input_table,processed_folder_path,partition_id,primary_key)
 
 # COMMAND ----------
 
 # MAGIC %md
 # MAGIC ##### Plain Python read
+# MAGIC
 
 # COMMAND ----------
 
-# df = spark.read.parquet(f"{processed_folder_path}/qualifying")
+# df = spark.read.parquet(f"{processed_folder_path}/lap_times")
 # display(df)
 
 # COMMAND ----------
@@ -202,8 +191,8 @@ qualifying_final.write.mode("overwrite").partitionBy('race_id').format("parquet"
 
 # COMMAND ----------
 
-df = spark.read.parquet(f"{processed_folder_path}/qualifying")
-display(df)
+# df = spark.read.parquet(f"{processed_folder_path}/lap_times")
+# display(df)
 
 # COMMAND ----------
 
@@ -213,8 +202,18 @@ display(df)
 # COMMAND ----------
 
 # test and confirm the data is stored in the readble format
-# df = spark.read.format("delta").load(f"{processed_folder_path}/qualifying")
-# display(df)
+df = spark.read.format("delta").load(f"{processed_folder_path}/lap_times")
+display(df)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ##### SQL Read
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC select as_of_date,count(*) from processed_db.lap_times group by as_of_date;
 
 # COMMAND ----------
 

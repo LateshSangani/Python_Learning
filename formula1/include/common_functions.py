@@ -18,7 +18,36 @@ from pyspark.sql.functions import current_timestamp , col, concat , lit , upper
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC #### Function to add new extra column ingestion date at the last of the all the Raw Tables
+# MAGIC ##### Function to Mount ADLS path in the databricks
+
+# COMMAND ----------
+
+# in real project , where many folders need to mount the function is getting prepared which takes the input contrainer name and storage account name. it will check its the container which is planning to mount if already exist. if yes then delete the mount and make new mount
+def mount_adls(storage_account_name,container_name):
+    #storage_account_name = "datasourceformula1"
+    client_id            = dbutils.secrets.get(scope="databrickscource-secret-scope" , key="databricks-client-id")
+    tenant_id            = dbutils.secrets.get(scope="databrickscource-secret-scope" , key="databricks-tenant-id")
+    client_secret        = dbutils.secrets.get(scope="databrickscource-secret-scope" , key="databricks-client-secret")
+
+    configs = {"fs.azure.account.auth.type": "OAuth",
+           "fs.azure.account.oauth.provider.type": "org.apache.hadoop.fs.azurebfs.oauth2.ClientCredsTokenProvider",
+           "fs.azure.account.oauth2.client.id": f"{client_id}",
+           "fs.azure.account.oauth2.client.secret": f"{client_secret}",
+           "fs.azure.account.oauth2.client.endpoint": f"https://login.microsoftonline.com/{tenant_id}/oauth2/token"}
+    
+    if any(mount.mountPoint == f"/mnt/{storage_account_name}/{container_name}" for mount in dbutils.fs.mounts()):
+        dbutils.fs.unmount(f"/mnt/{storage_account_name}/{container_name}")
+
+    # use the mount function to inside the custimaized function
+    dbutils.fs.mount(
+  source = f"abfss://{container_name}@{storage_account_name}.dfs.core.windows.net/",
+  mount_point = f"/mnt/{storage_account_name}/{container_name}",
+  extra_configs = configs)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ##### Function to add new extra column ingestion date at the last of the all the Raw Tables
 
 # COMMAND ----------
 
@@ -31,7 +60,7 @@ def add_ingestion_date(input_df):
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC #### Function to arrange all the columns in such form ,so that partition column will append at last
+# MAGIC ##### DATALAKE : Function to arrange all the columns in such form ,so that partition column will append at last
 
 # COMMAND ----------
 
@@ -52,7 +81,7 @@ def append_column(input_df,partition_id):
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC #### DATALAKE : Function to Overwrite the data for the input dataframe in the Destination DB using partition_id
+# MAGIC ##### DATALAKE : Function to Overwrite the data for the input dataframe in the Destination DB using partition_id
 
 # COMMAND ----------
 
@@ -63,12 +92,13 @@ def overwrite_partition_data(input_df,input_db,input_table,partition_id):
         output_df.write.mode("overwrite").insertInto(f"{input_db}.{input_table}")
     else:
         output_df.write.mode("overwrite").partitionBy(f"{partition_id}").format("parquet").saveAsTable(f"{input_db}.{input_table}")
+        #output_df.write.mode("append").partitionBy(f"{partition_id}").format("parquet").saveAsTable(f"{input_db}.{input_table}")
     return output_df
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC #### Function to convert the column values in the list
+# MAGIC ##### DELTALAKE : Function to convert the column values in the list
 
 # COMMAND ----------
 
@@ -82,7 +112,8 @@ def column_to_list(input_df,table_column_name):
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC #### DELTALAKE : Function to Overwrite the data for the input dataframe in the Destination DB using partition_id
+# MAGIC ##### DELTALAKE : Function to Overwrite the data for the input dataframe in the Destination DB using partition_id
+# MAGIC ##### Here no need to put the partition column at last
 
 # COMMAND ----------
 
@@ -96,12 +127,14 @@ def merge_delta_data(input_df,input_db,input_table,container_path,partition_id,p
     from delta.tables import DeltaTable
     if (spark._jsparkSession.catalog().tableExists(f"{input_db}.{input_table}")):
         deltaTable = DeltaTable.forPath(spark,f"{container_path}/{input_table}/")
-        deltaTable.alias("target").merge(input_df.alias("source"), \
-                                         f"target.{primary_key} = source.{primary_key} AND target.{partition_id} = source.{partition_id}") \
+        deltaTable.alias("target").merge(
+            input_df.alias("source"),
+            primary_key)    \
         .whenMatchedUpdateAll() \
         .whenNotMatchedInsertAll() \
         .execute()
     else:
+        # input_df.write.mode("overwrite").partitionBy(f"{partition_id}").format("parquet").saveAsTable(f"{input_db}.{input_table}")
         input_df.write.mode("overwrite").partitionBy(f"{partition_id}").format("delta").saveAsTable(f"{input_db}.{input_table}")
 
 # COMMAND ----------

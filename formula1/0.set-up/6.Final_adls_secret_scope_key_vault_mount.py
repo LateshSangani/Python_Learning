@@ -203,6 +203,7 @@ display(spark.read.csv("abfss://demo@datasourceformula1.dfs.core.windows.net/cir
 # values are hardcode here but it will copy in the azure keyvault in the future chapter.
 # mapping of the storage account with service principle should be done in advanced before mounting.
 # the mapping done from the IAM of the storage account
+container_name = "demo"
 storage_account_name = "datasourceformula1"
 client_id            = dbutils.secrets.get(scope="databrickscource-secret-scope" , key="databricks-client-id")
 tenant_id            = dbutils.secrets.get(scope="databrickscource-secret-scope" , key="databricks-tenant-id")
@@ -225,7 +226,6 @@ configs = {"fs.azure.account.auth.type": "OAuth",
 # COMMAND ----------
 
 # mount demo folder 
-container_name = "demo"
 dbutils.fs.mount(
   source = f"abfss://{container_name}@{storage_account_name}.dfs.core.windows.net/",
   mount_point = f"/mnt/{storage_account_name}/{container_name}",
@@ -238,7 +238,7 @@ dbutils.fs.mount(
 
 # COMMAND ----------
 
-dbutils.fs.unmount(f"/mnt/{storage_account_name}/demo")
+dbutils.fs.unmount(f"/mnt/{storage_account_name}/{container_name}")
 
 # COMMAND ----------
 

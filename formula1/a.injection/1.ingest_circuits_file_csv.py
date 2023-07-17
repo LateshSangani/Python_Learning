@@ -1,10 +1,10 @@
 # Databricks notebook source
 # MAGIC %md
-# MAGIC ## Ingest races.csv file
+# MAGIC ## Ingest circuites.csv file
 
 # COMMAND ----------
 
-# Include the common files to export the common variable and functions.
+# Include the common file to export the common variable and functions.
 # The filename without extention is fine
 # "/Repos/sangani.sangita@gmail.com/Python_Learning/formula1/include/configuration"
 # "/Repos/sangani.sangita@gmail.com/Python_Learning/formula1/include/common_functions"
@@ -31,6 +31,7 @@
 
 # add the input parameter of widget
 # the input parameter can be used to filter the data or store the extra column
+# the default value is ""  , but it can be anything we defined.
 dbutils.widgets.text("p_data_source","")
 v_data_source = dbutils.widgets.get("p_data_source")
 display(v_data_source)
@@ -47,18 +48,17 @@ display(v_as_of_date)
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Step1 : Read CSV file using the Spark Data frame reader
+# MAGIC ## Step 1 : Read CSV file using the Spark Data frame reader
 
 # COMMAND ----------
 
-#The above dispaly is not good , hence use the display function to get the better display in table format.
 display(dbutils.fs.mounts())
 
 # COMMAND ----------
 
 # The alternative of the interSchema is to make own schema and use while reading it.
 # the Struct is required to prepared, For that import Struct
-from pyspark.sql.types import StructType,StructField,IntegerType,StringType,DoubleType,DateType
+from pyspark.sql.types import StructType,StructField,IntegerType,StringType,DoubleType
 
 # COMMAND ----------
 
@@ -67,71 +67,76 @@ from pyspark.sql.types import StructType,StructField,IntegerType,StringType,Doub
 # True is NULL
 # StructType --> represent rows
 # StructField --> represent columns
-races_schema = StructType(fields=[StructField("raceId", IntegerType(), False),
-                                     StructField("year", IntegerType(), True),
-                                     StructField("round", IntegerType(), True),
-                                     StructField("circuitId", IntegerType(), True),
+circuits_schema = StructType(fields=[StructField("circuitId", IntegerType(), False),
+                                     StructField("circuitRef", StringType(), True),
                                      StructField("name", StringType(), True),
-                                     StructField("date", DateType(), True),
-                                     StructField("time", StringType(), True),
+                                     StructField("location", StringType(), True),
+                                     StructField("country", StringType(), True),
+                                     StructField("lat", DoubleType(), True),
+                                     StructField("lng", DoubleType(), True),
+                                     StructField("alt", IntegerType(), True),
                                      StructField("url", StringType(), True)
 ])
 
 # COMMAND ----------
 
 # use the circuits_schema while reading the dataframe from the CSV file.
-races_df = spark.read \
+# By default the header is set to false and spark consider the header has data record. The True skip the header 1st record.
+# If schema is not assigned by default all the rows will be consider the string. hence STRUCT gives the valid data type defination
+circuits_df = spark.read \
 .option("header" ,True) \
-.schema(races_schema) \
-.csv(f"{raw_folder_path}/{v_as_of_date}/races.csv")
+.schema(circuits_schema) \
+.csv(f"{raw_folder_path}/{v_as_of_date}/circuits.csv")
 
 # COMMAND ----------
 
-display(races_df)
+#circuits_df.show()  poor display 
+display(circuits_df)
 
 # COMMAND ----------
 
-#races_df.schema.names
-races_df.printSchema()
+#circuits_df.schema.names
+circuits_df.printSchema()
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Step2 : Rename of the columns , add new extra columns , removed unwanted column
+# MAGIC ## Step 2 : Rename of the columns , add new extra columns , removed unwanted column
 
 # COMMAND ----------
 
-# the extra column is added with name ingestion_date and it holds the current timestamp values.
-from pyspark.sql.functions import current_timestamp,to_timestamp,concat,lit,col
-races_final_df = races_df \
-.withColumnRenamed("raceId","race_id") \
-.withColumnRenamed("year","race_year") \
-.withColumnRenamed("circuitId","circuit_id") \
-.withColumn("race_timestamp",to_timestamp(concat(col('date'),lit(' '),col('time')), 'yyyy-MM-dd HH:mm:ss')) \
-.withColumn("ingestion_date",current_timestamp()) \
+# The lit function is required to convert the variable in the form of the column
+from pyspark.sql.functions import lit
+circuites_final_df = circuits_df.withColumnRenamed("circuitId","circuit_id") \
+.withColumnRenamed("circuitRef","circuit_ref") \
+.withColumnRenamed("lat","latitude") \
+.withColumnRenamed("lng","longitude") \
+.withColumnRenamed("alt","altitude") \
+.drop("url") \
 .withColumn("data_source",lit(v_data_source)) \
 .withColumn("as_of_date",lit(v_as_of_date))
 
 # COMMAND ----------
 
-races_final_df = races_final_df \
-.drop("date") \
-.drop("time") \
-.drop("url")
+display(circuites_final_df)
 
 # COMMAND ----------
 
-races_final_df = add_ingestion_date(races_final_df)
+# the extra column is added with name ingestion_date and it holds the current timestamp values.
+from pyspark.sql.functions import current_timestamp
+#add the new column with full command
+#circuites_final_df = circuites_final_df.withColumn("ingestion_date",current_timestamp())
+#add the new column with function imported
+circuites_final_df = add_ingestion_date(circuites_final_df)
 
 # COMMAND ----------
 
-display(races_final_df)
+display(circuites_final_df)
 
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ## Step 3 : Write the data in the database using the parqut format
-# MAGIC #### Make the partition on race_year column for the parallel processing of the cluster
+# MAGIC ## Step 3 : Write the data in the database using the parquet format
 
 # COMMAND ----------
 
@@ -141,8 +146,8 @@ display(races_final_df)
 # COMMAND ----------
 
 # Re-running the entire note book fails the write statement has path already present
-# add the mode option to overwrite the new existing file
-# races_final_df.write.mode("overwrite").partitionBy("race_year").parquet(f"{processed_folder_path}/races")
+# add the mode option to overwrite the existing file
+# circuites_final_df.write.mode("overwrite").parquet(f"{processed_folder_path}/circuits/")
 
 # COMMAND ----------
 
@@ -153,7 +158,7 @@ display(races_final_df)
 
 # Write the output of the processed data in the database tables
 # it has 2 benifies , table get created and file also stored in the azure storage account as processed_db used the mounted path
-races_final_df.write.mode("overwrite").partitionBy('race_year').format("parquet").saveAsTable("processed_db.races")
+# circuites_final_df.write.mode("overwrite").format("parquet").saveAsTable("processed_db.circuits")
 
 # COMMAND ----------
 
@@ -164,7 +169,7 @@ races_final_df.write.mode("overwrite").partitionBy('race_year').format("parquet"
 
 # Write the output of the processed data in the database tables
 # it has 2 benifies , table get created and file also stored in the azure storage account as processed_db used the mounted path
-# races_final_df.write.mode("overwrite").partitionBy('race_year').format("delta").saveAsTable("processed_db.races")
+circuites_final_df.write.mode("overwrite").format("delta").saveAsTable("processed_db.circuits")
 
 # COMMAND ----------
 
@@ -173,7 +178,7 @@ races_final_df.write.mode("overwrite").partitionBy('race_year').format("parquet"
 
 # COMMAND ----------
 
-# df = spark.read.parquet(f"{processed_folder_path}/races")
+# df = spark.read.parquet(f"{processed_folder_path}/circuits")
 # display(df)
 
 # COMMAND ----------
@@ -183,8 +188,8 @@ races_final_df.write.mode("overwrite").partitionBy('race_year').format("parquet"
 
 # COMMAND ----------
 
-df = spark.read.parquet(f"{processed_folder_path}/races")
-display(df)
+ #df = spark.read.parquet(f"{processed_folder_path}/circuits")
+ #display(df)
 
 # COMMAND ----------
 
@@ -194,8 +199,18 @@ display(df)
 # COMMAND ----------
 
 # confirm the data is stored well and read all the files
-# df = spark.read.format("delta").load(f"{processed_folder_path}/races")
-# display(df)
+df = spark.read.format("delta").load(f"{processed_folder_path}/circuits")
+display(df)
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC ##### SQL read
+
+# COMMAND ----------
+
+# MAGIC %sql
+# MAGIC select * from processed_db.circuits;
 
 # COMMAND ----------
 
