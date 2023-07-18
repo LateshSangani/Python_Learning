@@ -1,5 +1,3 @@
-Useful Links
-kishor.d.sangani@gmail.com / Five0985
 
 Azure Portal – https://portal.azure.com
 Databricks : https://adb-993395267027032.12.azuredatabricks.net/?o=993395267027032#
@@ -43,21 +41,21 @@ Azure Data Factory : databrickscource-adf
 Github Repo: https://github.com/LateshSangani/Python_Learning
 Github User Name : LateshSangani
 Github Token Name : databricks-token
-Github Token Value : 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
+Github Token Value : xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 Notes:
 
 5 V's of the BIG data. Volumn , Velocity , Variety , Veracity , Value
 
-Volume. Organizations collect data from a variety of sources, including business transactions, social media and information from sensor or machine-to-machine data. 
+Volume : Organizations collect data from a variety of sources, including business transactions, social media and information from sensor or machine-to-machine data. 
         Volume is the sheer amount of data generated that must be understood to make data-based decisions. 
 		These decisions are driven by increasing data sources and higher resolution devices. 
 		In the past, storing it would’ve been a problem – but new technologies (such as Hadoop) have eased the burden.
 
-Velocity. Velocity measures how fast data is produced and modified and the speed with which it needs to be processed. 
+Velocity : Velocity measures how fast data is produced and modified and the speed with which it needs to be processed. 
           An increased number of data sources, improved connectivity, and the enhanced power of data generating devices drives velocity.
 
-Variety. Data comes in all types of formats – from structured, numeric data in traditional databases to unstructured text documents, email, video, audio, stock ticker data 
+Variety : Data comes in all types of formats – from structured, numeric data in traditional databases to unstructured text documents, email, video, audio, stock ticker data 
          and financial transactions. 
 		 Variety defines data coming from new sources—both inside and outside of an enterprise—creating integration, management, governance, and architectural pressures on 
 		 Information Technology.
