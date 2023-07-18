@@ -1,0 +1,850 @@
+Useful Links
+kishor.d.sangani@gmail.com / Five0985
+
+Azure Portal – https://portal.azure.com
+Databricks : https://adb-993395267027032.12.azuredatabricks.net/?o=993395267027032#
+Token generation : https://adb-2643165434444923.3.azuredatabricks.net/?o=2643165434444923#setting/account
+Token name : ADF_Token
+Token validaty : 1000 days  
+Token Value : dapib4f44374d4b812b50437ad74c357c123
+DataFactory : https://adf.azure.com/en/home?factory=%2Fsubscriptions%2F61e5b0a8-fd06-46d7-9e33-eae1794be4ab%2FresourceGroups%2Fdatabrickscource-rg%2Fproviders%2FMicrosoft.DataFactory%2Ffactories%2Fdatabrickscource-adf
+Ergast API Documentation - http://ergast.com/mrd/
+PySpark Documentation - https://spark.apache.org/docs/latest/api/python/index.html
+PySpark API Reference - https://spark.apache.org/docs/latest/api/python/reference/index.html
+Spark SQL Reference - https://spark.apache.org/docs/latest/sql-ref.html
+Delta Lake Reference - https://docs.delta.io/latest/index.html
+Standard Solution Architecture : 
+https://learn.microsoft.com/en-us/azure/architecture/solution-ideas/articles/azure-databricks-modern-analytics-architecture
+
+
+Azure resource:
+Azure Subscription : Free Trial
+Azure Resource Group : databrickscource-rg
+Azure Databricks Workspace : databrickscource-ws
+Azure Gen2 Storage account :  datasourceformula1 
+Cluster Name :  databricks-cource-cluster
+Dash Board : Databricks Cource Dashboard
+Policy Name : databricks-learning (self made handwritten)
+Policy Name : databricks-learning-personal-familiy ( Derived from the Personal Family of the databricks)
+Azure tags : dev / dev
+Inside Azure Active Directory -> App registration -> databrickscource-service-app           -> service principle preparaion.
+Secret made in the service principe databrickscource-service-app  ->  databricks-access-secret
+Azure keyvault : databrickscource-kv
+	Total 5 secerets made in the Key-Vault
+	1) databricks-storage-access-key
+	2) databricks-storage-sas-key
+	3) databricks-client-id
+	4) databricks-tenant-id
+	5) databricks-client-secret
+
+Secret scope in the databricks : databrickscource-secret-scope
+Azure Data Factory : databrickscource-adf
+
+Github Repo: https://github.com/LateshSangani/Python_Learning
+Github User Name : LateshSangani
+Github Token Name : databricks-token
+Github Token Value : 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
+
+Notes:
+
+5 V's of the BIG data. Volumn , Velocity , Variety , Veracity , Value
+
+Volume. Organizations collect data from a variety of sources, including business transactions, social media and information from sensor or machine-to-machine data. 
+        Volume is the sheer amount of data generated that must be understood to make data-based decisions. 
+		These decisions are driven by increasing data sources and higher resolution devices. 
+		In the past, storing it would’ve been a problem – but new technologies (such as Hadoop) have eased the burden.
+
+Velocity. Velocity measures how fast data is produced and modified and the speed with which it needs to be processed. 
+          An increased number of data sources, improved connectivity, and the enhanced power of data generating devices drives velocity.
+
+Variety. Data comes in all types of formats – from structured, numeric data in traditional databases to unstructured text documents, email, video, audio, stock ticker data 
+         and financial transactions. 
+		 Variety defines data coming from new sources—both inside and outside of an enterprise—creating integration, management, governance, and architectural pressures on 
+		 Information Technology.
+
+Veracity. Data Veracity refers to the biases, noise and abnormality in data. Is the data that is being stored, and mined meaningful to the problem being analyzed.
+
+Value     Just having big data no value , until it turn into value.
+
+Hadoop file system(HDFS)
+Yet Another Resource Negotiator(YARN)
+
+Hadoop basic structure
+HDFS               MapReduce      YARN
+
+Spark Disturbuted : repalce hadoop MapReduce with Spark Cluster.
+HDFS               Spark Cluster  YARN
+
+Spark Standalone : 
+HDFS/Local/Storage Accounts      Spark Cluster    Yarn/MESOS/Kubernetes
+
+we cannot compare Apache Hadoop with Apache Spark. As Hadoop is the complete package and Mapreduce is the compute engine.
+Similarly the Apache Spark is the just the compute engine. 
+MapReduced is designed to read data from the Hard Disk
+And Spark is designed to read data from the RAM.
+
+-------------------------cource----------------------
+The Spark Engine was made by the Apache and same Apache company developed the Databricks.
+The Databricks service added in the Azure and it become the Azure Databricks.
+Apacha Hadoop : 
+1) only can do batch processing
+2) Compelx with programming
+3) Work to read data from the physical memory annd hence it is slow.
+4) It supports the disturbuted computing programming
+Apach Spark : 
+1) can do both batch and real time processing.
+2) Easy with programming
+3) Work to read data from the RAM memory annd hence it is fast.
+4) It supports the disturbuted computing programming
+5) Engine to support the SQL,Streaming , ML and Graph Processing.
+
+Spark Archirecture:
+The Old approch in spark was RDD and new approch is Dataframe and Datasets API.
+Intially , The Spark code suports Java,Python,R and Scala Language and its developer responsibiliy for the query optimazation
+But later Spark SQL Engine introduce and it has another 2 featurs: 
+a) Catalysy Optimizer which automatacally optimized code and find out the best plan for the optimization.
+b) Tungsten , its project for the CPU and Memory Effective utilization.
+
+The newly suggsted approch to develop the application is 
+Spark SQL + Dataframe + Dataset + Spark Streaming + Spark ML + Spark Graph.
+
+The Spark comes with default Spark Standlalone resource manager but we have option to use the Yarn/Apache MESOS/Kubernetes
+
+Databricks framework is written in Scala and its used java based JVM only for computation.
+Py4j libarary is used to for the Python interface in the Databricks i.e. PySpark
+Databricks supported in the Azure, GCP and AWS.
+
+Component of the databricks
+1) Notebooks
+2) Clusters
+3) Unity Catalog
+
+Feature of the Databricks 
+1) It supports the creation of the cluster in few click which was timeconsuming earlier.
+2) It has support of the workbook and notebook to run the code.
+3) The Adminstration activity can be controlled easily.
+4) It has Optimized Spark and its cosider the 5x time faster.
+5) It supports the creation of the database and Tables.
+6) To support the ACID properties , it supports has Delta Lake Feature.
+7) Support SQL analytics.
+8) ML Flow.
+
+Integration Feature with Databricks.
+1) The direct support from the Microsoft is present with Azure Databricks , Hence easy billing.
+2) Integration with Data services : Azure Data Lake Gen2 Storage accoiunts , BLOB storage , Cosmos DB,SQL Database,Synapse.
+3) Integration with Messanging Service : Azure IoT Hub and Azure Event Hub.
+4) Power BI for the reporting dash board.
+5) Azure Machine Learning ( ML).
+6) Azure Data Factory
+7) Azure DevOps.
+8) Azure Active Directory.
+
+Azure Databricks Pricing :  https://www.databricks.com/product/azure-pricing
+
+The Azure Databricks supports the three Pricing Tier : Standard , Premium + Trail
+The cost of the Premium is very high and it supports all the feature feature provided by the databricks. Special feature is the role based access control.
+The cost of the stardad is less with Premium but standard does not support the Delta Tables and Running SQL queries.
+
+after making the service , the service supports 3 personava.
+1) Data Science And Engg
+2) Machine learning
+3) SQL
+
+1 service has many logins and for that users need to grant.
+1 service resource can have many workspace
+
+Azure Databricks Archirecture  -> this gets created when new service gets prepared.
+A) Control Plane( Databricks Subscription)
+	1) Databricks Cluster Manager
+	2) Databricks UX( User Experince UI)
+	3) DBFS ( Databricks File System)
+B) Data Plane(Customer Subscription) -> this gets created when new service gets prepared.
+	1) VNET 
+    2) NSG( Network Security group)
+	3) Azure Blob Storage
+	4) Databricks Workspace
+	5) Network Watcher ( Not mentioed in video)
+	6) Managed Identity
+
+The Azure Active directory is responsible to make the other databricks hidden azure service components.
+.dbc is the extension of the Databricks files
+
+The cluster is the collection of the VM used to disturbute  work in the multiple VM(node)
+The cluster has 1 driver node and many worker node. 
+The driver node do the disturbution of the work.
+
+Cluster Types
+1) All Purpose cluster : 
+	a) Created manually by Graphical user interface. the create button can see here.
+	b) They are presistant and can be use further.
+	c) Suitable for the interactive workload ex: during coding , during POC , during analysis
+	d) The cluster is shared with many of the users.
+	e) Expensive to Run
+2) Job Cluster : 
+	a) Created by Jobs , the create button is missing here.
+	b) Cluster gets terminated at the end of the jobs.
+	c) Suitable for the automated work flow like ETL , Machine learning flow.
+	d) This clsuter is job specific and used during run time only.
+	e) Cheaper to run
+
+Creation of the new cluster
+It comes under the Compute -> It shows 4 values: All Purpose Cluster , Job Cluster , Pools and Policies(policies are part of the premium cluster only)
+
+Cluster Configuration
+A) Types of the node
+	1) Single Node : Here single node play the role of the both driver and worker. good for the POC And small computation work.
+	2) Multi Node: Here Driver node allocate work to many of the worker node and provide the combine results.
+
+B) Access Mode
+   1) Single : Only single user Access enabled and support Python, R , Scala , SQL.
+   2) Shared User : Multiple user accss Enabled , only in Premium workspace and support Python and SQL only.
+   3) No Isolation Shared: Multiple user accss Enabled, support Python, R , Scala , SQL.   
+
+C) Databricks Runtime
+   1) Databricks Run time => Spark + Python, R , Scala , SQL + Ubantu Libraries + GPU Libraries + Delta Lake + Other Databricks Libraries.
+   2) Databricks Run time ML => Point 1  + ML Libraries ( PyTorch + Keras + TensorFlow , XGBoost etc)
+   3) Databricks Run time Light => Required only for the Jobs and it does not support advanced feature.
+   4) Photon Run time => Point 1 +  Photon Engine (Processed SQL query faster and optimized mode) , Its checkbox in page.
+
+D) Termination time
+   1) Define the time when the cluster gets terminated when not in use.
+   2) Default value for Single Node + Standard Cluster is 120 mins.
+   3) User can change the values from the range 10..10000 mins of the duration.
+   
+E) Auto Scaling 
+   1) User can specify the Min and Max node 
+   2) Auto Scale between min and max nodes
+   3) Not recommanded for the streaming workload.
+
+F) Cluster VM Type / Size 
+	1) Memory Optimized : Its more RAM intensive. lots of the data loaded in the RAM memory. Good for ML.
+	2) Compute Optimized : Its more CPU intersive. disturbuted analytics and 
+	3) Storage Optimized : Its more Data read/write operation. High Disk throughput and IO.
+	4) General Purpose : Ennterprise Data Analytics application and it support in memory caching.
+	5) GPU Accelarated : Deep Learning model where its more Memory and Compute Extensive used.
+
+G) Cluster Policy
+The configuration of the cluster is the challanging task and it need the good knowledge. Its mainly controlled by Admins.
+The policy define some restriction to define to avoid the expensive or poor configuration of the cluster.
+It saves the cost. this can only found in the Premium Tier.
+ 
+Cluster Creation:
+Cluster name : databricks-cource-cluster  
+Cluster Type - Single Node
+Node Type - Standard_DS3_v2 14 GB memory , 4 cores.          => cost 0.75 DBU/hour
+
+Pricing Factory:
+The pricing is depending on below 4 factors :
+1) Workload(All Purpose Jobs/SQL/Python)
+2) Tier ( Premium/Standard)
+3) VM Type (General Purpose / GPU type / Optimized )
+4) Purchase plan (Pay as you go / PrePurchase)
+
+DBU : Databricks Units is the normalized units of the processing power on the databricks lakehouse platform 
+     used for the measurment and pricing purpose.
+	 
+Calculation of the Price:
+1) DBU cost =  No of the DBU * Price Based on the Workload / Tier	
+2) Driver Node cost = 1 (Driver ) * Price of VM 
+3) Worker Node cost = n (Worker ) * Price of VM
+4) Total cost of the cluster = DBU cost + Driver Node cost + Worker Node cost
+some very minor code of the public IP address and VNET cost will be also added but its very small cost.
+
+ex: for the single node premium subscription cost.
+DBU cost =  No of the DBU (0.75) * Price Based on the Workload/Tier (0.4125)
+Driver Node cost = Driver count(1) * 0.3510
+Worker Node cost = Worker (0) * 0.3510
+
+Total Cost of the cluster = 0.75*0.4125 + 1*0.3510 + 0*0.3510 = $0.7635 Per Hour
+
+Cluster Pool: this are the free VM made in advaced for the allocation of the resources to the clusters.
+If cluster pool has 1 Idle Instance and 2 max instance.
+And assume we have 2 cluster A and B
+If cluster A demands 1 VM then Cluster Pool give 1 instance of VM.
+If Cluster B demands 1 VM then Cluster Pool give 1 instance of VM , However if Cluster B demands more than 1 VM
+Then it will be fail for the non enough VM.
+Termination time default 60 mins is for the idle instance which applies to 1 ready node only.
+
+Cluster Pricing Policy:( Under Pubic Preview on Dec 2022)
+1) The Admin user make the policy for the regular users so that user cannot do any costler or cheaper cluster.
+2) The Policy hides some attributes , Fixed some values and Set some default values of the cluster configuration.
+3) Because of the Policy the User interface become simplier , Cost control achived , Standardized cluster configuration, Empowers Standard Users.
+4) 4 Default policy made by databricks while making new cluster : Job , Personal , Power User and Shared Compute.
+5) 4 Default Family members made by databricks while making new policy : Job , Personal , Power User and Shared Compute.
+
+sample code for policy:
+{
+  "spark_version": {
+    "type": "fixed",
+    "value": "auto:latest-lts",
+    "hidden": true
+  }
+}
+
+The export feature of the notebook has 4 values in the drop down.
+1) DBC Archive : It uses the zip file export feature or any Databricks binary format files.
+2) Source file : it uses the .py , .sql ..all the Databricks supported format files.
+3) IPYTHON Notebooks : It supported notebook style files written in the python language. mostly Juypeter notebook style.
+4) HTML : all the HTML file extension files.
+
+Magic commands: all the magic command starts with %
+Use of the MD command to write notes in the databricks notebooks
+%md
+# Notebook Introduction
+## GUI Introduction
+### Magic Commands
+- %python-> Python Language
+- %sql   -> SQL Language
+- %scala -> Scala Language
+- %r     -> R Language
+- %fs    -> file system
+- %sh    -> shell command
+- %md    -> mark down
+
+####### The more details about the md documentation is defined here : https://www.markdownguide.org/cheat-sheet/#basic-synta
+
+With in the Notebook we can write the code in the single file in the multiple languages 
+and output of the one language can use as input of the other language.
+
+Notebook Utilities:
+A) File system utilities : Make connection with storage accounts and file system of the databricks dbfs.
+B) Secrets Utilities : Make connection with Azure key Vault or Databricks scope enabled secretes.
+C) Widget Utilities : Use to provide the Input parameter to to run the notebook or input parameter coming from the azure data factory.
+D) Notebook Workflow Utilities : One notebook can call to another notebook and chain of the system formed.
+
+
+A) File system utilities:
+%fs
+ls /databricks-datasets
+versus
+dbutils.fs.ls('/databricks-datasets/')
+
+The package dbutils.fs.ls('path') can be used in any of the programming language , hence its GUI is poor but it can use in the programming.
+ex: in the python code cell.
+
+for files in dbutils.fs.ls('/databricks-datasets/'):
+    print(files)
+	
+
+DBFS : Databricks File system can connect to the Azure Blob Storage , Azure Data Lake Gen 1 , Azure Data Lake Gen 2
+The DBFS can access by Databricks Notebook , Databricks CLI and Databricks API.
+
+Benifites:
+1) Data can be access directely from the storage accounts without credential validation in Azure.
+2) Access data without long URL , the use with with / path is possible.
+3) Files stored in the object storage , Hence All the Azure Benifites are available.
+
+DBFS Root :
+1) While making the databricks service, it internally makes the one storage service which internally used by the DBFS root.
+2) Its become the default storage location and but not recommanded to choose for the user personal data.
+3) Data can be acess also via WebUI
+4) We can store the query results also here.
+5) It contains the data and meta data for managed (non external) tables.
+
+Azure Mount Storage:
+Databricks File system can connect to the Azure Blob Storage , Azure Data Lake Gen 1 , Azure Data Lake Gen 2 
+via 
+1) Azure Key Vault->Service Principle 
+2) Azure Key Vault(credential passthrough) -> Human account 
+3) SAS Token 
+4) Storage Access Key.
+The  SAS Token and Storage Access Key automatically created when storage account is made.
+The service principle is the most secured and useful approch to acces the storage accounts.
+The DBFS Mount point can be access by The DBFS can access by Databricks Notebook , Databricks CLI and Databricks API.
+This mount point is created by same Azure Key Vault , SAS Token, Service Principle.
+
+Authentication:
+1) Session scope authentication : Means the storage account session is mapped to user notebook 
+and once notebook session is closed then reopen of the notebook does not make the connection with storage account again.
+2) Cluster scope authentication : Means the storage account session is mapped to cluster ( Interactive or Job ), 
+once cluster is shut down, the authentication is no longer valid.
+
+Total 5 ways to access the storage account from the Azure databricks.
+3 approche at notebook levels and 2 approches at cluster level.
+
+Folder to check code is C:\Users\Lenovo\OneDrive\Technology\Azure\Azure Databricks\formula1\set-up
+
+Approch 1 : Azure Gen2 storage account and Access key.
+1) The storage account "datasourceformula1" is prepared. 
+2) The Azure Storage explorer is installed.
+3) The new folder raw and processed prepared under the blob container.
+4) Open the blank notebook for the Python.
+Write
+
+spark.conf.set("fs.azure.account.key.storage_account_name.dfs.core.windows.net","Gen 2 storage account key")
+ex: spark.conf.set("fs.azure.account.key.datasourceformula1.dfs.core.windows.net",
+               "MaQX8sF00ETsqMcnTGVX7ziHq4/IokY6wZ761bqaKOSARxZEfA82elBtFEYbZfRqPPSGZcs3RFPu+AStZ52cgA==")
+	
+dbutils.fs.ls("abfss://container_name@storage_account_name.dfs.core.windows.net")
+ex: dbutils.fs.ls("abfss://demo@datasourceformula1.dfs.core.windows.net")	
+
+df = spark.read.csv("abfss://demo@datasourceformula1.dfs.core.windows.net/circuits.csv")
+df.display()
+
+Approch 2 : Azure Gen2 storage account and SAS key
+1) The storage account "datasourceformula1"is prepared. 
+2) The Azure Storage explorer is installed.
+3) The new folder raw and processed prepared under the blob container.
+4) Open the blank notebook for the Python.
+Write
+
+spark.conf.set("fs.azure.account.auth.type.storage-account.dfs.core.windows.net", "SAS")
+ex: spark.conf.set("fs.azure.account.auth.type.datasourceformula1.dfs.core.windows.net", "SAS")
+
+spark.conf.set("fs.azure.sas.token.provider.type.storage-account.dfs.core.windows.net", "org.apache.hadoop.fs.azurebfs.sas.FixedSASTokenProvider")
+ex: spark.conf.set("fs.azure.sas.token.provider.type.datasourceformula1.dfs.core.windows.net", "org.apache.hadoop.fs.azurebfs.sas.FixedSASTokenProvider")
+
+spark.conf.set("fs.azure.sas.fixed.token.storage-account.dfs.core.windows.net","sas-token-key")
+ex: spark.conf.set("fs.azure.sas.fixed.token.datasourceformula1.dfs.core.windows.net","sp=rl&st=2023-07-12T13:55:47Z&se=2024-11-29T21:55:47Z&spr=https&sv=2022-11-02&sr=c&sig=GEQ8c3LMks9N0FKfaBJFKBSpzpdzFtOTlzSDbt8XtvM%3D")
+
+dbutils.fs.ls("abfss://container_name@storage_account_name.dfs.core.windows.net")
+ex: dbutils.fs.ls("abfss://demo@datasourceformula1.dfs.core.windows.net")
+
+df = spark.read.csv("abfss://demo@datasourceformula1.dfs.core.windows.net/circuits.csv")
+df.display()
+
+Approch 3 : Azure Gen2 storage account and Service Principal connection.
+1) The storage account "datasourceformula1" is prepared. 
+2) The Azure Storage explorer is installed.
+3) The new folder raw and processed prepared under the blob container.
+4) Inside Active Active Directory -> App registration -> New App "databrickscource-service-app" is registered.
+   copy values:
+	Copied string from the databrickscource-service-app
+	Application (client) ID
+	aaa42243-2425-403d-8037-518438780e38
+	Object ID
+	69a6bb51-c90f-48d7-8e5a-2af547dd9d81
+	Directory (tenant) ID
+	065d03af-dbd9-4135-8ef3-49b240d7eb87
+5) With in the new APP registred   databrickscource-service-app -> Certificates & Secretes -> Add new secret.
+6) New secrect made "databricks-access-secret" and validaty duration 3 months.
+7) Copy the secret value "OWK8Q~aR3Z5jTi2dNLM4iCkecpEwB0_2IXWMTbkh" and secret id "83c1bb67-ed9e-4f92-8b42-83a02df9d038" in the notepad.
+8) Go to the storage account "datasourceformula1" again and press Access control(IAM)
+9) Press Add , Add new role assignment.
+10) Select Role "Storage Blob Data Contributor"
+11) Press next and Assinged the Service Principle "databrickscource-service-app"
+12) It means now service principle "databrickscource-service-app" has access of the storage account "datasourceformula1"
+and it can contribute the object files in the storage files.
+
+
+Approch 4 : Azure Gen2 storage account and Cluster level access keys.
+1) The storage account "datasourceformula1" is prepared. 
+2) The Azure Storage explorer is installed.
+3) The new folder raw and processed prepared under the blob container.
+4) edit the cluster configuration and write the below extra line.
+
+fs.azure.account.key.datasourceformula1.dfs.core.windows.net MaQX8sF00ETsqMcnTGVX7ziHq4/IokY6wZ761bqaKOSARxZEfA82elBtFEYbZfRqPPSGZcs3RFPu+AStZ52cgA==
+
+5) restat the cluster.
+6) now all the notebook assocaited to cluster will get the access.
+
+Approch 5 : Azure Gen2 storage account and Cluster level credential_passthrough
+1) The storage account "datasourceformula1" is prepared. 
+2) The Azure Storage explorer is installed.
+3) The new folder raw and processed prepared under the blob container.
+4) edit the cluster configuration and enable the checkbox credential_passthrough
+5) restat the cluster.
+6) now all the notebook assocaited to cluster will get the access.
+
+
+B) PRODUCTION READ CODE: Secret Scope keep the secret credential secuerly and help them the get access secuerly in the notebook and jobs.
+The above 5 approches has hardcode value of the secret and here all the ADLS path is required to remember and data is not mounted.
+The PROD ready code need the secerets to hidden and data to be retrived from the ADLS Storage account via MOUNT path.
+So even if databricks instance is down or deleted, the actual data will remanin in the ADLS storage.
+
+Two ways to achive the secret scope.
+1) Databricks Backed Secret Scope
+2) Azure Key Vault Backed Secret Scope
+
+Steps to make the Secerate scope using databricks and Keyvault:
+1)  Create the new resource Of the Azure Keyvault databrickscource-kv.
+2)  Add the 5 new "Secrets" in the Azure Key Vault.  
+	databricks-storage-access-key   = "MaQX8sF00ETsqMcnTGVX7ziHq4/IokY6wZ761bqaKOSARxZEfA82elBtFEYbZfRqPPSGZcs3RFPu+AStZ52cgA=="
+	databricks-storage-sas-key      = "sp=rl&st=2023-07-12T13:55:47Z&se=2024-11-29T21:55:47Z&spr=https&sv=2022-11-02&sr=c&sig=GEQ8c3LMks9N0FKfaBJFKBSpzpdzFtOTlzSDbt8XtvM%3D"
+	databricks-client-id            = "2105c081-d8bf-43e2-b120-2aced3c763ea"
+	databricks-tenant-id            = "929c66f7-f159-487b-9c74-168b37f38962"
+	databricks-client-secret        = "kog8Q~pN9NykgT1noRSOImsBrXiGqD.aBLTlxbmG"
+
+3)  In the databricks service create the secret scope
+	The hidden Create secret scope from the Databricks Home page URL
+	Actual URL :  https://adb-993395267027032.12.azuredatabricks.net/?o=993395267027032#
+	Create secret scope URL : https://adb-993395267027032.12.azuredatabricks.net/?o=993395267027032#secrets/createScope
+	extra value added in the URL :  secrets/createScope
+
+4)  Name of the secret scope : databrickscource-secret-scope
+	Get the DNS name and Resource ID from the Azure Key Vault. 
+	Go to the Key vault databrickscource-kv -> select Properties 
+	Vault URI (DNS name) :  https://databrickscource-kv.vault.azure.net/
+	Resource ID(Resource ID) : /subscriptions/b5c43fea-ade3-46b3-9c11-283ea451927c/resourceGroups/databrickscource-rg/providers/Microsoft.KeyVault/vaults/databrickscource-kv
+	Images copied for the understanding Purpose.
+
+	Received succuss message 
+	"The secret scope named databrickscource-secret-scope has been added.
+	Manage secrets in this scope in Azure KeyVault with manage principal = creator "
+
+5)  Get the secret from the secret scope via dbutils.secrets.get
+
+
+Benifites of the Databricks Mount:
+1) Access data without required credentials
+2) Access files without using the file semantices rather than long storage URL
+3) Store file to the Object Storage ( ex: Azure BLOB) , so that all the benifites of the Azure get it. 
+
+
+FINAL : Using the Azure Storage Service Principle values stored in key-vault and key retrived using databricks seceret scope Notebook level and Data can be mount and unmount to storage account.
+MOUNT And UNMOUNT real need of the project as the local DBFS storage gets deleted if workspace gets deleted.
+The Actual Data is required in the storage account and data will be seperate from the Databricks
+
+The Final script to run is 6.Final_adls_secret_scope_key_vault_mount
+it has Last final chapter to make the PROD ready code.
+
+C) Widget Utilities : See all the python files in the formula1/injection folder where widget used to provide the input parameter.
+D) Notebook Workflow Utilities : See the file in formula1/injection/0.ingest_all_files which gets called from the Databrics Workflow job  "formula1_ingestion_job"
+
+
+Databrciks default folders or locations:
+By default the databricks comes with three folders under the dbfs:/
+1) dbfs:/user/hive/warehouse  -> Used for the DB creation , the default is "default" database
+   ex: dbfs:/user/hive/warehouse/demo.db
+2) dbfs:/FileStore -> Used to upload the local files
+   ex: dbfs:/FileStore/circuits.csv
+3) dbfs:/mnt/ -> Used for the ADLS Mounting
+   ex: dbfs:/mnt/datasourceformula1/raw
+
+Hive Meta Store:
+1) The raw , processed , clean or analytic data is stored in the form of the file format ex: Parquet in the Azure Gen2 storage accounts.
+2) The Hivemeta stored the meta information like column names , data types, file name , file location..etc.
+3) The Hivemeta can be stored in the default Databricks storage 
+   or it can be stored in the external data storage location like Azure SQL , MySQL etc.
+4) The spark.sql read the data from the Hive meta store.
+
+
+Databricks Database in the databricks workspace(or resource):
+1) The default database of the data bricks is global_temp
+2) we can make own database also in the databricks
+3) The databricks table has 2 types 
+
+a) Managed Table : the table data and metadata both stored in the databricks
+dropping table will drop both DDL and data.
+b) Unmanaged or External Table : the table data stored in the file system ex: Azure Gen2 account, but meta data is stored in the Hivemeta store.
+droping table will just drop the DDL structure and its files are safe in the ADLS or other storage.
+
+4) We can make the views on both table types.
+5) The new or exists database gets created inside the Data -> hive_metastore -> default | demo | ...
+The default is the "default" database made by Spark in the databricks.
+
+
+
+Formual 1:  Details about all the scripts prepared as the part of the project
+
+0) demo : 
+It listed all the python and sql scripts syntax with example.
+
+1) set-up folder : 
+It listed the Python script to make Azure Gen2 storage account linked to the Azure Databricks and accessable.
+
+2) include folder : 
+It listed all the Python files which are requried to load all the uesr developed environment variables and functions.
+
+3) utils folder : 
+It listed the SQL Scripts for the DB related operations.
+
+4) injection folder : 
+It listed all the python scripts to read the Raw files from Storage account datasourceformula1/raw 
+container and processed the data and finally clean data stored in the Storage account datasourceformula1/processed folder.
+
+5) procesed folder : 
+It listed all the python scripts to read the Storage account datasourceformula1/processed folder
+and make the requried dashboard or user presentation data in the 
+Storage account datasourceformula1/presentation folder.
+	
+6) analysis folder : 
+It listed the SQL scripts to make the diffrent representation of the data and different reports of the data	
+				
+7) raw_db folder : 
+raw_db database creation and it listed the SQL script to make the EXTERNAL table to read the Raw data files by the Analyst. 
+This are called the Bronze Tables. Also the files data gets stored in the Physical table also pointing to the Azure Storage location only.
+
+8) procesed_db folder : 
+processed_db database creation and it listed the SQL script to read the Storage account datasourceformula1/processed
+data powered by Physical table for the Analyst. This are called the Silver Tables.
+
+9) presentation_db folder : 
+presentation_db database creation it listed the SQL script to read the Storage account datasourceformula1/presentation 
+data powered by Physical table for the Analyst. Its called the Gold Tables. 
+Fact Tables comes here.
+
+
+Data details:
+1) Dimension Tables : The circutis , races , constructor and driveres are the limited master data and its refreshed occatially.
+As races are happening limited events only and cicuites are fixed in the world , team and drivers all most working from many years.
+The full data dumps is fine and fast to reload any times
+2) Fact Tables : The results , pitstops , laptimes , qualifying are the more incremental data where through out the year many data gets coming.
+The incremental data does not overwrite the old data.
+
+Summary of the read and write:
+
+----------------------------------------------------READ--------------------------------------------------
+1) READ Python Code
+read the data in the python datafrom from the Data files
+python_df = spark.read.parquet(f"{presentation_folder_path}/dashboard_results/")
+python_df = spark.read.csv(f"{raw_folder_path}/races.csv/")
+python_df = spark.read.json(f"{raw_folder_path}/drivers.json/")
+
+2) READ SQL from SQL
+read the data in the SQL cells from the sql views or tables
+select * from v_dashboard_results
+select * from global_temp.gv_dashboard_results
+
+3) READ SQL from Python
+read the data in the python cells from sql views or tables
+python_df = spark.sql("select * from v_dashboard_results")
+python_df = spark.sql("select * from global_temp.gv_dashboard_results")
+
+----------------------------------------------------WRITE--------------------------------------------------
+4) Write Python to Python Code:
+write the python dataframe data in the storage location
+python_df.write.mode("overwrite").parquet(f"{presentation_folder_path}/dashboard_results")
+
+5) Write Python to SQL Managed Table
+write the python dataframe data in the SQL Managed tables
+python_df.write.format("parquet").saveAsTable("demo.dashboard_results")
+
+6) Write SQL to SQL UnManaged Table
+write the SQL table data in the another SQL Managed tables
+CREATE TABLE demo.dashboard_results_filtered AS SELECT * FROM demo.dashboard_results WHERE race_year = 2020;
+
+7) Write Python to SQL UN-Managed Table
+write the python dataframe data in the SQL UNMANAGED EXTERNAL tables but databricks storage path location
+python_df.write.format("parquet").option("path",f"{presentation_folder_path}/dashboard_results/").saveAsTable("demo.dashboard_results")
+
+8) Write SQL to SQL UN-Managed Table
+write the python dataframe data in the SQL UNMANAGED EXTERNAL tables but ADLS storage path location
+CREATE EXTERNAL Table USING CSV|parquet|JSON LOCATION/OPTION
+INSERT INTO NEW_TABLE SELECT * FROM OLD_TABLE
+
+----------------------------------------------------VIEW--------------------------------------------------
+9) Create SQL view by Python
+python_df.createOrReplaceTempView("v_dashboard_results")   
+python_df.createOrReplaceGlobalTempView("gv_dashboard_results")  
+No option for the permenant view creation
+
+10) Create SQL view by SQL
+CREATE OR REPLACE TEMP VIEW v_dashboard_results AS SELECT * FROM TABLE_NAME WHERE ..
+CREATE OR REPLACE GLOBAL TEMP VIEW v_dashboard_results AS SELECT * FROM TABLE_NAME WHERE ..
+CREATE OR REPLACE VIEW v_dashboard_results AS SELECT * FROM TABLE_NAME WHERE .. 
+
+
+
+Types of the Dataload
+1) FULL Load : Where old data gets fully replaced by new data, good for the less data. i.e. dimension tables
+2) INCREMENTAL Load : Where new data gets appended to old data , means old data will not lost. i.e. fact tables
+3) HYBRID Sceneraios : Combination of the Full and Incremental Load
+ a) Full dataset received , but data incrementiacally loaded and incrementiacally data transformed (ALM scenario)
+ b) Incrementel dataset received , but data fully loaded and fully transformed.
+ c) Incrementel dataset received , but data fully loaded and incrementiacally transformed.
+ d) Mix , some data received fully and some data received incremental.
+ 
+
+One Day 1 we will get the file with whole history data so its called as Cut Over File or History files.
+On the Subsequent days we will get the new files with only incremental data.
+The day 1 cutover file with incremental approch is complex and it need the more programming
+The good design is from the Day 1 , do the incremental approch.
+
+In databricks with spark sql or plain SQL their is "NO" feature of the DELETE or TRUNCATE.
+Hence for the incremenal write with append option is not re-runnable
+
+Before Datalake the Datawarehouse was present.
+DataLake :
+1) Formula1 project before start of the Delta Lake chapter was based on the Data Lake.
+2) After DataLake , the Delta Lake is the open house project of the Databricks.
+3) Delta Lake Run over Data Lake only and its fully compatable with Apache Spark API i.e. Pyspark and SQL can be used from it.
+
+DataLake Limitations:
+1) DataLake does not support for the ACID properties , DELETE , UPDATE , MERGE operations was not supported.
+2) The DataLake lacks capability of the History data maintaince, Unified meta data handelling techniques.
+3) Failed Jobs Leave partially complete and half data copied , half failed. Means Partial Analayis and Report.
+4) Rollback feature is missing and in case to do the data correction or Addition of the new column , 
+   the old data partition has to re-run again. Means expensive operation.
+5) Lack of the ability to remove the GDPR Data.
+6) Poor Performance.
+7) Poor BI Support.
+8) Compex to Setup
+9) Lambda Archirecture for streaming workflow loads.
+
+Delta Lake : It came with objective to fix the limitation came by the Datalake.
+Delta Lake support the ACID properties , means now data streaming and batch data loading can be do parallel.
+
+Delta Lake Benifites
+1) It handel all the types of the data that Datalake was handelling.
+2) Support cheap cloud storage.
+3) Uses all the open source format like Parquet.
+4) Support both Batch and Streaming work load.
+5) ACID and Direct BI support.
+6) Performance of the operation is faster.
+7) Just replacement of the data lake with delta lake makes the current archirecture simplified.
+8) Delta tables has access based on the roles , grants and Data governance and better meta data handelling.
+
+
+A) Data Lake Syntax:
+Pre-requsite: First read all the source files of the JSON/CSV/PARQUET and let them convert into the PARQUET format.
+Python : 
+	READ : Way to read the files from the storage location
+	results_df = spark.read.parquet(f"{processed_folder_path}/results/")
+
+	WRITE : Way to write the files in storage location
+	results_df.write.mode("overwrite").partitionBy("race_id").parquet(f"{processed_folder_path}/results")
+
+Managed SQL:
+	READ : Way to read the files from the table
+	select * from processed_db.results
+
+	WRITE : Way to write the files in the table
+	results_df.write.mode("overwrite").partitionBy('race_id').format("parquet").saveAsTable("processed_db.results")
+
+UNMANDAGED ( EXTERNAL) SQL:
+
+	READ : Way to read the files from the table
+	select * from processed_db.results 
+	
+    WRITE : Way to write the files in the table
+	
+	CREATE TABLE IF NOT EXISTS processed_db.results 
+	(
+	.....
+	)
+	USING PARQUET | JSON  CSV 
+	OPTIONS(path "/mnt/datasourceformula1/processed/results");
+	
+
+B) Delta Lake Syntax: format("delta")
+Pre-requsite: First read all the source files of the JSON/CSV/PARQUET and let them convert into the DELTA format.
+Python : 
+	READ : Way to read the files from the storage location NOTE : for the delata syntax , the read file should be in the PARQUET format ony.
+    result_df = spark.read.format("delta").load("/mnt/datasourceformula1/demo/results_files")
+
+	WRITE : Way to write the files in storage location
+	results_df.write.mode("overwrite").format("delta").save("/mnt/datasourceformula1/demo/results_files")
+
+Managed SQL:
+	READ : Way to read the files from the table
+	select * from demo.results_managed
+
+	WRITE : Way to write the files in the table
+	results_df.write.mode("overwrite").partitionBy("raceId").format("delta").saveAsTable("demo.results_managed")
+
+UNMANDAGED ( EXTERNAL) SQL:
+
+	READ : Way to read the files from the table
+	SELECT * FROM demo.results_external
+	
+    WRITE : Way to write the files in the table
+	CREATE TABLE demo.results_external
+	USING DELTA
+	LOCATION "/mnt/datasourceformula1/demo/results_files"
+	
+
+C) Delta Lake DML
+   see the demo/8.deltalake_demo for all the DML operations
+
+
+
+
+
+
+
+
+
+Azure Data Factory ( ADF ):
+1) Its fully managed , serverless , data integration solution for the ingesting , preparing , and transforming 
+all of our data at scale.
+The same can be achive with Azure Databricks but with ADF simple transformation is possible for the complex transformatin
+and hugh data the Azure Databrciks is good.
+2) The ADF can be use as orchestrator to run the Azure Databricks code.
+3) Case where ADF is NOT requested to use.
+  a) When to do the full database migration.
+  b) Data Streaming.
+  c) Data storage is not possible. Its just to the lift and shift of the files.
+  d)   
+
+
+
+
+
+dbutils.help()
+output:
+This module provides various utilities for users to interact with the rest of Databricks.
+credentials: DatabricksCredentialUtils -> Utilities for interacting with credentials within notebooks
+data: DataUtils -> Utilities for understanding and interacting with datasets (EXPERIMENTAL)
+fs: DbfsUtils -> Manipulates the Databricks filesystem (DBFS) from the console
+jobs: JobsUtils -> Utilities for leveraging jobs features
+library: LibraryUtils -> Utilities for session isolated libraries
+meta: MetaUtils -> Methods to hook into the compiler (EXPERIMENTAL)
+notebook: NotebookUtils -> Utilities for the control flow of a notebook (EXPERIMENTAL)
+preview: Preview -> Utilities under preview category
+secrets: SecretUtils -> Provides utilities for leveraging secrets within notebooks
+widgets: WidgetsUtils -> Methods to create and get bound value of input widgets inside notebooks
+
+
+dbutils.widgets.help()
+output:
+dbutils.widgets provides utilities for working with notebook widgets. You can create different types of widgets and get their bound value. For more info about a method, use dbutils.widgets.help("methodName").
+combobox(name: String, defaultValue: String, choices: Seq, label: String): void -> Creates a combobox input widget with a given name, default value and choices
+dropdown(name: String, defaultValue: String, choices: Seq, label: String): void -> Creates a dropdown input widget a with given name, default value and choices
+get(name: String): String -> Retrieves current value of an input widget
+getArgument(name: String, optional: String): String -> (DEPRECATED) Equivalent to get
+multiselect(name: String, defaultValue: String, choices: Seq, label: String): void -> Creates a multiselect input widget with a given name, default value and choices
+remove(name: String): void -> Removes an input widget from the notebook
+removeAll: void -> Removes all widgets in the notebook
+text(name: String, defaultValue: String, label: String): void -> Creates a text input widget with a given name and default value
+
+
+dbutils.fs.help()
+output:
+dbutils.fs provides utilities for working with FileSystems. Most methods in this package can take either a DBFS path (e.g., "/foo" or "dbfs:/foo"), or another FileSystem URI. For more info about a method, use dbutils.fs.help("methodName"). In notebooks, you can also use the %fs shorthand to access DBFS. The %fs shorthand maps straightforwardly onto dbutils calls. For example, "%fs head --maxBytes=10000 /file/path" translates into "dbutils.fs.head("/file/path", maxBytes = 10000)".
+fsutils
+cp(from: String, to: String, recurse: boolean = false): boolean -> Copies a file or directory, possibly across FileSystems
+head(file: String, maxBytes: int = 65536): String -> Returns up to the first 'maxBytes' bytes of the given file as a String encoded in UTF-8
+ls(dir: String): Seq -> Lists the contents of a directory
+mkdirs(dir: String): boolean -> Creates the given directory if it does not exist, also creating any necessary parent directories
+mv(from: String, to: String, recurse: boolean = false): boolean -> Moves a file or directory, possibly across FileSystems
+put(file: String, contents: String, overwrite: boolean = false): boolean -> Writes the given String out to a file, encoded in UTF-8
+rm(dir: String, recurse: boolean = false): boolean -> Removes a file or directory
+
+mount
+mount(source: String, mountPoint: String, encryptionType: String = "", owner: String = null, extraConfigs: Map = Map.empty[String, String]): boolean -> Mounts the given source directory into DBFS at the given mount point
+mounts: Seq -> Displays information about what is mounted within DBFS
+refreshMounts: boolean -> Forces all machines in this cluster to refresh their mount cache, ensuring they receive the most recent information
+unmount(mountPoint: String): boolean -> Deletes a DBFS mount point
+updateMount(source: String, mountPoint: String, encryptionType: String = "", owner: String = null, extraConfigs: Map = Map.empty[String, String]): boolean -> Similar to mount(), but updates an existing mount point (if present) instead of creating a new one
+
+dbutils.fs.help('ls')
+output:
+/**
+* Lists the contents of a directory.
+*
+* Example: display(ls("/mnt/my-folder/"))
+*
+* The FileInfo object that is returned has the following helper methods:
+* val files = ls("/mnt/my-folder/")
+* files.map(_.name) // [myFile, myDir/]
+* files.map(_.length) // [1286, 0]
+* files.map(_.path) // [/mnt/my-folder/myFile, /mnt/my-folder/myDir/]
+* files.map(_.isDir) // [false, true]
+* files.map(_.isFile) // [true, false]
+* files.map(_.modificationTime) // [1615937446000, 1615937224000]
+*
+* @param dir FileSystem URI
+* @return Ordered sequence of FileInfos containing the name, size and modification time
+* of each file.
+*/
+ls(dir: java.lang.String): scala.collection.Seq
+
+
+
+
+dbutils.notebook.help()
+output:
+
+exit(value: String): void -> This method lets you exit a notebook with a value
+run(path: String, timeoutSeconds: int, arguments: Map): String -> This method runs a notebook and returns its exit value
