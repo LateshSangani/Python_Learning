@@ -4,7 +4,7 @@ Databricks : https://adb-993395267027032.12.azuredatabricks.net/?o=9933952670270
 Token generation : https://adb-2643165434444923.3.azuredatabricks.net/?o=2643165434444923#setting/account
 Token name : ADF_Token
 Token validaty : 1000 days  
-Token Value : dapib4f44374d4b812b50437ad74c357c123
+Token Value : xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 DataFactory : https://adf.azure.com/en/home?factory=%2Fsubscriptions%2F61e5b0a8-fd06-46d7-9e33-eae1794be4ab%2FresourceGroups%2Fdatabrickscource-rg%2Fproviders%2FMicrosoft.DataFactory%2Ffactories%2Fdatabrickscource-adf
 Ergast API Documentation - http://ergast.com/mrd/
 PySpark Documentation - https://spark.apache.org/docs/latest/api/python/index.html
@@ -37,6 +37,7 @@ Azure keyvault : databrickscource-kv
 
 Secret scope in the databricks : databrickscource-secret-scope
 Azure Data Factory : databrickscource-adf
+Azure Databricks token for the Power BI: dapi68cfcd0097d065bb4252711188e78cf0
 
 Github Repo: https://github.com/LateshSangani/Python_Learning
 Github User Name : LateshSangani
@@ -684,6 +685,17 @@ Delta Lake Benifites
 8) Delta tables has access based on the roles , grants and Data governance and better meta data handelling.
 
 
+Azure Data Factory ( ADF ):
+1) Its fully managed , serverless , data integration solution for the ingesting , preparing , and transforming 
+all of our data at scale.
+The same can be achive with Azure Databricks but with ADF simple transformation is possible for the complex transformatin
+and hugh data the Azure Databrciks is good.
+2) The ADF can be use as orchestrator to run the Azure Databricks code.
+3) Case where ADF is NOT requested to use.
+  a) When to do the full database migration.
+  b) Data Streaming.
+  c) Data storage is not possible. Its just to the lift and shift of the files.   
+
 A) Data Lake Syntax:
 Pre-requsite: First read all the source files of the JSON/CSV/PARQUET and let them convert into the PARQUET format.
 Python : 
@@ -746,26 +758,75 @@ C) Delta Lake DML
    see the demo/8.deltalake_demo for all the DML operations
 
 
+Unity Catalog: Introduce Late 2022. Mainly to replace the Hive Metastore feature which was default in the databricks
+1) UC is the databricks offered unified solution for the implementating data governance in  the data lakehouse.
+2) It can only attached to the Premium Tier of the Azure Databricks workspace.
+3) To store the data , the UC need the ADLS G2 account.
+4) To link Databricks and UC , the Connector i.e. DataBricks Access Connector is required. 
+
+Unity Catalog Featurs
+1) User Management
+2) Metastore
+3) Access Control
+4) Data Explorer
+5) Data Lineage 
+6) Audit Logs
+
+Setup of the UC with Databricks Integration:
+1) Make new Resource Group : databrickscource-uc-rg
+2) Make new Data bricks workspace  : databrickscource-uc-ws
+3) Make new ADLS Storage Account : datasourceformula1uc
+4) Make new "Access Connector" : databrickscource-uc-access
+The Access Connector is new and recommended feature for the Unity Catalog to established connection of the ADLS And Databricks without using the 
+access keys and SAS keys. 
+5) Assigned "Azure BLOB Storage Contributor" into the IAM section of the ADLS(datasourceformula1uc) to the Managed Itentity Access Connector(databrickscource-uc-access)
+6) Open the databricks workspace URL and click "Manage Account"
+7) Create new "Metastore" and fill the below list of the details.
+
+	a) Metastore name : databrickscource-uc-metastore
+	b) Region : uksouth 
+	c) ADLS Path : metastore@datasourceformula1uc.dfs.core.windows.net/
+	d) Access Connection Id : Copy the value from the Properties section of the "Access connector"
+	/subscriptions/b5c43fea-ade3-46b3-9c11-283ea451927c/resourceGroups/databrickscource-uc-rg/providers/Microsoft.Databricks/accessConnectors/databrickscource-uc-access
+	datasourceformula1uc 
+
+8) Assign the metastore to the workspace.
+9) Create the new cluster and in the create page the "Unity Catalog" button will start appearing.
+10) The "Data" tab pressing start showing the 4 Catalog : hive_metastore,main,samples,system.
+	hive_metastore : made for the trasfer of the Legacy data.
+	main : Actual main Catalog to stored the user data.
+	system : To store some system or schema level meta data information.
+	samples : Provide some sample data.
+
+Rules of the Unity Catalog
+1) The Managed Table should Manadatory of the format DELTA.
+2) Stored in the default storage.
+3) Deleted data retained for 30 days.
+4) Benefits from Automatic Performance Improvements and Maintenance.
+5) The database and schema both same in the Unity Catelog but has Catelog is the new element added in the Hirerchy.
+   select query will change.
+ex: select * from catelog.schema.table_name;
 
 
+Setup of the UC Where data is coming from the external source system.
+1) Make new or use existing Resource Group : databrickscource-uc-rg (same as above)
+2) Make new or use existing Data bricks workspace  : databrickscource-uc-ws (same as above)
+3) Make new ADLS Storage Account : datasourceformula1ucext
+4) Make new "Access Connector" : databrickscource-uc-ext
+5) Assigned "Azure BLOB Storage Contributor" into the IAM section of the ADLS(datasourceformula1ucext) to the Managed Itentity Access Connector(databrickscource-uc-ext)
+6) Open the databricks workspace URL -> Data Explorer -> Create Catalog -> demo_catalog
+6) Open the databricks workspace URL -> Data Explorer -> Catalog List -> demo_catalog -> Create Schema -> demo_schema
+6) Open the databricks workspace URL -> Data Explorer -> External Data -> Create Credential -> databrickscource-ext-storage-credential
+7) Open the databricks workspace URL -> Data Explorer -> External Location -> databrickscource-ext-storage-location
 
 
+Mini Project:
+formula1_unity_catalog
 
-
-
-Azure Data Factory ( ADF ):
-1) Its fully managed , serverless , data integration solution for the ingesting , preparing , and transforming 
-all of our data at scale.
-The same can be achive with Azure Databricks but with ADF simple transformation is possible for the complex transformatin
-and hugh data the Azure Databrciks is good.
-2) The ADF can be use as orchestrator to run the Azure Databricks code.
-3) Case where ADF is NOT requested to use.
-  a) When to do the full database migration.
-  b) Data Streaming.
-  c) Data storage is not possible. Its just to the lift and shift of the files.
-  d)   
-
-
+1) setup : folder to make the external connections, catalogs , schema
+2) bronze_table_creation : folder to make the external tables of the raw format formula1 files.
+3) silver_table_creation : folder to make the managed tables of the derived from the bronze location.
+4) gold_table_creation : folder to make the managed tables of the derived from the silver location.
 
 
 
