@@ -765,12 +765,18 @@ Unity Catalog: Introduce Late 2022. Mainly to replace the Hive Metastore feature
 4) To link Databricks and UC , the Connector i.e. DataBricks Access Connector is required. 
 
 Unity Catalog Featurs
-1) User Management
+1) User Management : Users , Service Principal and groups to manage them.
 2) Metastore
-3) Access Control
-4) Data Explorer
-5) Data Lineage 
-6) Audit Logs
+3) Access Control : Assigned the roles. 4 roles : Account Admin , Metastore Admin , Object Owner , Object User 
+4) Data Explorer : Searching of the data in te system catalog.
+5) Data Lineage : Data Leanage is the process of following / tracking the journey of the data within a pipeline.
+                  what is the origin of the data, How it has been changed / transformed , what is the destination.
+6) Audit Logs (Under the Preview state, soon get the system catalog -> audit schema)
+
+Data Lineage Limitations.
+1) Only availble for the table registered in the Unity Catalog Metastore.
+2) Available only for the last 30 days.
+3) Limited Column Level Lineage 
 
 Setup of the UC with Databricks Integration:
 1) Make new Resource Group : databrickscource-uc-rg

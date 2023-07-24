@@ -36,3 +36,12 @@ data powered by Physical table for the Analyst. This are called the Silver Table
 presentation_db database creation it listed the SQL script to read the Storage account datasourceformula1/presentation 
 data powered by Physical table for the Analyst. Its called the Gold Tables. 
 Fact Tables comes here.
+
+
+Mini Project on Unity Catalog
+formula1_unity_catalog
+
+1) setup : folder to make the external connections, catalogs , schema
+2) bronze_table_creation : folder to make the external tables of the raw format formula1 files.
+3) silver_table_creation : folder to make the managed tables of the derived from the bronze location.
+4) gold_table_creation : folder to make the managed tables of the derived from the silver location.
