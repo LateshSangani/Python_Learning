@@ -47,7 +47,3 @@ df = spark.read.csv("abfss://demo@datasourceformula1.dfs.core.windows.net/circui
 # COMMAND ----------
 
 df.display()
-
-# COMMAND ----------
-
-

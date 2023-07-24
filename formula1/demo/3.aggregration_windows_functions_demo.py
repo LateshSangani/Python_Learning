@@ -197,7 +197,3 @@ from pyspark.sql.window import Window
 from pyspark.sql.functions import desc , rank
 # Skip the variable and used the complex logic in the over function, just lift and shift
 dashboard_grouped_df.withColumn("rank",rank().over(Window.partitionBy("race_year").orderBy(desc("total_points")))).display()
-
-# COMMAND ----------
-
-

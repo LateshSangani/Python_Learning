@@ -4,7 +4,3 @@ message = "Welcome to the Python Nodebook"
 # COMMAND ----------
 
 print(message)
-
-# COMMAND ----------
-
-

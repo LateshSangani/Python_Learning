@@ -116,7 +116,3 @@ select count(*) from presentation_db.calculated_race_results_sql
 
 -- MAGIC %md
 -- MAGIC ### Best Solution is to use the 5.dashboard_race_results_python i.e full code converted into python
-
--- COMMAND ----------
-
-

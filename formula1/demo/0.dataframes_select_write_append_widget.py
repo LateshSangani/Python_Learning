@@ -316,13 +316,5 @@ display(df)
 
 # COMMAND ----------
 
-
-
-# COMMAND ----------
-
 # this success indicator is required to get the confirmation message for the calling program 0.ingest_all_files
 dbutils.notebook.exit("success")
-
-# COMMAND ----------
-
-

@@ -412,7 +412,3 @@ merge_delta_data(final_df,input_db,input_table,presentation_folder_path,partitio
 # test and confirm the data is stored in the readble format
 df = spark.read.format("delta").load(f"{presentation_folder_path}/dashboard_standings/")
 df.display()
-
-# COMMAND ----------
-
-

@@ -64,7 +64,3 @@ races_df_filtered = races_df.filter((races_df.race_year == "2009") & (races_df.r
 races_df_filtered.count()
 races_df_filtered = races_df.where((races_df.race_year == "2009") & (races_df.round <= 5))
 races_df_filtered.count()
-
-# COMMAND ----------
-
-

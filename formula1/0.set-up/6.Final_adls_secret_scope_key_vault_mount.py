@@ -335,7 +335,3 @@ dbutils.fs.ls("/mnt/datasourceformula1/demo")
 
 # check the list of the all the mounts after run
 dbutils.fs.mounts()
-
-# COMMAND ----------
-
-

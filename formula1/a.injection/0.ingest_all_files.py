@@ -152,7 +152,3 @@ v_result
 
 # MAGIC %sql
 # MAGIC select as_of_date,count(*) from processed_db.qualifying group by as_of_date;
-
-# COMMAND ----------
-
-

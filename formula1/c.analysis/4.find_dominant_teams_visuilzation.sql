@@ -64,7 +64,3 @@ from presentation_db.calculated_race_results_sql
 where constructor_name in ( select constructor_name from v_dominant_team where team_rank < 5)
 group by race_year,constructor_name
 order by race_year,avg_points desc;
-
--- COMMAND ----------
-
-

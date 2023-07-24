@@ -88,7 +88,3 @@ VALUES (race_year,constructor_name,driver_id,driver_name,race_id,position,actual
 
 # MAGIC %sql
 # MAGIC select count(*) from presentation_db.calculated_race_results
-
-# COMMAND ----------
-
-

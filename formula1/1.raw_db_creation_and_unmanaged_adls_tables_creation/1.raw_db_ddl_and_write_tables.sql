@@ -283,7 +283,3 @@ OPTIONS(path "/mnt/datasourceformula1/raw/qualifying/" , multiLine true);
 -- COMMAND ----------
 
 select * from raw_db.qualifying;
-
--- COMMAND ----------
-
-

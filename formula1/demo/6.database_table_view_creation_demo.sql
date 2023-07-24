@@ -82,7 +82,6 @@ SHOW TABLES IN default;
 
 -- COMMAND ----------
 
-
 ----------------------------------------------------READ--------------------------------------------------
 --1) READ Python Code
 --read the data in the python datafrom from the Data files

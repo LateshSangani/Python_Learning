@@ -77,7 +77,3 @@ dbutils.widgets.help()
 # COMMAND ----------
 
 dbutils.notbook.help()
-
-# COMMAND ----------
-
-

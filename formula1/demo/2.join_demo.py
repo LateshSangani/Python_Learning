@@ -144,7 +144,3 @@ display(races_circuites_df)
 races_circuites_df = circuites_df.join(races_df,circuites_df.circuit_id == races_df.circuit_id,"anti" ) \
 .select(circuites_df.circuit_name , circuites_df.location , circuites_df.country  )
 display(races_circuites_df)
-
-# COMMAND ----------
-
-

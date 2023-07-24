@@ -136,7 +136,3 @@ def merge_delta_data(input_df,input_db,input_table,container_path,partition_id,p
     else:
         # input_df.write.mode("overwrite").partitionBy(f"{partition_id}").format("parquet").saveAsTable(f"{input_db}.{input_table}")
         input_df.write.mode("overwrite").partitionBy(f"{partition_id}").format("delta").saveAsTable(f"{input_db}.{input_table}")
-
-# COMMAND ----------
-
-

@@ -83,7 +83,3 @@ select * from presentation_db.dashboard_constructor;
 -- COMMAND ----------
 
 select * from presentation_db.dashboard_standings;
-
--- COMMAND ----------
-
-

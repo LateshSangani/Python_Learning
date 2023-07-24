@@ -60,7 +60,3 @@ df = spark.read.parquet("/mnt/datasourceformula1/processed/circuits")
 # COMMAND ----------
 
 df.display()
-
-# COMMAND ----------
-
-
