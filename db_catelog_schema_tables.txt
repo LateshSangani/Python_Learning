@@ -1,0 +1,80 @@
+--all the managed tables and its data in the storage account gets deleted. but in case of the external tables the data in the external table always reside.
+DROP DATABASE IF EXISTS presentation_db CASCADE;
+
+CREATE DATABASE IF NOT EXISTS presentation_db
+LOCATION "/mnt/datasourceformula1/presentation/";
+
+SHOW DATABASES / SHOW TABLES
+
+
+USE DATABASE presentation_db
+
+SELECT CURRENT_DATABASE()
+
+-------UC ---------------
+
+CREATE CATALOG IF NOT EXISTS CATELOG_NAME
+--MANAGED LOCATION 'abfss://<container-name>@<storage-account>.dfs.core.windows.net/<path>/<directory>';
+
+CREATE SCHEMA IF NOT EXISTS bronze
+MANAGED LOCATION "abfss://bronze@datasourceformula1ucext.dfs.core.windows.net/"
+
+CREATE STORAGE CREDENTIAL databrickscource-ext-storage-credential          --via AZURE_MANAGED_IDENTITY
+  WITH AZURE_MANAGED_IDENTITY (
+    ACCESS_CONNECTOR_ID = '/subscriptions/<subscription-id>/resourceGroups/<resource-group>/providers/Microsoft.Databricks/accessConnectors/<connector-name>'
+  )
+  --/subscriptions/b5c43fea-ade3-46b3-9c11-283ea451927c/resourceGroups/databrickscource-uc-rg/providers/Microsoft.Databricks/accessConnectors/databrickscource-uc-access
+  [COMMENT '<comment-string>']
+  [OPTIONS (read_only = TRUE)];
+  
+CREATE STORAGE CREDENTIAL databrickscource-ext-storage-credential            --via SPN
+  WITH AZURE_SERVICE_PRINCIPAL (
+    DIRECTORY_ID = '<directory-id>',
+    APPLICATION_ID = '<application-id>',
+    CLIENT_SECRET = '<client-secret>'
+  )
+  [COMMENT '<comment-string>']
+  [OPTIONS (read_only = TRUE)];
+
+CREATE EXTERNAL LOCATION IF NOT EXISTS datasourceformula1ucext [bronze|silver|gold]
+URL "abfss://bronze@datasourceformula1ucext.dfs.core.windows.net/"
+WITH (STORAGE CREDENTIAL `databrickscource-ext-storage-credential`);
+
+USE CATALOG CATELOG_NAME  / USE SCHEMA SCHEMA_NAME
+
+SHOW CATALOGS / SHOW SCHEMAS / SHOW TABLES
+
+SELECT CURRENT_CATELOG() , CURRENT_SCHEMA()
+
+DESC EXTERNAL LOCATION datasourceformula1ucext_bronze
+
+
+
+-- COMMAND ----------
+select * from system.information_schema.tables
+where table_name = 'results'
+
+-- COMMAND ----------
+
+select * from system.information_schema.metastores
+where table_name = 'results'
+
+-- COMMAND ----------
+
+select * from system.information_schema.schema_privileges
+where table_name = 'results'
+
+-- COMMAND ----------
+
+select * from formula1_dev.information_schema.tables
+where table_name = 'results'
+
+-- COMMAND ----------
+
+select * from formula1_dev.information_schema.views
+
+-- COMMAND ----------
+
+select * from formula1_dev.information_schema.external_locations
+
+

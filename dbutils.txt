@@ -1,0 +1,58 @@
+dbutils.help()
+output:
+This module provides various utilities for users to interact with the rest of Databricks.
+
+credentials: DatabricksCredentialUtils -> Utilities for interacting with credentials within notebooks
+data: DataUtils -> Utilities for understanding and interacting with datasets (EXPERIMENTAL)
+fs: DbfsUtils -> Manipulates the Databricks filesystem (DBFS) from the console
+jobs: JobsUtils -> Utilities for leveraging jobs features
+library: LibraryUtils -> Utilities for session isolated libraries
+meta: MetaUtils -> Methods to hook into the compiler (EXPERIMENTAL)
+notebook: NotebookUtils -> Utilities for the control flow of a notebook (EXPERIMENTAL)
+preview: Preview -> Utilities under preview category
+secrets: SecretUtils -> Provides utilities for leveraging secrets within notebooks
+widgets: WidgetsUtils -> Methods to create and get bound value of input widgets inside notebooks
+
+
+dbutils.fs.help()
+output:
+dbutils.fs provides utilities for working with FileSystems. Most methods in this package can take either a DBFS path (e.g., "/foo" or "dbfs:/foo"), or another FileSystem URI. For more info about a method, use dbutils.fs.help("methodName"). In notebooks, you can also use the %fs shorthand to access DBFS. The %fs shorthand maps straightforwardly onto dbutils calls. For example, "%fs head --maxBytes=10000 /file/path" translates into "dbutils.fs.head("/file/path", maxBytes = 10000)".
+fsutils
+cp(from: String, to: String, recurse: boolean = false): boolean -> Copies a file or directory, possibly across FileSystems
+head(file: String, maxBytes: int = 65536): String -> Returns up to the first 'maxBytes' bytes of the given file as a String encoded in UTF-8
+ls(dir: String): Seq -> Lists the contents of a directory
+mkdirs(dir: String): boolean -> Creates the given directory if it does not exist, also creating any necessary parent directories
+mv(from: String, to: String, recurse: boolean = false): boolean -> Moves a file or directory, possibly across FileSystems
+put(file: String, contents: String, overwrite: boolean = false): boolean -> Writes the given String out to a file, encoded in UTF-8
+rm(dir: String, recurse: boolean = false): boolean -> Removes a file or directory
+
+dbutils.fs.help('ls') - Provide the explanation how to use the command.
+dbutils.fs.ls(path) - Lists the contents of a directory
+dbutils.fs.cp(src, dst, recurse=False): Copies a file or directory, optionally across different filesystems.
+dbutils.fs.mv(src, dst, recurse=False): Moves a file or directory, potentially across filesystems
+dbutils.fs.mkdirs(path): Creates the specified directory and any necessary parent directories if they do not exist
+dbutils.fs.mounts() - List of all the mount points
+dbutils.fs.mount(source, mount_point, extra_configs) - Command to make the mount point.
+dbutils.fs.unmount() - Command to unmount.
+dbutils.fs.refresh_mounts() - Refreshes mount caches.
+dbutils.fs.help() : Lists available commands and their descriptions for the file system utility module.
+
+dbutils.secrets.listScopes() - List of all the Databricks Scopes
+dbutils.secrets.list("databrickscource-secret-scope") - List of all the creadentils stored in the key vault for the input scope
+dbutils.secrets.get(scope="databrickscource-secret-scope" , key="databricks-storage-access-key")  - Get the value of the input creatential.
+
+dbutils.widgets provides utilities for working with notebook widgets. You can create different types of widgets and get their bound value. For more info about a method, use dbutils.widgets.help("methodName").
+dbutils.widgets.text(name, defaultValue, label): Creates a free-text input box.
+dbutils.widgets.dropdown(name, defaultValue, choices, label): Creates a single-select dropdown list.
+dbutils.widgets.combobox(name, defaultValue, choices, label): Creates a dropdown that also allows typing a custom value.
+dbutils.widgets.multiselect(name, defaultValue, choices, label): Creates a dropdown where multiple options can be selected. 
+dbutils.widgets.get(name): Retrieves the current value of a specific widget.
+dbutils.widgets.getAll(): Returns a map of all widget names and their current values.
+dbutils.widgets.remove(name): Deletes a specific widget from the notebook.
+dbutils.widgets.removeAll(): Removes all widgets from the notebook. 
+dbutils.widgets.help() : Lists available commands and their descriptions for the widgets utility module.
+
+
+dbutils.notebook.run(path: String, timeoutSeconds: Int, arguments: Map): String: Executes another notebook as a new job, passing arguments and capturing its string exit value.
+dbutils.notebook.exit(value: String): void: Stops the current notebook's execution and returns a specified string value to the calling notebook (usually after a run() call).
+dbutils.notebook.help(): Lists available commands and their descriptions for the notebook utility module. 
