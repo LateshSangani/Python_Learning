@@ -28,6 +28,7 @@ rm(dir: String, recurse: boolean = false): boolean -> Removes a file or director
 
 dbutils.fs.help('ls') - Provide the explanation how to use the command.
 dbutils.fs.ls(path) - Lists the contents of a directory
+dbutils.fs.put(file_path, file_content) - write the file content to the file path. 
 dbutils.fs.cp(src, dst, recurse=False): Copies a file or directory, optionally across different filesystems.
 dbutils.fs.mv(src, dst, recurse=False): Moves a file or directory, potentially across filesystems
 dbutils.fs.mkdirs(path): Creates the specified directory and any necessary parent directories if they do not exist
@@ -56,3 +57,65 @@ dbutils.widgets.help() : Lists available commands and their descriptions for the
 dbutils.notebook.run(path: String, timeoutSeconds: Int, arguments: Map): String: Executes another notebook as a new job, passing arguments and capturing its string exit value.
 dbutils.notebook.exit(value: String): void: Stops the current notebook's execution and returns a specified string value to the calling notebook (usually after a run() call).
 dbutils.notebook.help(): Lists available commands and their descriptions for the notebook utility module. 
+
+
+
+# Widgtes in the Databricks
+their are 4 types of the widgtes 
+1) text
+2) dropdown
+3) combobox
+4) multiselect
+
+dbutils.widgets.help()  # show all the detail help of the widget.
+dbutils.widgets.text("Name","Default value","Enter the value of the name")   
+#  here 1st para Name is the variable , 2nd para is Default value used when no value passed from frontend,3rd description message.
+# the data bricks UI show the message "Enter the value of the name" at the top section below the cluster name and user has to input the values.
+print(dbutils.widgets.get("Name"))   #  Value Latesh will come as cell output and Latesh Is entred from the frontend.
+v_local = dbutils.widgets.get("Name")  # get value in the local variable.
+print(v_local)  
+# we can have many widgets of same or diffrent type in the single notebook. it maninly used to pass run time paramter like password, AS_OF_DATE. 
+dbutils.widgets.combobox("Grade_Combobox","-","ABCDE","Enter the grade value")  # drop down values will comes -,A,B,C,D,E  ; default is -
+v_local = dbutils.widgets.get("Grade_Combobox")
+print(v_local) 
+
+dbutils.widgets.dropdown("Age_Dropdown","1","1234","Enter the age value")  # drop down values will comes 1,2,3,4  
+v_local = dbutils.widgets.get("Age_Dropdown")
+print(v_local) 
+
+dbutils.widgets.dropdown("Age_Dropdown", "1" ,[str(x) for x in range(1,10)])
+v_local = dbutils.widgets.get("Age_Dropdown")
+
+dbutils.widgets.dropdown("Age_Dropdown", "1" ,[str(x) for x in range(1,10)],"Enter the age value from the drop down")
+v_local = dbutils.widgets.get("Age_Dropdown")
+
+dbutils.widgets.remove("Name") # this will remove the widget with variable name "Name"
+dbutils.widgets.removeAll()  # remove all the widgets from the notebook screen.
+
+
+
+CSV_TABLE = spark.read.format("csv").options("header","true").option("inferSchema","true").load("dbfs:/CSV_TABLE.csv")
+
+%sql
+CREATE WIDGET DROPDOWN year DEFAULT "2099" CHOICES SELECT DISTINCT year FROM CSV_TABLE
+CREATE WIDGET TEXT year DEFAULT "2099" CHOICES SELECT DISTINCT year FROM CSV_TABLE
+
+%sql  
+select * from  CSV_TABLE where year = getArgument('year');
+
+%sql
+CREATE WIDGET TEXT y DEFAULT "10"
+
+%sql
+DROP TABLE IF EXISTS TABLE_CSV;
+CREATE TABLE IF NOT EXISTS TABLE_CSV
+USING CSV OPTIONS(path '/FileStore/Latesh/employee.csv',header "true")
+
+%sql
+CREATE WIDGET DROPDOWN emp_id_input DEFAULT -1 CHOICES SELECT distinct emp_id FROM TABLE_CSV
+
+%sql
+SELECT * FROM TABLE_CSV where emp_id LIKE "%$emp_id_input%"
+
+%sql 
+REMOVE WIDGET emp_id_input

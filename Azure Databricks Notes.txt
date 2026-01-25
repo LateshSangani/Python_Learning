@@ -1,4 +1,3 @@
-
 Azure Portal – https://portal.azure.com
 Databricks : https://adb-993395267027032.12.azuredatabricks.net/?o=993395267027032#
 Token generation : https://adb-2643165434444923.3.azuredatabricks.net/?o=2643165434444923#setting/account
@@ -61,7 +60,7 @@ Variety : Data comes in all types of formats – from structured, numeric data i
 		 Variety defines data coming from new sources—both inside and outside of an enterprise—creating integration, management, governance, and architectural pressures on 
 		 Information Technology.
 
-Veracity. Data Veracity refers to the biases, noise and abnormality in data. Is the data that is being stored, and mined meaningful to the problem being analyzed.
+Veracity. refers to the quality, accuracy, trustworthiness, and reliability of the data, essentially asking "how true is the data
 
 Value     Just having big data no value , until it turn into value.
 
@@ -80,11 +79,37 @@ HDFS/Local/Storage Accounts      Spark Cluster    Yarn/MESOS/Kubernetes
 we cannot compare Apache Hadoop with Apache Spark. As Hadoop is the complete package and Mapreduce is the compute engine.
 Similarly the Apache Spark is the just the compute engine. 
 MapReduced is designed to read data from the Hard Disk
-And Spark is designed to read data from the RAM.
+And Spark is designed to read data from the RAM(memory).
 
 -------------------------cource----------------------
 The Spark Engine was made by the Apache and same Apache company developed the Databricks.
 The Databricks service added in the Azure and it become the Azure Databricks.
+
+Spark First Launch was RDD (2011) and it was running over the JVM  and it also has some limitatins.
+Second Launch was DataFrame (2013) and its SQL based and it was fast but it also has some limitatins.
+Third launch was DataSet ( 2015) and it has both  RDD and DataFrame benifites.
+
+1) Apache Spark is the Open source distirbuted compute engine. 
+2) Apache Spark is a lightning-fast unified analytics engine for big data processing and machine learning
+3) Apache Spark lazy evaluation is an optimization strategy that defers the execution of data transformations until their results are explicitly needed by an action. 
+   This approach allows Spark to build an optimized execution plan ( logical + physical) for the entire workflow before running any computation.
+4) Serialization in Apache Spark is the process of converting objects into an efficient byte stream format for storage or transmission across the network, 
+   while deserialization is the reverse process of converting the byte stream back into objects. 
+   This mechanism is crucial for performance in a distributed environment
+
+Spark lazy Evaultion Benifites:
+
+Lazy evaluation in Apache Spark is a core optimization technique where transformations (e.g., map(), filter(), join()) are not executed immediately. 
+Instead, Spark records these operations in a Directed Acyclic Graph (DAG) and only executes the full, optimized plan when an action (e.g., collect(), count(), save()) is called
+
+1) Speed:	Faster execution due to optimized, planned, and reduced computations.
+2) Efficiency:	Lower CPU/Memory usage by avoiding unnecessary data processing.
+3) Resilience:	Automatic fault recovery using DAG lineage.
+4) Optimization:	Catalyst optimizer reorganizes tasks for best performance.
+
+questions : why Apache hadoop is slow than Apache Spark
+or why Spark RDD/Datafram are faster then Hadoop Map Reduce.
+
 Apacha Hadoop : 
 1) only can do batch processing
 2) Compelx with programming
@@ -92,17 +117,28 @@ Apacha Hadoop :
 4) It supports the disturbuted computing programming
 Apach Spark : 
 1) can do both batch and real time processing.
-2) Easy with programming
+2) Simple and easy to use the API.
 3) Work to read data from the RAM memory annd hence it is fast.
 4) It supports the disturbuted computing programming
-5) Engine to support the SQL,Streaming , ML and Graph Processing.
+5) Engine to support the SQL,Streaming , MLFlow and Graph Processing.
 
-Spark Archirecture:
+General Information:
 The Old approch in spark was RDD and new approch is Dataframe and Datasets API.
 Intially , The Spark code suports Java,Python,R and Scala Language and its developer responsibiliy for the query optimazation
 But later Spark SQL Engine introduce and it has another 2 featurs: 
-a) Catalysy Optimizer which automatacally optimized code and find out the best plan for the optimization.
+a) Catalyst Optimizer which automatacally optimized code and find out the best plan for the optimization.
+   The Catalyst Optimizer is the core query optimization engine in Apache Spark SQL, responsible for translating and optimizing high-level DataFrames, Datasets, 
+   and SQL queries into efficient, low-level physical execution plans. 
+   It uses a combination of rule-based ( RBO ) and cost-based optimization ( CBO ) techniques to improve application performance 
+   by reducing latency and resource consumption
 b) Tungsten , its project for the CPU and Memory Effective utilization.
+   Tungsten in Apache Spark is a project focused on optimizing the execution engine for maximum CPU and memory efficiency, 
+   bringing performance closer to hardware limits by managing memory explicitly, using binary processing, 
+   and generating optimized JVM bytecode (Whole-Stage Code Generation). It reduces JVM overhead (like garbage collection) and minimizes data movement, 
+   enabling Spark to process large datasets faster and more efficiently, 
+   especially for DataFrames and Datasets. 
+
+See Image : Spark_Catalyst_Optimisor.jpeg inside C:\Users\Lenovo\OneDrive\Technology\Python\Python_Learning
 
 The newly suggsted approch to develop the application is 
 Spark SQL + Dataframe + Dataset + Spark Streaming + Spark ML + Spark Graph.
@@ -113,25 +149,157 @@ Databricks framework is written in Scala and its used java based JVM only for co
 Py4j libarary is used to for the Python interface in the Databricks i.e. PySpark
 Databricks supported in the Azure, GCP and AWS.
 
+
+Databricks vs Azure Synapse:
+
+Core Focus & Design
+	Databricks: A unified data analytics platform built on Apache Spark, emphasizing data engineering, machine learning (ML), and AI, offering deep Spark optimization.
+	Azure Synapse: A unified analytics service integrating data warehousing (SQL pools) and big data processing (Spark pools), designed for end-to-end analytics within the Azure ecosystem. 
+Spark Implementation
+	Databricks: Uses an optimized Spark runtime with features like GPU support, high concurrency, Delta Lake optimizations, and seamless integration with MLflow.
+	Synapse Spark Pool: Runs open-source Apache Spark, includes .NET support (C#), but its Spark engine isn't as deeply optimized as Databricks' for advanced tasks. 
+Performance & Features
+	Databricks: Generally faster for complex Spark workloads, offers advanced ML features, real-time collaboration, Git integration, and robust data sharing.
+	Synapse: Strong for SQL analytics, integrates well with Power BI, but its Spark features (like streaming) are less comprehensive than Databricks'. 
+Developer Experience
+	Databricks: Offers powerful notebooks (Python, R, Scala, SQL) with features like automated versioning, Git integration (Databricks Repos), and a unified UI.
+	Synapse: Uses Synapse Studio, notebooks (Python, Spark SQL, Scala, R, .NET), but notebook collaboration and versioning are less advanced than Databricks'. 
+Ecosystem & Integration
+	Databricks: Multi-cloud (AWS, Azure, GCP) with strong open-source Spark/ML ecosystem integration.
+	Azure Synapse: Deeply integrated with other Azure services (ADF, Purview, Power BI, Azure ML) for a simplified Azure-centric experience. 
+When to Choose Which
+	Choose Databricks for: Advanced AI/ML, high-performance big data engineering, real-time streaming, complex transformations, and multi-cloud strategies.
+	Choose Synapse for: Teams heavily invested in Azure, SQL-focused data warehousing and BI, simpler big data analytics, and unified data governance within Azure
+
+RDD : Resilient distributed dataset
+Resilient : Its fault tolerant and its capable of rebuilding of the data.  in case of node or program failure then origanl copy will remain in the memory.
+Disturbuted : Data gets distributed into the multiple nodes of the cluster.
+Dataset : collection of the partition data with values.
+
+RDD vs DataFrame vs Dataset
+FYI : type safety refers to the ability to catch type-mismatch errors at compile time rather than at runtime.
+RDD : 
+1) RDD are type-safe
+2) lower-level optimizations ( slow performer) compared to DataFrames and Datasets
+3) Do not have an explicit schema, and are often used for unstructured data ( like logs )
+4) Java, Scala, Python, and R
+
+DataFrame:
+1) DataFrames are NOT type-safe, type errors , missing columns are caught at runtime not during compile time.
+2) Optimized for performance, Catalyst Optimizer which automatacally optimized code , Tungsten (CPU and Memory Effective utilization)
+3) DataFrames enforce schema at runtime. Have an explicit schema that describes the data and its types.
+4) Java, Python, Scala, and R
+5) Dataframe are faster than RDD.
+
+Dataset:
+1) Datasets are type-safe, Datasets provide compile-time type checking, which helps catch errors early in the development process.
+2) Datasets are faster than DataFrames because they use JVM bytecode generation to perform operations on data.
+3) Datasets enforce schema at compile time,With Datasets, errors in data types or structures are caught earlier in the development cycle.
+4) Scala and Java.
+5) Datasets are faster than RDD and Dataframe.
+
+PySpark vs Pandas
+
+The core difference is that Pandas is for small to medium-sized data analysis on a single machine, 
+while PySpark is for large-scale, distributed data processing across a cluster of machines. 
+The choice depends entirely on the size of your dataset and your computational resources.
+Both are libarary's.
+
+1) PySpark runs on single cluster or many clusters or single machine and pandas run on single machine. 
+2) PySpark is lasy in nature and in case of pandas the result get immedetelay as soon as we apply operation.
+3) Pyshark good for big data / ETL project , pandas good for small set of the data.
+4) PySpark RDD is not mutable. means the DDL structure cannot change and its good because it data gets disturbuted into multiple cluster.
+   Pandas data frame DDL structure can be change any time after its creation. RRD structure need to convert into new RDD to become use of the modified structure.
+5) PySpark supports less operation and Pandas support more operation.
+6) PySpark DataFrame Data Access is slower because read from cluster but processing is fast because of many cluster.
+   Pandas DataFrame Data Access is fast because reading from RAM (limited to available memory) but processing is slow because no concept of cluster.
+7) Pyspark need cluster and min 1 cluster is required.
+   Pandas has no concept of the cluster.
+
+Spark Archirecture:
+
+Databricks Spark archirecture has key component Cluter.
+The cluster has main driver node and rest all the worker node.
+Each worker node is act like VM and Each worker node has minimum 4 Cores.
+
+Once driver node gets command from notebook or spark submit job , it perform the below steps.
+1) The driver node run the "Driver program" in the JVM.
+2) The Driver node does not perform the actual execution of the work but it allocates the "Task" to the worker nodes.
+3) Driver node do communication with cluster manager and prepared the "Spark Context". The Driver Node Converts the application code into a DAG i.e a logical execution plan
+   The Cluster Manager allocate the resources,identifed the number's of the "JOBS","STAGES" and "Task" ( JST ) to be created.
+   so that overall work can be parallelly done.
+   
+   FYI:	
+   JOB is A top-level execution triggered by a PySpark action (like show(), count(), collect(), or write()
+   
+   STAGE is a collection of tasks that can run in parallel without data shuffling, 
+   A logical grouping of the sequence operations (narrow transformations) that can be run together as a single step in the physical execution plan.( ex: select + filter + mapping) 
+   A new stage begins when a (wide transformation) which requires a shuffle, such as join or groupBy()) is encountered
+   
+   TASK is the smallest unit of execution that processes a single partition of data.
+   The smallest unit of physical work that runs on a single CPU core in an executor process.
+   
+4) Each worker nodes run the "Executor program" in the JVM.
+5) In Standard Spark Archirecture their are many "Executor program" running in the Single Node and Sharing resources.
+   but Databricks restrict to the Single Executor in the JVM of the Worker node.
+   So that most optimum and easy to manage configuration.
+6) The function of the "Excutor Program" is to do call the Data Processing and Data Reading and Writing to External sources.  
+7) Each Executor has one or more "Slots" to Execute the Program and its generally equal to number of the "Cores" in the worker node.
+8) The Slots are the placed where it received the "Task" from the Driver program.
+9) The Spark try to do maximum parallelisim of the Input program and it based on the how data is partation,distrubuted accross the cluster, as well has "STAGES" are paralized.
+10) The important thing is that "Task" is the low level component that need to Executed. 
+11) 1 Core ≈ 1 Task ≈ 1 Partition (for parallelism)
+12) Once the "Task" is executed, The "Excutor program" of the Worker Node , send the results back to the Driver Node.
+13) After getting results from the all the Worker Node, The Driver Node Send the results to the users.
+
+Scaling for performance improvement.
+
+Vertial Scaling : Adding More Cores in the Worker Node.
+Horizantal Scaling : Adding More Nodes in the Cluster. So data tera/peta bytes of the data can process.
+
+SparkContext vs SparkSession
+
+SparkContext:
+1) SparkContext is the fundamental connection to the Spark cluster and manages core tasks like resource allocation, task execution, and monitoring.
+2) It primarily supports the low-level Resilient Distributed Dataset (RDD) API. ( used for RDD ) 
+3) Only one SparkContext can be active per Java Virtual Machine (JVM). 
+
+SparkSession
+1) SparkSession acts as a single, unified entry point that consolidates the functionalities of all the older contexts (SparkContext, SQLContext,HiveContext,StreamingContext etc.).
+2) It provides a high-level API for working with structured data, specifically DataFrames and Datasets, which benefit from the Catalyst optimizer for performance enhancements.( used for Datafram and Dateset)
+3) Multiple SparkSession instances can exist within a single application, each with its own isolated configurations and temporary tables, 
+   all sharing the same underlying SparkContext
+
+Databricks (Delta Lake/ Delta tables) vs Apache Iceberg:
+Delta Lake and Apache Iceberg are open table formats for data lakes, offering ACID transactions, time travel, and schema evolution, 
+but differ in their core architecture: Delta uses a transaction log (JSON) tightly coupled with Spark/Databricks, favoring write performance (Merge-on-Write), 
+while Iceberg uses manifest files for metadata, supports more file formats (Parquet, Avro, ORC), integrates widely with engines (Spark, Trino, Flink),
+and excels at complex partition evolution (Merge-on-Read)
+
 Component of the databricks
 1) Notebooks
 2) Clusters
 3) Unity Catalog
 
-Feature of the Databricks 
-1) It supports the creation of the cluster in few click which was timeconsuming earlier.
+Functional Feature of the Databricks 
+1) It supports the creation of the cluster iand its get spin  up very fastly.
 2) It has support of the workbook and notebook to run the code.
-3) The Adminstration activity can be controlled easily.
-4) It has Optimized Spark and its cosider the 5x time faster.
-5) It supports the creation of the database and Tables.
+3) The Adminstration activity can be controlled easily (like cluster / notebook / table access via UC ).
+4) Spark provides the multiple run time environment with spark+python+scale versions and its very fast with basic vanella spark version.
+5) Supports vectorized query PHOTON engine  and its improved the 10 times performance.
+5) Hive meta store and unity catelog ( It supports the creation of the database and Tables ) 
 6) To support the ACID properties , it supports has Delta Lake Feature.
-7) Support SQL analytics.
-8) ML Flow.
+7) it supports the delta live tables.
+8) Workflow for the task execution and orchestration.   The Workflow is same as DAG code of Airflow and Task is same has Stages in the DAG's.
+9) Support SQL analytics/Warehouse.
+10) ML Flow Lifecycle ( like model creation , pipeline , exprementation and its deployment )
+11) Databricks IQ ( Supports the AI features ) 
 
-Integration Feature with Databricks.
+Integration Feature with Databricks with Mictosoft Azure.
 1) The direct support from the Microsoft is present with Azure Databricks , Hence easy billing.
 2) Integration with Data services : Azure Data Lake Gen2 Storage accoiunts , BLOB storage , Cosmos DB,SQL Database,Synapse.
 3) Integration with Messanging Service : Azure IoT Hub and Azure Event Hub.
+4) Integration with Monitoring solutions.
 4) Power BI for the reporting dash board.
 5) Azure Machine Learning ( ML).
 6) Azure Data Factory
@@ -140,14 +308,17 @@ Integration Feature with Databricks.
 
 Azure Databricks Pricing :  https://www.databricks.com/product/azure-pricing
 
-The Azure Databricks supports the three Pricing Tier : Standard , Premium + Trail
+The Azure Databricks supports the three Pricing Tier : Standard , Premium , Trail
 The cost of the Premium is very high and it supports all the feature feature provided by the databricks. Special feature is the role based access control.
 The cost of the stardad is less with Premium but standard does not support the Delta Tables and Running SQL queries.
 
-after making the service , the service supports 3 personava.
-1) Data Science And Engg
-2) Machine learning
-3) SQL
+after making the service , the service supports 4 personava.
+1) Common Feature ( Notebooks , Catelog , Compute , Workflows..etc ) 
+2) SQL ( SQL Editor, Databoard , Queries ..etc) 
+3) Data Enggineering ( Job Runs , Integration , Pipelines..etc)
+4) Machine learning ( Plyground, Experiments , Models )
+
+
 
 1 service has many logins and for that users need to grant.
 1 service resource can have many workspace
@@ -156,24 +327,48 @@ Azure Databricks Archirecture  -> this gets created when new service gets prepar
 A) Control Plane( Databricks Subscription)
 	1) Databricks Cluster Manager
 	2) Databricks UX( User Experince UI)
-	3) DBFS ( Databricks File System)
-B) Data Plane(Customer Subscription) -> this gets created when new service gets prepared.
-	1) VNET 
-    2) NSG( Network Security group)
-	3) Azure Blob Storage
-	4) Databricks Workspace
-	5) Network Watcher ( Not mentioed in video)
-	6) Managed Identity
+	3) Notebook storage, Code and Query storage.
+	4) Unity Catelog
+	5) Server less Compute Plain ( pre loaded VM for the computation ) 2024 introduced 
+B) Compute Plane( Customer Subscription ) -> this gets created in backend when new workspace gets prepared.
+
+  Classic Compute Plain 
+  The USER resource group is different and it contains user own RESOURCE and databricks made its own MANAGED RESORCE group to add the supporting resource.
+  The MANAGED RESOURCE GROUP of the databricks contains below resource automatically made with Workspace creation.
+	1) Virtual network i.e VNET  ( private network to communication with resource ) 
+    2) Network Security group i.e NSG (  Firewall to manager traffice )
+	3) Azure Blob Storage i.e ADLS ( store code, notebooks) 
+	4) Access CONNECTOR for unity catelog i.e UC ( For Governance )  
+	   Azure resource that links your Databricks workspace (especially Unity Catalog) to 
+	   Azure resources like storage accounts using Managed Identities (System or User Assigned)
+	5) Managed Identity ( Service Account stored on the Microsoft Entra net ( Active directory ))
+ 	
 
 The Azure Active directory is responsible to make the other databricks hidden azure service components.
 .dbc is the extension of the Databricks files
 
 The cluster is the collection of the VM used to disturbute  work in the multiple VM(node)
 The cluster has 1 driver node and many worker node. 
-The driver node do the disturbution of the work.
+The driver node do the disturbution of the work to worker node.
 
-Cluster Types
-1) All Purpose cluster : 
+Simcast 
+    Simcast use the Datascience and Engg Workspace.  Other Workspace types are SQL,ML Flow workspace.
+	Databricks Runtime : 14.3 LTS ( Spark : 3.5 , Scala : 2.15 , Python 3.10) 
+	Latest Runtime : 18.0 ( Spark : 4.1 , Scale : 2.13 )
+	Simcast gamma Worker node Pool name "NonML Worker Pool" : Min ideal 2 and Max 50
+	Simcast gamma Driver node Pool name "NonML Driver Pool" : Min ideal 1 and Max 10
+	Size of worker node : 32 GB memory and 4 cores.
+	Size of driver node : 64 GB memory and 8 cores.
+	Machine types : Standard E8as_V4
+
+Types of the Compute:
+A) Serverless Compute/Cluster : Every things stays in the databricks subscription and it used the latest Run time configuration.
+ Databricks prepared the pool of the VM/Nodes and based on the need it usage and cost will charge.
+ Scales the Compute up and down with AI intellengenc.
+B) Classic Compute/Cluster : User Developed it with own controls, Run time configuration, number of nodes and customer subscription.
+
+Classing Compure : Cluster Types
+1) All Purpose/General purpose cluster/Shared Cluster : 
 	a) Created manually by Graphical user interface. the create button can see here.
 	b) They are presistant and can be use further.
 	c) Suitable for the interactive workload ex: during coding , during POC , during analysis
@@ -183,27 +378,32 @@ Cluster Types
 	a) Created by Jobs , the create button is missing here.
 	b) Cluster gets terminated at the end of the jobs.
 	c) Suitable for the automated work flow like ETL , Machine learning flow.
-	d) This clsuter is job specific and used during run time only.
+	d) This cluster is job specific and used during run time only.
 	e) Cheaper to run
 
 Creation of the new cluster
 It comes under the Compute -> It shows 4 values: All Purpose Cluster , Job Cluster , Pools and Policies(policies are part of the premium cluster only)
 
 Cluster Configuration
-A) Types of the node
+A) Node Configuation.
 	1) Single Node : Here single node play the role of the both driver and worker. good for the POC And small computation work.
+	                 Note : one node can have many cores and RAM Size.
 	2) Multi Node: Here Driver node allocate work to many of the worker node and provide the combine results.
+	                 Note : Each node has it number core and RAM Size.
+	3) Spot intance : Use spare cloud capacity ,at significant discounts, ideal for cost savings. 
 
 B) Access Mode
-   1) Single : Only single user Access enabled and support Python, R , Scala , SQL.
-   2) Shared User : Multiple user accss Enabled , only in Premium workspace and support Python and SQL only.
-   3) No Isolation Shared: Multiple user accss Enabled, support Python, R , Scala , SQL.   
+   1) Single/Dedicated : Only single user Access enabled and support Python, R , Scala , SQL.
+   2) Shared User/Standard : Multiple user accss Enabled , only in Premium workspace and support Python and SQL only. it supports Scala with Unity catelog enabled.
+   3) No Isolation Shared: Multiple user accss Enabled but data is not insolated in the session i.e Violation of the ACID properties, support Python, R , Scala , SQL.   
 
 C) Databricks Runtime
    1) Databricks Run time => Spark + Python, R , Scala , SQL + Ubantu Libraries + GPU Libraries + Delta Lake + Other Databricks Libraries.
    2) Databricks Run time ML => Point 1  + ML Libraries ( PyTorch + Keras + TensorFlow , XGBoost etc)
    3) Databricks Run time Light => Required only for the Jobs and it does not support advanced feature.
    4) Photon Run time => Point 1 +  Photon Engine (Processed SQL query faster and optimized mode) , Its checkbox in page.
+   
+   LTS (Long Term Support) good for the stable , bug fixed version and updates for 2 yrs. 
 
 D) Termination time
    1) Define the time when the cluster gets terminated when not in use.
@@ -212,30 +412,44 @@ D) Termination time
    
 E) Auto Scaling 
    1) User can specify the Min and Max node 
-   2) Auto Scale between min and max nodes
+   2) Auto Scale between min and max nodes. if single task need more number of the worker nodes then it will use it with in  the range of the max nodes defined.
+                                            it will improve the performance but reduced the time to scale up.
    3) Not recommanded for the streaming workload.
 
-F) Cluster VM Type / Size 
-	1) Memory Optimized : Its more RAM intensive. lots of the data loaded in the RAM memory. Good for ML.
+F) Node type i.e selection of the VM type and Size ( This is important section ) 
+	1) Memory Optimized : Its more RAM intensive. lots of the data loaded in the RAM memory. Good for ETL/ELT/ML.
 	2) Compute Optimized : Its more CPU intersive. disturbuted analytics and 
-	3) Storage Optimized : Its more Data read/write operation. High Disk throughput and IO.
-	4) General Purpose : Ennterprise Data Analytics application and it support in memory caching.
+	3) Storage Optimized : Its more Data read/write operation. High Disk throughput and IO. ( means where more data shuffuled happens )
+	4) General Purpose : Enterprise Data Analytics application and it support in memory caching. ( general development task with less data )
 	5) GPU Accelarated : Deep Learning model where its more Memory and Compute Extensive used.
 
 G) Cluster Policy
 The configuration of the cluster is the challanging task and it need the good knowledge. Its mainly controlled by Admins.
-The policy define some restriction to define to avoid the expensive or poor configuration of the cluster.
-It saves the cost. this can only found in the Premium Tier.
+The policy define some restriction to define to avoid the expensive or poor configuration of the cluster. setting of the spark and environment varaibles.
+So that standard / approved defination of the clusters gets created and cost also controlled.
+This can only found in the Premium Tier.
  
+H) Tags : just to define its usage like : ETL, POD name , Its scala/spark version.etc.
+
+I) Addtional OPTION
+Spark Configuration: Custom Spark configuraion and default configuraion.
+Environment Variable: Like Environment name, ADLS name , Rest API URL...etc.
+Logs path in custom location.
+init scipts : Install the python libararies when cluster gets up.
+
+
+  
 Cluster Creation:
 Cluster name : databricks-cource-cluster  
 Cluster Type - Single Node
 Node Type - Standard_DS3_v2 14 GB memory , 4 cores.          => cost 0.75 DBU/hour
+Autoscale : it mainly need for the streaming and unpredicted data size.
+Any failure in the clutser creation , it need to check the reason in the "Event Logs" option in the cluster defination page.
 
 Pricing Factory:
 The pricing is depending on below 4 factors :
 1) Workload(All Purpose Jobs/SQL/Python)
-2) Tier ( Premium/Standard)
+2) Databricks resource Tier ( Premium/Standard)
 3) VM Type (General Purpose / GPU type / Optimized )
 4) Purchase plan (Pay as you go / PrePurchase)
 
@@ -256,10 +470,13 @@ Worker Node cost = Worker (0) * 0.3510
 
 Total Cost of the cluster = 0.75*0.4125 + 1*0.3510 + 0*0.3510 = $0.7635 Per Hour
 
-Cluster Pool: this are the free VM made in advaced for the allocation of the resources to the clusters.
+Cluster Pool: this are the free VM made in advanced for the allocation of the resources to the clusters.
+Collections of the VM.
+Its required to spin up the cluster in the faster pace. So that waiting time for task will reduced.
+make sure the cluster run time databricks configuration and pool VM has same run time databricks configuration .
 If cluster pool has 1 Idle Instance and 2 max instance.
 And assume we have 2 cluster A and B
-If cluster A demands 1 VM then Cluster Pool give 1 instance of VM.
+If Cluster A demands 1 VM then Cluster Pool give 1 instance of VM.
 If Cluster B demands 1 VM then Cluster Pool give 1 instance of VM , However if Cluster B demands more than 1 VM
 Then it will be fail for the non enough VM.
 Termination time default 60 mins is for the idle instance which applies to 1 ready node only.
@@ -299,13 +516,14 @@ Use of the MD command to write notes in the databricks notebooks
 - %fs    -> file system
 - %sh    -> shell command
 - %md    -> mark down
+- %run ""-> Include the path of another notebook into current notebook ( import of python ) 
 
 ####### The more details about the md documentation is defined here : https://www.markdownguide.org/cheat-sheet/#basic-synta
 
 With in the Notebook we can write the code in the single file in the multiple languages 
 and output of the one language can use as input of the other language.
 
-Notebook Utilities:
+Notebook dbutils Utilities:
 A) File system utilities : Make connection with storage accounts and file system of the databricks dbfs.
 B) Secrets Utilities : Make connection with Azure key Vault or Databricks scope enabled secretes.
 C) Widget Utilities : Use to provide the Input parameter to to run the notebook or input parameter coming from the azure data factory.
@@ -325,7 +543,7 @@ for files in dbutils.fs.ls('/databricks-datasets/'):
     print(files)
 	
 
-DBFS : Databricks File system can connect to the Azure Blob Storage , Azure Data Lake Gen 1 , Azure Data Lake Gen 2
+DBFS : Databricks File system can connect to the Azure Blob Storage  , Azure Data Lake Gen 1 , Azure Data Lake Gen 2 via MOUNT POINT.
 The DBFS can access by Databricks Notebook , Databricks CLI and Databricks API.
 
 Benifites:
@@ -340,13 +558,13 @@ DBFS Root :
 4) We can store the query results also here.
 5) It contains the data and meta data for managed (non external) tables.
 
-Azure Mount Storage:
+Azure Mount Point:
 Databricks File system can connect to the Azure Blob Storage , Azure Data Lake Gen 1 , Azure Data Lake Gen 2 
 via 
 1) Azure Key Vault->Service Principle 
 2) Azure Key Vault(credential passthrough) -> Human account 
 3) SAS Token 
-4) Storage Access Key.
+4) Access Key Token.
 The  SAS Token and Storage Access Key automatically created when storage account is made.
 The service principle is the most secured and useful approch to acces the storage accounts.
 The DBFS Mount point can be access by The DBFS can access by Databricks Notebook , Databricks CLI and Databricks API.
@@ -402,7 +620,7 @@ ex: dbutils.fs.ls("abfss://demo@datasourceformula1.dfs.core.windows.net")
 df = spark.read.csv("abfss://demo@datasourceformula1.dfs.core.windows.net/circuits.csv")
 df.display()
 
-Approch 3 : Azure Gen2 storage account and Service Principal connection.
+Approch 3 : Azure Gen2 storage account and Service Principal connection via Blob Contributor Role.
 1) The storage account "datasourceformula1" is prepared. 
 2) The Azure Storage explorer is installed.
 3) The new folder raw and processed prepared under the blob container.
@@ -455,7 +673,7 @@ Two ways to achive the secret scope.
 1) Databricks Backed Secret Scope
 2) Azure Key Vault Backed Secret Scope
 
-Steps to make the Secerate scope using databricks and Keyvault:
+Steps to make the Secret scope using databricks and Keyvault:
 1)  Create the new resource Of the Azure Keyvault databrickscource-kv.
 2)  Add the 5 new "Secrets" in the Azure Key Vault.  
 	databricks-storage-access-key   = "MaQX8sF00ETsqMcnTGVX7ziHq4/IokY6wZ761bqaKOSARxZEfA82elBtFEYbZfRqPPSGZcs3RFPu+AStZ52cgA=="
@@ -523,8 +741,9 @@ Databricks Database in the databricks workspace(or resource):
 2) we can make own database also in the databricks
 3) The databricks table has 2 types 
 
-a) Managed Table : the table data and metadata both stored in the databricks
+a) Managed Table : the table data and metadata both managed by the databricks
 dropping table will drop both DDL and data.
+We can make the manage table where table path or scema can refer to ADLS location.
 b) Unmanaged or External Table : the table data stored in the file system ex: Azure Gen2 account, but meta data is stored in the Hivemeta store.
 droping table will just drop the DDL structure and its files are safe in the ADLS or other storage.
 
@@ -532,54 +751,6 @@ droping table will just drop the DDL structure and its files are safe in the ADL
 5) The new or exists database gets created inside the Data -> hive_metastore -> default | demo | ...
 The default is the "default" database made by Spark in the databricks.
 
-
-
-Formual 1:  Details about all the scripts prepared as the part of the project
-
-0) demo : 
-It listed all the python and sql scripts syntax with example.
-
-1) set-up folder : 
-It listed the Python script to make Azure Gen2 storage account linked to the Azure Databricks and accessable.
-
-2) include folder : 
-It listed all the Python files which are requried to load all the uesr developed environment variables and functions.
-
-3) utils folder : 
-It listed the SQL Scripts for the DB related operations.
-
-4) injection folder : 
-It listed all the python scripts to read the Raw files from Storage account datasourceformula1/raw 
-container and processed the data and finally clean data stored in the Storage account datasourceformula1/processed folder.
-
-5) procesed folder : 
-It listed all the python scripts to read the Storage account datasourceformula1/processed folder
-and make the requried dashboard or user presentation data in the 
-Storage account datasourceformula1/presentation folder.
-	
-6) analysis folder : 
-It listed the SQL scripts to make the diffrent representation of the data and different reports of the data	
-				
-7) raw_db folder : 
-raw_db database creation and it listed the SQL script to make the EXTERNAL table to read the Raw data files by the Analyst. 
-This are called the Bronze Tables. Also the files data gets stored in the Physical table also pointing to the Azure Storage location only.
-
-8) procesed_db folder : 
-processed_db database creation and it listed the SQL script to read the Storage account datasourceformula1/processed
-data powered by Physical table for the Analyst. This are called the Silver Tables.
-
-9) presentation_db folder : 
-presentation_db database creation it listed the SQL script to read the Storage account datasourceformula1/presentation 
-data powered by Physical table for the Analyst. Its called the Gold Tables. 
-Fact Tables comes here.
-
-
-Data details:
-1) Dimension Tables : The circutis , races , constructor and driveres are the limited master data and its refreshed occatially.
-As races are happening limited events only and cicuites are fixed in the world , team and drivers all most working from many years.
-The full data dumps is fine and fast to reload any times
-2) Fact Tables : The results , pitstops , laptimes , qualifying are the more incremental data where through out the year many data gets coming.
-The incremental data does not overwrite the old data.
 
 Summary of the read and write:
 
@@ -589,6 +760,8 @@ read the data in the python datafrom from the Data files
 python_df = spark.read.parquet(f"{presentation_folder_path}/dashboard_results/")
 python_df = spark.read.csv(f"{raw_folder_path}/races.csv/")
 python_df = spark.read.json(f"{raw_folder_path}/drivers.json/")
+python_df = spark.read.text(f"{raw_folder_path}/poem.txt/") # The default column of the txt file is the value
+python_df = spark.read.text("/Filestore/tables/emp_table.xml")
 
 2) READ SQL from SQL
 read the data in the SQL cells from the sql views or tables
@@ -603,11 +776,11 @@ python_df = spark.sql("select * from global_temp.gv_dashboard_results")
 ----------------------------------------------------WRITE--------------------------------------------------
 4) Write Python to Python Code:
 write the python dataframe data in the storage location
-python_df.write.mode("overwrite").parquet(f"{presentation_folder_path}/dashboard_results")
+python_df.write.mode("overwrite").parquet(f"{presentation_folder_path}/dashboard_results") --or mode = append
 
 5) Write Python to SQL Managed Table
 write the python dataframe data in the SQL Managed tables
-python_df.write.format("parquet").saveAsTable("demo.dashboard_results")
+python_df.write.format("parquet").saveAsTable("demo.dashboard_results")   --or format = delta
 
 6) Write SQL to SQL UnManaged Table
 write the SQL table data in the another SQL Managed tables
@@ -615,12 +788,14 @@ CREATE TABLE demo.dashboard_results_filtered AS SELECT * FROM demo.dashboard_res
 
 7) Write Python to SQL UN-Managed Table
 write the python dataframe data in the SQL UNMANAGED EXTERNAL tables but databricks storage path location
-python_df.write.format("parquet").option("path",f"{presentation_folder_path}/dashboard_results/").saveAsTable("demo.dashboard_results")
+python_df.write.format("parquet").option("path",f"{presentation_folder_path}/dashboard_results/").saveAsTable("demo.dashboard_results")  --or format = delta
 
 8) Write SQL to SQL UN-Managed Table
 write the python dataframe data in the SQL UNMANAGED EXTERNAL tables but ADLS storage path location
 CREATE EXTERNAL Table USING CSV|parquet|JSON LOCATION/OPTION
 INSERT INTO NEW_TABLE SELECT * FROM OLD_TABLE
+
+df.write.mode("append"|"overwrite").format("parquet"|"delta").saveAsTable(schema.table_name)
 
 ----------------------------------------------------VIEW--------------------------------------------------
 9) Create SQL view by Python
@@ -633,7 +808,14 @@ CREATE OR REPLACE TEMP VIEW v_dashboard_results AS SELECT * FROM TABLE_NAME WHER
 CREATE OR REPLACE GLOBAL TEMP VIEW v_dashboard_results AS SELECT * FROM TABLE_NAME WHERE ..
 CREATE OR REPLACE VIEW v_dashboard_results AS SELECT * FROM TABLE_NAME WHERE .. 
 
-
+The Databricks Workflow means we can Orachestration of the Multiple task call via  notebook/Python Wheel File.
+ The Notebook Can call another notebook via magic %run command.
+The Databricks notebook /Python Whell / java Package can call from the Databrick Workflow Jobs.
+The Databricks Workflow supports 2 schedule types : Manual and Schedule
+We can select the Job or Interactive any of the cluster to schedule the job.
+We can specify the parameter name and its value that has same name in the Notebook widgets.
+We can specify the retrives and timeout parameters.
+We can speficy the maximum concurrent runs. ( means same job can run multiple times on same time )
 
 Types of the Dataload
 1) FULL Load : Where old data gets fully replaced by new data, good for the less data. i.e. dimension tables
@@ -654,8 +836,38 @@ In databricks with spark sql or plain SQL their is "NO" feature of the DELETE or
 Hence for the incremenal write with append option is not re-runnable
 
 Before Datalake the Datawarehouse was present.
+
+In 2026, the data landscape is defined by three primary storage architectures, each serving a specific role in an organization's data strategy: 
+1. Data Warehouse
+A Data Warehouse is a highly structured repository optimized for reporting and business intelligence. 
+Data Structure: Stores only structured data that has been cleaned and transformed to fit a predefined schema (schema-on-write).
+Performance: Offers the fastest query performance for complex, predictable business reports.
+Primary Users: Business analysts and executives who need reliable "single source of truth" dashboards.
+Common Tools: Snowflake, Google BigQuery, Amazon Redshift, and Microsoft Azure Synapse.
+ 
+2. Data Lake
+A Data Lake is a centralized, low-cost repository for storing massive amounts of data in its native form. 
+Data Structure: Supports structured, semi-structured, and unstructured data (e.g., social media posts, sensor logs, images).
+Flexibility: Uses schema-on-read, meaning you store data first and apply structure only when needed for analysis. External tables.
+Primary Users: Data scientists and engineers for exploration, machine learning, and predictive analytics.
+Core Challenge: Without proper governance, it can become a "data swamp," making data hard to find or trust. 
+
+3. Delta Lake
+Delta Lake is an open-source storage layer that sits on top of a data lake to provide it with data warehouse-like reliability. 
+It is a foundational technology for Data Lakehouse architecture. 
+Key Features:
+ACID Transactions: Ensures data integrity by preventing partial or failed writes from corrupting the lake.
+Schema Enforcement: Automatically rejects data that does not match the table's defined schema.
+Time Travel: Allows users to query or roll back to historical versions of the data.
+Performance: Uses a transaction log and advanced indexing (like Z-ordering) to significantly speed up queries compared to standard data lakes.
+OPTIMIZE table_name ZORDER BY (col1, col2, ...)
+Better Governance.
+
+Relationship: You do not "have" a Delta Lake instead of a data lake; 
+you use the Delta Lake format on top of your existing data lake (like AWS S3 or Azure Data Lake Storage) to make it more reliable. 
+
 DataLake :
-1) Formula1 project before start of the Delta Lake chapter was based on the Data Lake.
+1) Formula-1 project before start of the Delta Lake chapter was based on the Data Lake.
 2) After DataLake , the Delta Lake is the open house project of the Databricks.
 3) Delta Lake Run over Data Lake only and its fully compatable with Apache Spark API i.e. Pyspark and SQL can be used from it.
 
@@ -675,7 +887,7 @@ Delta Lake : It came with objective to fix the limitation came by the Datalake.
 Delta Lake support the ACID properties , means now data streaming and batch data loading can be do parallel.
 
 Delta Lake Benifites
-1) It handel all the types of the data that Datalake was handelling.
+1) It handle all the types of the data that Datalake was handelling.
 2) Support cheap cloud storage.
 3) Uses all the open source format like Parquet.
 4) Support both Batch and Streaming work load.
@@ -685,16 +897,60 @@ Delta Lake Benifites
 8) Delta tables has access based on the roles , grants and Data governance and better meta data handelling.
 
 
+abfss vs dbfs databricks
+
+In Databricks on Azure, DBFS (Databricks File System) is the default, integrated file system for convenience, 
+while ABFSS (abfss://...) is the recommended, secure protocol for directly accessing native Azure Data Lake Storage (ADLS Gen2), 
+offering better security, fine-grained access control (ACLs), and seamless integration with Unity Catalog for modern data governance. 
+Use ABFSS for new projects and production workloads for superior integration with Azure's security model, 
+moving away from DBFS (especially its legacy mount points) for better scalability and governance. 
+
+DBFS (Databricks File System)
+	What it is: Databricks' built-in, distributed file system, often used for temporary storage or for data within the Databricks environment.
+	Location: Stores data within the Databricks platform, though it can be configured to use ADLS Gen2 as its underlying storage (often via mounts).
+	Access: Easier for basic use, but less granular security than ABFSS.
+	Use Case: Good for quick data uploads, temporary files, or when you don't need direct Azure AD integration for every file operation. 
+ABFSS (Azure Blob File System Secure)
+	What it is: A secure protocol (abfss://) for accessing Azure Data Lake Storage Gen2 (ADLS Gen2) directly from Databricks.
+	Location: Points directly to your ADLS Gen2 storage account and containers.
+	Access: Leverages Azure Active Directory (AAD) for authentication and fine-grained POSIX-like ACLs (Access Control Lists).
+	Use Case: Recommended for new projects, production data, and when using Unity Catalog, as it provides robust security and governance. 
+Key Differences & Recommendation
+	Security: ABFSS is inherently more secure due to its AAD integration and ACL support, while DBFS relies more on Databricks-level security or stored credentials.
+	Governance: ABFSS (especially with Unity Catalog) offers better data governance and auditing.
+	Performance: Direct ABFSS access to ADLS Gen2 offers performance comparable to mount points, but with better security and future-proofing.
+	Modern Standard: Databricks strongly encourages using ABFSS URIs (e.g., abfss://container@storageaccount.dfs.core.windows.net/path) 
+	                 for direct access and recommends Unity Catalog for managing this data. 
+	In summary, for most modern Databricks workloads on Azure, use ABFSS for accessing data in ADLS Gen2 
+	for better security, performance, and governance, especially with Unity Catalog. 
+	
 Azure Data Factory ( ADF ):
-1) Its fully managed , serverless , data integration solution for the ingesting , preparing , and transforming 
-all of our data at scale.
-The same can be achive with Azure Databricks but with ADF simple transformation is possible for the complex transformatin
-and hugh data the Azure Databrciks is good.
+1) Its fully managed (Microsoft take care all enviornment owwership for maintaince) , 
+  "serverless" (Microsoft take care CPU/RAM) , 
+  data integration solution for the ingesting , preparing , and transforming all of our data at scale , but it does not store the data.
+	The same can be achive with Azure Databricks but with ADF simple transformation is possible for the complex transformatin
+	and hugh data the Azure Databrciks is good.
 2) The ADF can be use as orchestrator to run the Azure Databricks code.
 3) Case where ADF is NOT requested to use.
   a) When to do the full database migration.
   b) Data Streaming.
-  c) Data storage is not possible. Its just to the lift and shift of the files.   
+  c) Data storage is not possible. Its just to the lift and shift of the files.
+4) To use Databricks as Linked Service in the ADF, the Managed Identity of the ADF resource need the access to the Databricks resource in Azure Portal of Databricks. 
+5) The ADF UI provide the option only for the NOTEBOOK to run. In real time we need the Python libarary.
+
+ADF Key Components:
+Linked Service : Connection details of the ADLS/SQL server/another cloud provider/
+Dataset : Some sort of the ADLS File path, table or view.
+Activity : Like Action to Do (  Move & Trasform / Databricks / IF / Meta Data / Execute Pipeline ..etc )   
+           Note : The Execute Pipeline activity execute multiple pipelines ( parallel or serially ) i.e provided the wrapper.
+Pipeline : Collection of the activity and chain of the activity. The Debug option in the pipeline is used to run pipeline manually. 
+           The Publish option do actual save of the code in session
+Trigger : Orechestration of the pipeline via manual or schedule or on arrival of the file ( event based )
+          Three types of the triggers.
+          Schedule : Run on the Specific Date and Time. ( starts from future dates )
+          Tumbling Trigger: Runs on Fixed Reccusive Duraion ex: Every 6 hours ( starts from past and future dates )
+          Storage Events : On Arrival of the File on the ADLS.		  
+Serverless : ADF use own computation and customer does not make new VM for it.  
 
 A) Data Lake Syntax:
 Pre-requsite: First read all the source files of the JSON/CSV/PARQUET and let them convert into the PARQUET format.
@@ -757,36 +1013,705 @@ UNMANDAGED ( EXTERNAL) SQL:
 C) Delta Lake DML
    see the demo/8.deltalake_demo for all the DML operations
 
+Option Values in the Spark.
 
-Unity Catalog: Introduce Late 2022. Mainly to replace the Hive Metastore feature which was default in the databricks
+Common df.options() include:
+	header: For CSV files, whether the first line of the file should be treated as the column names. The value can be "true" or "false".
+	inferSchema: Determines whether Spark should automatically guess the data types of the columns by reading a pass over the data. 
+				 The value can be "true" or "false". Disabling it and specifying a schema manually is generally more performant for large datasets.
+	sep or delimiter: Specifies the column separator for delimited files like CSV. The default is typically a comma, 
+					  but can be set to any character like "\t" for tab-separated or "|" for pipe-separated files.
+	mode: Configures how Spark handles corrupt records or missing files. 
+		  Common values include "permissive" (default, puts corrupted records into a string column), 
+		  "dropMalformed" (drops rows with malformed records), 
+		  and "failFast" (throws an exception if any corruption is found).
+	nullValue: Specifies a string value that should be treated as null when reading the data.
+	dateFormat: Specifies the expected format of date strings in the input data.	  
+	pathGlobFilter: A glob pattern to filter files that are loaded, useful when you only need to read a subset of files in a directory.
+	timestampFormat: Specifies the expected format of timestamp strings in the input data.
+	quote: Specifies the character used to quote values, typically " (double quotes) for CSV files.
+	encoding: Specifies the character encoding of the files, e.g., "UTF-8"
+
+Standard SQL Join Types
+Databricks and Spark SQL support the following standard join types for use in both batch and stream processing (with specific behavioral differences for streaming): 
+INNER JOIN (or simply JOIN): Returns only the rows that have matching values in both tables. It is the default join type in Spark.
+LEFT OUTER JOIN (or LEFT JOIN): Returns all rows from the left table and only the matching rows from the right table. Unmatched rows in the right table's columns will be NULL.
+RIGHT OUTER JOIN (or RIGHT JOIN): Returns all rows from the right table and only the matching rows from the left table. Unmatched rows in the left table's columns will be NULL.
+FULL OUTER JOIN (or FULL JOIN): Returns all rows from both tables, combining them where a match exists and using NULL values for unmatched columns on either side.
+LEFT SEMI JOIN (or SEMI JOIN): Returns all rows from the left table for which there is match row in the right table,
+                               The Unmatched row of the Left table will not returned (thats why its semi)
+                               but only the columns from the left table are included in the result. Right table column cannot return.
+LEFT ANTI JOIN (or ANTI JOIN): Returns rows from the left table for which there is no match in the right table, returning only columns from the left table.
+LEFT OUTER JOIN = LEFT SEMI JOIN ( Only Left table Matching)  + LEFT ANTI JOIN ( Only Left Table Unmatching )
+CROSS JOIN: Returns the Cartesian product of the two tables, combining each row of the first table with every row of the second table. 
+            This join does not require a join condition and can produce very large result sets.
+SELF JOIN: A table is joined with itself using table aliases to compare rows within the same table. 
+C:\Users\Lenovo\OneDrive\Technology\Python\Python\Python_Learning\formula1\demo\2.join_demo
+
+
+Window functions in Spark:
+DataFrames perform calculations across a set of related rows (a "window") while retaining every input row, 
+unlike standard aggregations which collapse rows. They are crucial for tasks such as ranking, calculating moving averages, 
+and comparing the current row to preceding or following rows. 
+
+Key Components of a Window Function
+To use a window function in the DataFrame API, you must define a WindowSpec using the Window object from "pyspark.sql.window" (or the equivalent in Scala/Java). 
+A window specification has three parts: 
+1) Partitioning Specification (.partitionBy()): Groups rows into logical partitions, similar to a GROUP BY clause. 
+                                                The window function's calculation is performed independently within each partition. 
+												If omitted, the entire DataFrame is treated as a single partition, 
+												which can cause performance issues (e.g., Out of Memory errors) on large datasets.
+2) Ordering Specification (.orderBy()): Sorts the rows within each partition. This is essential for functions that rely on row order (like rank(), row_number(), lag(), lead()) 
+                                        and for defining frame boundaries.
+3) Frame Specification (.rowsBetween() or .rangeBetween()): Defines the specific subset of rows within the partition (the "frame") 
+                                                            that the window function should consider for the current row's calculation.
+   a) rowsBetween(start, end) uses physical offsets (e.g., current row, 3 rows preceding).
+   b) rangeBetween(start, end) uses logical offsets based on the value of the orderBy column (useful for time-series analysis). 
+   
+Types of Window Functions
+Spark supports three main types of functions that can be applied over a window: 
+A) Ranking Functions: Assign a rank or sequential number to each row within its partition.
+ 1) row_number(): Assigns a unique sequential number (1, 2, 3, ...).
+ 2) rank(): Assigns a rank with gaps for ties (e.g., 1, 1, 1, 4, 5).
+ 3) dense_rank(): Assigns a rank without gaps for ties (e.g., 1, 1, 1, 2, 3).
+ 4) ntile(n): Divides the rows in a partition into n groups.
+ 
+B) Analytic Functions: Access data from other rows or compute cumulative distributions.
+ 1) lag(column, offset): Accesses the value of a preceding row.
+ 2) lead(column, offset): Accesses the value of a following row.
+ 3) first_value(), last_value(): Returns the first or last value in the window.
+
+C) Aggregate Functions: Standard aggregate functions like sum(), avg(), min(), max() can be used as window functions, 
+   producing an aggregate value for each row's window frame instead of a single value per group. 
+
+question : Find out the 3rd highest sales for each category.
+
+from pyspark.sql.window import Window
+from pyspark.sql.functions import desc,rank,sum
+
+# Sample DataFrame (replace with your actual data source)
+data = [("ProdA", "Cat1", 100), ("ProdB", "Cat1", 150),("ProdC", "Cat2", 200), ("ProdD", "Cat2", 180),("ProdE", "Cat1", 120)]
+columns = ["product", "category", "sales"]
+df = spark.createDataFrame(data, columns)
+
+# Define the window specification
+windowSpec = Window.partitionBy("category").orderBy(desc("sales"))
+runningTotalSpec = Window.partitionBy("category").orderBy("sales").rowsBetween(Window.unboundedPreceding, Window.currentRow)
+
+# Apply the window functions
+df_result = df.withColumn("rank_by_sales", rank().over(windowSpec)) \
+              .withColumn("running_total_sales", sum("sales").over(runningTotalSpec))
+
+display(df_result.filter(rank_by_sales==3))
+
+Rank and Dense Rank with SQL.
+question : Find out the name of each driver having 3rd highest age for each nationality / country.
+
+with driver_sql as (
+select nationality , dob , name , dense_rank() over(partition by nationality order by dob desc) as age_rank
+from processed_db.drivers
+order by nationality,age_rank
+)
+select * from driver_sql where age_rank = 3
+
+sample example of the SQL with split,current_timestamp,date_format,date_add function.
+select name,
+dob,
+split(name,' ') , 
+split(name,' ')[0] as first_name, 
+split(name,' ')[1] as last_name , 
+date_format(dob,'dd-MM-yyyy') as data_of_birth,  --stored formate is YYYY-MM-DD
+date_format(date_add(dob,365),'dd-MM-yyyy') as dob_modified, 
+current_timestamp() as datatime
+from processed_db.drivers;
+
+
+The EXPLODE function in PySpark is used to transform array or map (dictionary) columns into individual rows. 
+For each element in the array or each key-value pair in the map, a new row is generated, duplicating the values in other columns as necessary. 
+
+data = [("Alice", [1, 2, 3]), ("Bob", [4, 5])]
+columns = ["Name", "Numbers"]
+df = spark.createDataFrame(data, columns)
+# Explode the "Numbers" column
+df_exploded = df.select(col("Name"), explode(col("Numbers")).alias("Number_Element"))
+
++-----+--------------+
+| Name|Number_Element|
++-----+--------------+
+|Alice|             1|
+|Alice|             2|
+|Alice|             3|
+|  Bob|             4|
+|  Bob|             5|
++-----+--------------+
+
+
+# Python way to read delta table and do the update/delete operation.
+from delta.tables import DeltaTable
+deleteTable = DeltaTable.forPath(spark,"/mnt/datasourceformula1/demo/results_files/")
+deleteTable.update( "POSITION <= 10",{"POINTS" : "21-POSITION"} )
+deleteTable.delete( "POINTS <= 0" )
+
+Merge Syntax in SQL:
+
+MERGE INTO demo.drivers_merge target --table to be write    
+USING drivers_day1 upd --read table
+ON target.driverId = upd.driverId
+WHEN MATCHED THEN 
+UPDATE SET target.dob = upd.dob,
+target.forename = upd.forename,
+target.surname = upd.surname,
+target.updatedDate = current_timestamp
+WHEN NOT MATCHED
+THEN INSERT (driverId,dob,forename,surname,creationDate) VALUES (driverId,dob,forename,surname,current_timestamp)
+
+Merge Syntax in  Python.
+from delta.tables import DeltaTable
+deltaTable = DeltaTable.forPath(spark,"/mnt/datasourceformula1/demo/drivers_merge/")
+
+deltaTable.alias("target").merge(   \
+    drivers_day3_df.alias("upd"),   \
+    "target.driverId = upd.driverId") \
+.whenMatchedUpdate(set = {"dob" : "upd.dob" , "forename" : "upd.forename" , "surname" : "upd.surname" , "updatedDate" : "current_timestamp()" } )   \
+.whenNotMatchedInsert(values =
+  {
+      "driverId" : "upd.driverId",
+      "dob" : "upd.dob",
+      "forename" : "upd.forename",
+      "surname" : "upd.surname",
+      "creationDate" : "current_timestamp()"
+  }
+) \
+.execute()
+
+History to see old state of the data
+question : How to get the count of records inserted, updated or deleted in the delta tables without reading the table.
+answer : check the history of the table.
+
+Table history retention is determined by the table setting delta.logRetentionDuration, which is 30 days by default.
+Using SQL
+	DESC HISTORY demo.drivers_merge;
+	DESCRIBE HISTORY demo.drivers_merge;
+	SELECT * FROM demo.drivers_merge VERSION AS OF 1;
+	SELECT * FROM demo.drivers_merge TIMESTAMP AS OF "2023-07-17T08:05:40.000+0000"; 
+
+Using Python
+	df = spark.read.format("delta").option("timestampAsOf", "2023-07-17T08:05:40.000+0000").load("/mnt/datasourceformula1/demo/drivers_merge/")
+	df.display()
+
+VACUUM : DELETE History of the Old data 
+See delete will also make the entry in the history and that history can again read, so even data is deleted from the main table but it can be read from the history.
+VACUUM is a command that removes unreferenced, obsolete data files from Delta Lake tables to save storage costs and maintain compliance, 
+working by deleting files older than a specified retention period (default 7 days)
+force to overwrite the vacuum 168 hours policy , run the below SQL command -
+
+ SET spark.databricks.delta.retentionDurationCheck.enabled = false; 
+
+VACUUM demo.drivers_merge
+VACUUM demo.drivers_merge RETAIN <hours> HOURS
+VACUUM demo.drivers_merge DRY RUN  -> lists files to be deleted without deleting them. 
+
+Merge Table using same table history 
+	MERGE INTO demo.drivers_merge target
+	USING demo.drivers_merge VERSION AS OF 5 source
+	ON (target.driverId = source.driverId)
+	WHEN NOT MATCHED THEN
+	INSERT *
+
+Convert Parquet table in delta format SQL command
+CONVERT TO DELTA demo.drivers_parquet;
+
+Convert Parquet Files in delta format SQL command
+CONVERT TO DELTA parquet.`/mnt/datasourceformula1/demo/parquet_files`; 
+
+spark.table vs spark.sql:
+both spark.table("demo.drivers_parquet")   and   spark.sql("select * from demo.drivers_parquet")  are same.
+
+Performance Improvements:
+
+First do not important all the functions or all the functions of the single class. As unnessary extra import loaded in memory.
+
+Data skew:
+Data skew in PySpark is an imbalance where data isn't evenly spread across partitions, 
+causing some tasks to process much more data, becoming bottlenecks that slow down jobs and waste resources while others finish quickly.
+
+Causes of Data Skew
+Uneven Key Distribution: Common in joins or groupBy operations where certain keys appear far more frequently (e.g., a popular product ID).
+Poor Partitioning: Custom or default hash partitioning can still send many records to one partition if values hash similarly.
+Heterogeneous Clusters: Nodes with different hardware (RAM, disk) can lead to uneven data distribution during shuffling.   
+
+Why Data skew is a Problem
+Performance Bottlenecks: Tasks on skewed partitions take much longer, holding up the entire job.
+Resource Inefficiency: Other executors finish early and sit idle, waiting for the slow tasks.
+Memory Spills & Failures: Large partitions can exceed executor memory, causing data spills to disk or OutOfMemory (OOM) errors
+
+How to Identify Data skew
+Spark UI: Look for tasks in a stage that take significantly longer than others (staggering tasks). 
+
+Solutions/Techniques to fix Data Skew
+Salting: Add a random salt to skewed keys to spread them across more partitions before a join/aggregation, then remove it later.
+Broadcast Joins: For small lookup tables, broadcast them to all executors to avoid shuffling large tables.
+Adaptive Query Optimization (AQE): Enable this in Spark 3+ for automatic skew handling (e.g., skew join optimization).
+Multi-Stage Processing: Break down complex operations into multiple steps, gradually reducing data or changing keys. 
+
+Code to Fix Data Skew ( High level )
+1) Get the count of the records in the each partition using the spark function spark_partition_id()
+2) Do re-partition
+3) salting.
+
+import pyspark.sql.functions import spark_partition_id	,rand
+df = spark.sql("select * from inbound.mor_trades")
+df = df.select("*", spark_partition_id().alias("partition_id"))
+df = df.groupBy("partition_id").count()
+#Count of the records in the each partition
+df.display() 
+
+#do the re-partition
+df = df.repartition(10,"DELIVERY_ID")
+
+# add salt
+df = df.withColumn("SALT",rand())
+df = df.repartition(8,"SALT")
+
+
+Out of memory exception : 
+
+Common Reasons for Driver OOM
+	Large Data Collection: Using .collect(), .take(), or .collectAsMap() on large DataFrames pulls all data to the driver.
+	Note : Collect operation collect data from all the Worker Nodes and save in the Driver node.
+	Broadcast Joins: Broadcasting very large tables can exhaust driver memory.
+	Inefficient Queries/High Concurrency: Complex operations or too many simultaneous tasks taxing the driver. 
+Common Reasons for Worker (Executor) OOM
+	Data Skew: Uneven data distribution, causing some executors to process much more data.
+	Large Shuffles: Operations like groupBy, join, distinct moving large amounts of data between executors.
+	Caching: Over-caching or forgetting to .unpersist() data.
+	Insufficient Executor Memory: Not enough heap space for processing partitions. 
+General Causes (Both)
+	Incorrect Configuration: Driver/Executor memory settings too low for the workload.
+	Memory Overhead: Insufficient overhead memory for JVM processes. 
+Solutions
+	Increase Memory: Boost spark.driver.memory, spark.executor.memory, and spark.executor.memoryOverhead.
+	Avoid collect(): Use take(100) or toLocalIterator() instead; write data to disk.
+	Optimize Joins: Use spark.sql.autoBroadcastJoinThreshold=-1 to disable small table broadcasting if it causes issues, or ensure large tables fit in executor memory.
+	Tune Caching: Cache only when necessary and unpersist() when done.
+	Handle Skew: Use salting or repartitioning
+
+Profiling:
+Profiling in PySpark is about observation and measurement to find and fix performance bottlenecks (code/memory) 
+and understand data characteristics (data profiling), leading to optimized Spark applications and better data insights.
+
+Partition pruning in PySpark is an optimization that skips reading unnecessary data partitions, dramatically speeding up queries, 
+especially with large partitioned datasets.
+It works by applying filters on partition columns at analysis (static) or runtime (Dynamic Partition Pruning or DPP), 
+reducing disk I/O by only accessing relevant data directories, often by pushing filters down to the data source, 
+sometimes using broadcast joins for join-based filtering.
+Technically do the good quality of the joins and apply as much has filter to use the limited data.
+
+PySpark supports various profiling tools, which are all based on cProfile/profile, one of the standard Python profiler implementations. 
+PySpark Profilers provide information such as the number of function calls, total time spent in the given function, and filename, as well as line number to help navigation. 
+That information is essential to exposing hot spots/tight loops in your PySpark programs, and allowing you to make performance improvement decisions.
+
+Broadcast and accumulators variables
+In PySpark, broadcast variables and accumulators are shared variables that optimize communication between the driver program and executor nodes, 
+but they serve opposite purposes: 
+1) broadcast variables send data from the driver to the executors,The copy of broadcast variable available to all the worker node. Its made to read.
+2) while accumulators variables aggregate data from the executors back to the driver. The accumulators variable are made to write.
+
+here variable values is of type broadcast and its read only copy available to all the worker nodes.
+bc = sc.broadcast([1,2,3,4,5,6])
+bc.value
+type(bc)  # pySpark.broadcast.Broadcast
+
+Spark 5 Join Strategies (Physical Execution) Hints https://spark.apache.org/docs/latest/sql-ref-syntax-qry-select-hints.html
+Internally, the Apache Spark engine in Databricks uses different physical algorithms (join strategies) to execute these logical join types efficiently, 
+depending on factors like data size, distribution, and join conditions: 
+
+1) Broadcast Hash Join (BHJ): Used when one table is small enough to fit into the memory of the driver and all executor nodes. 
+                              Spark broadcasts the smaller table to all nodes to perform a fast, local hash join, avoiding a costly data shuffle.
+2) Sort Merge Join (SMJ): The default strategy when tables are large. It sorts both tables by the join key and then merges the sorted data.
+                          It is used when neither dataset can fit entirely into memory for a Broadcast Hash Join.  
+3) Shuffle Hash Join (SHJ): Involves shuffling both tables by the join key and then performing a hash join on each partition. 
+                            It is used for equi/inner joins when broadcasting is not an option.
+4) Broadcast Nested Loop Join (BNLJ) : 
+                           Generally used for non-equi joins ex: != <= >=
+						   comparing every row of one table with every row of the other. 
+						   It works by broadcasting one dataset and performing a nested loop comparison for every row, which is computationally intensive.
+5) Cartesian Join	: This occurs when no join condition is specified (a cross join) or for certain non-equi joins. 
+                      It pairs every row from the first dataset with every row from the second, resulting in a massive number of rows. 
+                      This is extremely expensive and should be used with extreme caution. 					   
+						   
+This is the sequence which spark to follow to decide the join strategy in case of equi join ( = )
+Broadcast Hash Join (BHJ) -> Sort Merge Join (SMJ) -> Shuffle Hash Join (SHJ) -> Broadcast Nested Loop Join	(BNLJ)	-> Cartesian Join
+
+This is the sequence which spark to follow to decide the join strategy in case of non-equi join ( != , >= , <= )	
+Broadcast Nested Loop Join	(BNLJ)			  
+
+Data engineers can influence Spark's choice of strategy using join hints like BROADCAST or MERGE in their SQL queries
+Azure Databricks supports various SQL hints to influence the Spark SQL optimizer's query plan, 
+which can be useful for performance tuning and managing data processing strategies. 
+These hints are used within SQL queries to suggest specific join or partitioning strategies. 
+Types of SQL Hints : The primary categories of hints available are Join Hints, Partitioning Hints, and Skew Hints. 
+
+a) Join Hints : Join hints allow you to suggest the algorithm for joining tables. If conflicting hints are used on both sides of a join, 
+Databricks prioritizes them in the order: BROADCAST > MERGE > SHUFFLE_HASH > SHUFFLE_REPLICATE_NL. 
+
+	1) BROADCAST (or BROADCASTJOIN): Forces Spark to use a broadcast join, where the hinted table is broadcast to all worker nodes. 
+	This is ideal for small dimension tables to avoid costly data shuffles.
+	By default, Spark automatically performs a broadcast join if the size of the smaller table is below a certain threshold, 
+	which is configured by spark.sql.autoBroadcastJoinThreshold (default is 10MB).
+
+        SQL:
+		SELECT /*+ BROADCAST(p) */ o.order_id,p.product_name
+		FROM orders o JOIN products p ON o.product_id = p.product_id;
+		
+		PySpark:
+		from pyspark.sql.functions import broadcast,hint
+        result = orders.join(broadcast(products), on="product_id")
+
+	2) MERGE (or SHUFFLE_MERGE, MERGEJOIN): Suggests using a shuffle sort-merge join, which is efficient when both datasets are large and data is already sorted.
+	
+		SELECT /*+ MERGE(o, p) */ o.order_id,p.price
+	    FROM orders o JOIN products p ON o.product_id = p.product_id;
+		
+		from pyspark.sql.functions import broadcast,hint
+		result = orders.hint("MERGE").join(products.hint("MERGE"), on="product_id", how="inner")
+	
+	3) SHUFFLE_HASH: Suggests using a shuffle hash join, suitable for large tables where data distribution might be skewed.
+	
+		SELECT /*+ SHUFFLE_HASH(o, c) */ o.order_id, c.customer_name
+		FROM orders o JOIN customers c ON o.customer_id = c.customer_id;
+		
+		from pyspark.sql.functions import broadcast,hint
+		result = orders.join(hint("SHUFFLE_HASH", customers), "product_id")
+
+	4) SHUFFLE_REPLICATE_NL: Forces a shuffle-and-replicate nested loop join, essentially a Cartesian product. 
+							 This is generally computationally expensive and should be used with caution.
+		SELECT /*+ SHUFFLE_REPLICATE_NL(t1) */ t1.id, t1.value, t2.value
+		FROM table1 t1 JOIN table2 t2 ON t1.id >= t2.id; -- Non-equi join condition
+		
+		from pyspark.sql.functions import broadcast,hint
+		result = orders.join(products, df1["product_id"] >= df2["product_id"],how= "inner")
+
+ 
+b) Partitioning Hints : These hints help control the number of output files and manage the degree of parallelism, similar to the repartition and coalesce Dataset APIs. 
+	1) COALESCE(part_num): Reduces the number of partitions to a specific number. Let say if 10 partition are reduced to 7, than 3 paratition data gets copied to remaning 7. 
+	                       Its more peformance oriented as compare the repartition. But it has drawback, if very less count is choose then degree of the parallasim will missed out.
+	                       SELECT /*+ COALESCE(5) */  * FROM table_name
+	2) REPARTITION(part_num, [column_name, ...]): Repartitions data to a specified number of partitions, optionally by specific columns. 
+	                                              Its expensive opearation because its involves the data shuffling.
+												  As it will make new set of the partation, the data gets shuffled and it will take more time.
+	                       SELECT /*+ REPARTITION(10, column_a) */ * FROM table_name;
+						   --This forces 10 partitions and uses column_a for hash partitioning. 
+	3) REPARTITION_BY_RANGE([part_num,] column_name, ...): Repartitions by a range of values within specified columns.
+	                       SELECT /*+ REPARTITION_BY_RANGE(2, age) */ * FROM people
+						   --Use the REPARTITION_BY_RANGE hint to repartition by 'age' into 2 partitions
+	4) REBALANCE([column_name, ...]): A best-effort hint to rebalance output partitions to a reasonable size, useful to avoid creating too many small files when writing to a table. 
+	                                   This hint is ignored if Adaptive Query Execution (AQE) is not enabled. 
+									   SELECT /*+ REBALANCE(column_name) */ * FROM temp_view
+									   Alternatively, without specific columns (round-robin partitioning is typically used)
+									   This is a best-effort rebalance that splits skewed partitions
+
+
+c) Skew Hints
+In open-source Apache Spark, true "skew" hints are not supported; they are an explicit feature of the proprietary Databricks platform
+Skew hints are used to explicitly inform the optimizer about data skew in a specific relation or column, allowing Spark to apply specialized skew join optimization. 
+SKEW('table_name', 'column_name', (value1, value2, ...)): Explicitly identifies the table, column, and values that are causing data skew. 
+
+  SELECT /*+ SKEW(df1 key_column) */ * FROM df1 JOIN df2 ON df1.key_column = df2.key_column;
+
+How to determine size of the partation.
+For Data Reading Operations
+	When a DataFrame is created by reading files from sources like DBFS or Azure Data Lake Storage, the number of partitions is primarily determined by:
+	The size of the input data and the spark.sql.files.maxPartitionBytes configuration, which defaults to 128 MB. A file larger than 128 MB will be split into multiple partitions. 
+	1 partition = 128 MB
+	For example, a 1 GB = 1024 MB file would typically result in around 8 partitions.  1024/128 = 8
+	The total number of available CPU cores in the cluster can also influence this, as Spark aims to utilize resources efficiently, 
+	potentially creating more, smaller partitions if many cores are available. 
+
+For Shuffle Operations (Transformations)
+	For transformations that involve a data shuffle (such as join(), groupBy(), or union()), 
+	the default number of partitions is controlled by the spark.sql.shuffle.partitions configuration property, which is 200 by default. 
+
+How to check partition number
+print(df.rdd.getNumPartitions()) ex: o/p : 10
+
+df.rdd.getNumPartitions() : Gives the exact count of the partation.
+df = df.repartition(20) : Set the new paratation number
+df = df.repartition("DELIVERY_ID") : Set the paratation based on column name.
+df = df.coalesce(8) : Set the new paratation number and reduced it
+
+
+df.coalesce(10).write.mode("overwrite")....
+df.repartition(10).write.mode("overwrite")....
+
+1 Core ≈ 1 Task ≈ 1 Partition (for parallelism): Each CPU core works on one partition at a time; more partitions mean more tasks, increasing concurrency.
+Tune Partitions to Cores: Aim for a number of partitions (especially after shuffles) that's a multiple of your total cores (e.g., 2-4x) to ensure all cores are busy.
+Ideal Partition Size: Keep partitions around 100-200 MB to prevent tasks from becoming too large or too small, balancing processing time and overhead.
+spark.sql.shuffle.partitions: This setting controls partitions for shuffle operations (joins, groupBys). Set it based on your core count and data size.
+Underutilization: Too few partitions means cores sit idle waiting for work.
+Overutilization (Shuffle): Too many small partitions cause excessive shuffle, increasing network/disk I/O
+
+Example Scenario:
+20 Cores, 2GB Data: Set shuffle.partitions to 20-80 (1x-4x cores).
+40 Cores, 20GB Data: Aim for ~120-160 partitions (3x-4x cores), with each partition around 125-160MB. 
+
+Narrow Transformation vs Wide Transformation
+Narrow Transformation
+	Definition: Each input partition contributes to at most one output partition. The data needed to compute a single partition resides entirely within one corresponding parent partition.
+	Data Movement: No data shuffling occurs across the network. All computation is local to the executor.
+	Performance: Highly efficient and fast because no network I/O or disk I/O is needed to move data.
+	Lineage: Straightforward; if a partition is lost, it can be recomputed from a single parent partition.
+	Examples: map(), filter(), flatMap(), union(), coalesce().
+	Use Case: Ideal for row-level transformations (e.g., adding a column). 
+Wide Transformation
+	Definition: Each input partition contributes to multiple output partitions. Multiple parent partitions are required to compute a single child partition.
+	Data Movement: Involves shuffling (moving data between executor or worker nodes) to redistribute data across the cluster.
+	Performance: Slower and more resource-intensive due to heavy disk/network I/O.
+	Lineage: Complex; recomputing lost partitions may require recomputing the entire parent stage.
+	Examples: groupByKey(), reduceByKey(), join(), repartition(), distinct(), sort().
+	Use Case: Necessary for aggregations, sorting, and combining data from different sources. 
+
+What is Whole-Stage Code Generation ?
+(WholeStageCodegen) is a physical query optimization technique in Spark SQL that improves query execution performance 
+by consolidating multiple physical operators (like filtering, projecting, and aggregation) into a single, 
+optimized Java function at runtime. This effectively transforms a series of operations 
+into highly efficient "hand-written" code specific to the current query. 
+Enabled by Default: WholeStageCodegen has been enabled by default since Spark 2.0
+
+SQL Endpoints is same as SQL Warehouse in the never version of the Databricks.
+SQL warehoue is just very small compute power  mainly for the Data Analyst.
+Data Engg mainly used the clusters.
+
+
+Databricks (and Apache Spark) provides three main error handling modes when reading data into a DataFrame, which determine how malformed or corrupt records are handled. 
+These modes are specified using the .option("mode", "...") setting during the read operation. 
+The three primary modes are:
+PERMISSIVE (default):
+This is the default mode and loads all data, inserting null for fields that cannot be parsed.
+Optionally, an extra column can be specified (e.g., _corrupted_record) to store the entire raw, malformed record for later analysis and rectification.
+This is generally preferred during the initial data ingestion (bronze layer) to capture all data and prevent the pipeline from failing.
+DROPMALFORMED:
+This mode drops the entire row/record if any of its fields cannot be parsed according to the defined schema.
+It is used when you only want to process clean, valid data, but carries the risk of silently losing data if not monitored properly.
+FAILFAST:
+This mode stops the job immediately and throws an exception as soon as it encounters a malformed or corrupted record.
+This is best for strict data pipelines where data quality is critical and any error must be addressed immediately before processing continues. 
+
+
+# Example using the PERMISSIVE mode with a corrupted records column
+df = spark.read.format("csv") \
+  .option("mode", "PERMISSIVE") \
+  .option("columnNameOfCorruptRecord", "_corrupted_record") \
+  .load("/path/to/data")
+
+# Example using the DROPMALFORMED mode
+df_clean = spark.read.format("csv") \
+  .option("mode", "DROPMALFORMED") \
+  .load("/path/to/data")
+
+# Example using the FAILFAST mode
+try:
+  df_strict = spark.read.format("csv") \
+    .option("mode", "FAILFAST") \
+    .load("/path/to/data")
+except Exception as e:
+  print(f"Data read failed: {e}")
+  
+  
+SORT BY vs ORDER BY
+SORT BY / df.sort()
+	Sorts data within each partition independently. It does not guarranty the full output comes in the sorted order.
+	Does not necessarily involve a full shuffle, so it's more efficient for large datasets where global order isn't critical. 
+
+ORDER BY / df.orderBy()
+	Guarantees a total order across the entire dataset.
+	Involves a full shuffle to ensure global ordering.
+	
+df.sortWithinPartitions()
+	Partition-wise (within each partition)
+
+
+map() vs mapPartitions()
+Use map() when:
+	You need to perform simple, element-wise transformations or filtering logic.
+	The function logic is light and doesn't involve heavy initializations or batch processing.
+	Memory usage is a concern, and you need to process data row by row to avoid memory issues. 
+Use mapPartitions() when:
+	You have heavy initializations, like establishing a database connection or loading a machine learning model, that you want to perform once per partition rather than for every single row.
+	You want to process data in batches, which can be more efficient for certain library functions (e.g., vectorized NumPy operations or external API calls).
+	You need to perform partition-level aggregations (e.g., finding the top 10 items or min/max values within each partition before a global aggregation).
+	Performance optimization is a priority, and the overhead of function calls in map() is significant for your task. 
+	
+Example of the mapPartitions
+	
+	from pyspark.sql import SparkSession
+
+	spark = SparkSession.builder.appName("MapVsMapPartitions").getOrCreate()
+
+	data = [("James", "Smith", 3000), ("Anna", "Rose", 4100), ("Robert", "Williams", 6200)]
+	columns = ["firstname", "lastname", "salary"]
+	df = spark.createDataFrame(data=data, schema=columns)
+	# Repartition to 2 to demonstrate partition-level operations clearly
+	rdd = df.rdd.repartition(2)
+
+	# Function for mapPartitions: takes an iterator, returns an iterator (using yield)
+	def add_bonus_partition(iterator):
+		# This (e.g., a DB connection) would be initialized only twice for the whole RDD
+		print("Initializing connection/resource for this partition...")
+		for row in iterator:
+			# Perform row-level logic
+			yield (f"{row.firstname} {row.lastname}", row.salary * 0.10)
+
+	# Apply mapPartitions
+	bonus_rdd = rdd.mapPartitions(add_bonus_partition)
+	bonus_df = bonus_rdd.toDF(["name", "bonus"])
+
+	print("--- DataFrame using mapPartitions ---")
+	bonus_df.show()	
+
+
+	
+
+spark caching : two ways for data persiste in the Spark:
+1) cache()
+2) persist()
+
+cache() is a shortcut for persist(StorageLevel.MEMORY_ONLY), storing data in memory for faster access but losing it on executor failure
+
+Cache()
+	Storage: Stores data only in memory (MEMORY_ONLY).
+	Performance: Fastest, but less resilient.
+	Use Case: Small datasets, iterative algorithms where data fits in RAM. 
+Persist()
+	Storage: Highly configurable (e.g., MEMORY_ONLY, MEMORY_AND_DISK, DISK_ONLY, MEMORY_ONLY_SER, MEMORY_AND_DISK_SER). ( Note : SER means Serilized)
+	Performance/Reliability: Offers a trade-off; MEMORY_AND_DISK spills to disk if memory runs out, providing fault tolerance.
+	Use Case: Larger datasets, complex workflows needing storage control. 
+
+from pyspark.storagelevel import StorageLevel
+emp_df=spark.read.csv("/FileStore/tables/emp_csv.csv" , header = True, inferSchema = True)
+emp_df.cache()
+new_df=emp_df.select("EMPNO","EMP_NAME","SAL"...).filter("DEPTNO==20")  #> new data frame created from the existing one emp_df
+new_df.display()
+new_df.filter("SAL >= 2000").display()
+emp_df.unpersist()  # removed data from the cache
+emp_df.persist(StorageLevel.MEMORY_AND_DISK)
+emp_df.display()
+emp_df.storageLevel  -> StorageLevel(True,True,False,False,1)
+
+
+#remove all the cache table from the in-memory cache.
+spark.catalog.clearCache()
+sqlContext.clearCache()
+
+spark.catalog.uncacheTable(table_name)
+sqlContext.uncacheTable(table_name)
+
+%sql
+CACHE table sample_db.emp    # get from the Parquet file
+
+%sql
+select * from sample_db.emp  # scan from in-memory table
+select * from sample_db.emp  where dept_no = 9  # scan from in-memory table
+
+%sql
+UNCACHE TABLE sample_db.emp
+
+%sql
+CLEAR CACHE; 
+
+---------------------------------------UC---------------------------------- 
+
+Unity Catalog is databricks offered unifined solution for implementing "Data Governance" Solution in the Data Lakehouse.
+Data Governance is the process of the Managing the Availability , Usabality , Integrity , Security of the Data present in the Enterprise.
+The Data should Granted , Revoked , Permission basic , need to know principle, it should be Audited , its should be Tracable
+and It meet the regulatory privicy requirement ex: GDPR,CCPA..etc.
+
+Unity Catalog (UC): Introduce Late 2022. Mainly to replace the Hive Metastore feature which was default in the databricks
 1) UC is the databricks offered unified solution for the implementating data governance in  the data lakehouse.
 2) It can only attached to the Premium Tier of the Azure Databricks workspace.
 3) To store the data , the UC need the ADLS G2 account.
 4) To link Databricks and UC , the Connector i.e. DataBricks Access Connector is required. 
+5) With UC , now the user managment and metastore management can be centralized with multiple workspace of multiple environment.
+6) The Hive metastore still exist in the UC for backward compatibility but its not recommended to use it. The new databricks instance does not have Hive metastore.
 
-Unity Catalog Featurs
-1) User Management : Users , Service Principal and groups to manage them.
-2) Metastore
-3) Access Control : Assigned the roles. 4 roles : Account Admin , Metastore Admin , Object Owner , Object User 
-4) Data Explorer : Searching of the data in te system catalog.
-5) Data Lineage : Data Leanage is the process of following / tracking the journey of the data within a pipeline.
-                  what is the origin of the data, How it has been changed / transformed , what is the destination.
-6) Audit Logs (Under the Preview state, soon get the system catalog -> audit schema)
+Unity Catelog Few Features: its trying to match traditional RDBMS.
+1) User Management : Users , Service Principal, roles and groups to manage workspace, tables , notebook, ADLS File Level Access ,metastore, ML models ..etc.
+2) Metastore : It can be share with multiple workspace.
+3) Data Discovery : Search the table name , schema name or matching notebook,sql files, 
+                    search via system catelog i.e. SYSTEM catelog it has information_schema.
+					We can Add TAG or COMMENT for each columns. 
+4) Data Audit     : The audit information can view by enabled the Diagonastic setting in the databrciks homepage in Azure portal.
+                    So that all the logs of the Unity Catelog can transferred to Log Analytics , or Event Hub or other provided features on the azure portal page.
+					Databrikcs soon provide the new AUDIT Catelog which contains the information_schema and it will have many meta tables/views.
+					Data should be Audited , who did update , when did Update , find the audit logs , storage of audit logs.					
+5) Data Lineage : Its the process to tracking/follow the journey of the data in the pipelines.
+                  What is the origin of the data, How it has been changed / transformed in Pipeline, what is the destination.
+				  its required for data autheticity and trustworthiness.
+				  it only present for the tables registered in Unity Catelog Metastore , not present in the Hive Metestore.
+				  If the data quality is poor , then with Lineage we can find out at what step the data is updated.
+				  The Unity Catelog Enabled Workspace Databricks Workflow shows the lineage of the Upstream and Downstream table used in the code.
+				  The Unity Catelog Enabled table has Lineage TAB in the Databricks UI and it shows all the upstream and downstream information.
+					Data Lineage Limitations.
+					1) Only availble for the table registered in the Unity Catalog Metastore.
+					2) Available only for the last 30 days.
+					3) Limited Column Level Lineage 			
+6) Data Access Control : Databricks support Groups(Users + Service Principle) to protect tables, schema, views from unauthorized access.
+         It support Role based and Previledge base Access control.
+		 A) Roles Based : 4 types of the roles in the unity catelog : Account Admin , Metastore Admin , Object Owner , Object User.
+			 Account Admin : The most powerful Admin user , it can make another Admin user and it can create the MetaStore.
+							 it can grant another user to admin of the metastore.		 
+							 It has full grants to do all the metastore admin,object creation , grants to it..etc
+			 Metastore Admin : The scope of the Metastore admin is limited to its own metastore only. It cannot access Another meta store.
+							   it can makes catelogs , schema, objects , grants..etc
+			 Object Owner : The scope of the Object owner i.e schema owner
+			 Object User : Are the general users who want to access the schema tables.
+		 B) Previledge base : 
+			 Databricks used the ACL ( Access control list ) 
+			 The UC provide the options to grant/revoke [select|insert|update|delete]/create [table|view|catelog|schema|creadential|external location]/USE [catelog|schema]/execute [functions] the permission to the users/groups 
+			 at catelog , schema , table level  ,external location and Storage Credential level.
 
-Data Lineage Limitations.
-1) Only availble for the table registered in the Unity Catalog Metastore.
-2) Available only for the last 30 days.
-3) Limited Column Level Lineage 
+Databricks Hive Metastore vs Databricks Unity Catalog		
+	Databricks Hive Metastore
+	Scope: Limited to a single workspace. Data assets and governance settings are isolated within that specific workspace [1].
+	Governance Model: Relies on local table access control lists (ACLs), which are managed independently within each workspace [1, 2].
+	Security & Compliance: Offers basic table-level security."two-level namespace", Auditing and access control are workspace-specific and can be complex to manage at scale [1].
+	Compatibility: Widely compatible with existing Apache Spark and Hive environments. 
 
-Setup of the UC with Databricks Integration:
+	Databricks Unity Catalog
+	Scope: Provides a unified, top-down governance solution across multiple workspaces. Data is managed centrally, 
+		   allowing users to access data across different workspaces without data replication [2, 3].
+	Governance Model: Introduces a "three-level namespace" (catalog.schema.table) managed centrally at the account level, separate from individual workspaces. 
+					  It uses ANSI SQL for access control, making management more standardized [1, 2, 4].
+	Security & Compliance: Offers enhanced security features like fine-grained, column-level access control, robust auditing capabilities across all workspaces, 
+							and data lineage tracking. It helps meet industry compliance requirements more easily [1, 3].
+	Compatibility: Native to Databricks Data Lakehouse platform. It works with most Databricks runtimes (SQL Warehouses, clusters) 
+				   and supports data formats like Delta Lake, Parquet, and ORC
+
+Managed Identity vs Service Principal 
+Managed Identity (MI)
+	Lifecycle: Tied to an Azure resource (VM, Function); deleted with the resource.
+	Credential Management: Automatic (Azure manages secrets/certs).
+	Usage: Internal to Azure; perfect for one Azure resource accessing another (e.g., VM accessing,ADLS Storage).
+	Creation: Automatic when enabled on an Azure resource. 
+Service Principal (SP)
+	Lifecycle: Independent: must be manually deleted.
+	Credential Management: Manual (requires managing client secrets/certificates).
+	Usage: Broader: for external apps, scripts, CI/CD pipelines, cross-service, or outside Azure.
+	Creation: Manual registration in Azure AD.
+		
+
+
+Setup of the UC "Meta store" with Databricks Integration:
 1) Make new Resource Group : databrickscource-uc-rg
 2) Make new Data bricks workspace  : databrickscource-uc-ws
-3) Make new ADLS Storage Account : datasourceformula1uc
+3) Make new ADLS Storage Account : datasourceformula1uc and container metastore
 4) Make new "Access Connector" : databrickscource-uc-access
 The Access Connector is new and recommended feature for the Unity Catalog to established connection of the ADLS And Databricks without using the 
 access keys and SAS keys. 
 5) Assigned "Azure BLOB Storage Contributor" into the IAM section of the ADLS(datasourceformula1uc) to the Managed Itentity Access Connector(databrickscource-uc-access)
-6) Open the databricks workspace URL and click "Manage Account"
+6) Open the databricks workspace URL and click "Manage Account"  ( httsp://accounts.azuredatabricks.net/ ) 
+   See this URL is independent to any workspace URL. This URL holds all the Workspace URL of the Databricks. This is now the Databricks Parent URL.
+   This URL has 4 secions Workspace, Data ( Create/Edit metastore ) , User Management and Settings.
 7) Create new "Metastore" and fill the below list of the details.
 
 	a) Metastore name : databrickscource-uc-metastore
@@ -794,8 +1719,7 @@ access keys and SAS keys.
 	c) ADLS Path : metastore@datasourceformula1uc.dfs.core.windows.net/
 	d) Access Connection Id : Copy the value from the Properties section of the "Access connector"
 	/subscriptions/b5c43fea-ade3-46b3-9c11-283ea451927c/resourceGroups/databrickscource-uc-rg/providers/Microsoft.Databricks/accessConnectors/databrickscource-uc-access
-	datasourceformula1uc 
-
+	 
 8) Assign the metastore to the workspace.
 9) Create the new cluster and in the create page the "Unity Catalog" button will start appearing.
 10) The "Data" tab pressing start showing the 4 Catalog : hive_metastore,main,samples,system.
@@ -804,112 +1728,73 @@ access keys and SAS keys.
 	system : To store some system or schema level meta data information.
 	samples : Provide some sample data.
 
-Rules of the Unity Catalog
-1) The Managed Table should Manadatory of the format DELTA.
+Setup of the "Catalog" And "Schema" its Rules.
+1) The "Managed Table" should Manadatory of the format DELTA. The EXTERNAL tables with parquet and JSON format is supported.
 2) Stored in the default storage.
 3) Deleted data retained for 30 days.
 4) Benefits from Automatic Performance Improvements and Maintenance.
-5) The database and schema both same in the Unity Catelog but has Catelog is the new element added in the Hirerchy.
+5) The database and schema both same in the Unity Catalog but has Catalog is the new element added in the Hirerchy.
    select query will change.
 ex: select * from catelog.schema.table_name;
 
+	Metastore : Treasury/Finance  ( it can be created without cluster up and running ) 
+	Catelog : Simcast_Dev,Simcast_Preprod , Simcast_Prod ( it can be created without cluster up and running ) 
+	Schema/DB : inbound,irrbb,ccar..etc
+	tables : meta_information..etc.
+	SQL : select * from Simcast.inbound.meta_information
+
+6) The catelog , Schema and tables can be created from the UI and with SQL/Python (spark.sql) statements.
+7) By default the Catelog Creation makes the 2 schema ( default and information_schema)
+8) The application by default stored all the data in the storage location defined in the metastore.
+   and data placed in the Catelog and schema (The catelog and schema also shared the metastore location) 
+9) if the ADLS storage account provided at Metastore level , Catelog level , Schema Level 
+	By default Unity catelog will give the priority to the schema level , second priority to Catelog and third to Metastore.
+	As good practice , schema level is the good option.
+    In case ADLS storage account is missed at Catelog and Schema level, the tables or views will make in the Metastore level.
+
+The Storage credentials and External location are the alternative approch of the MOUNT point made before unity catelog.
+The problem with mount points its access was not controled.
+but this is now recommand by databricks using unity catelog.
+
+Storage credentials:
+1) The storage credentials required for authentication and authorization to external storage location.
+2) The storage credentials can be created by SPN and Azure managed identity.
+3) Before Storage Credentials Creation , First the External ADLS and databricks connector Must Exists
+   And  with Azure databricks connector must have blob storage contributor role to External ADLS 
+4) The Creation of the storage credentails need the databricks connector id mainly. 
+5) storage credentails object stored centrally in the metastore and its access can managed and shared.
+
+External location:
+1) The External location is used when data need to fetch from the external source system or make new tables in the external source system.
+2) The Creation of External location need the Storage credentails in advanced and Container path of the Extrnal ADLS.
+3) External location object stored centrally in the metastore and its access can managed and shared.
+
+
+storage credentails = External ADLS + databricks connector
+external location = storage credentails + External ADLS path of the Container or Specific Folder path.
 
 Setup of the UC Where data is coming from the external source system.
 1) Make new or use existing Resource Group : databrickscource-uc-rg (same as above)
 2) Make new or use existing Data bricks workspace  : databrickscource-uc-ws (same as above)
-3) Make new ADLS Storage Account : datasourceformula1ucext
-4) Make new "Access Connector" : databrickscource-uc-ext
-5) Assigned "Azure BLOB Storage Contributor" into the IAM section of the ADLS(datasourceformula1ucext) to the Managed Itentity Access Connector(databrickscource-uc-ext)
+3) Make new ADLS Storage Account : datasourceformula1ucext and add container demo
+4) Make new "Access Connector" : databrickscource-uc-ext  or we can reuse the Access connector made when meta Store was created.
+5) Assigned "Azure BLOB Storage Contributor" into the IAM section of the ADLS(datasourceformula1ucext) to the Managed Identity Access Connector(databrickscource-uc-ext)
 6) Open the databricks workspace URL -> Data Explorer -> Create Catalog -> demo_catalog
 6) Open the databricks workspace URL -> Data Explorer -> Catalog List -> demo_catalog -> Create Schema -> demo_schema
-6) Open the databricks workspace URL -> Data Explorer -> External Data -> Create Credential -> databrickscource-ext-storage-credential
-7) Open the databricks workspace URL -> Data Explorer -> External Location -> databrickscource-ext-storage-location
+6) Open the databricks workspace URL -> Data Explorer -> External Data -> Storage Credential -> Create Credential -> (Databricks connector id -> databrickscource-uc-ext and Credential name -> databrickscource-ext-storage-credential )
+7) Open the databricks workspace URL -> Data Explorer -> External Data -> External Location -> Create Location -> ( Credential name : databrickscource-ext-storage-credential , storage account name : datasourceformula1ucext And External location name : databrickscource-ext-storage-location )
 
+Now from the Upstream external source files can be read in the current application using file system
 
-Mini Project:
-formula1_unity_catalog
+dbutils.fs.ls("abfss://demo@datasourceformula1ucext.dfs.core.windows.net/")
 
-1) setup : folder to make the external connections, catalogs , schema
-2) bronze_table_creation : folder to make the external tables of the raw format formula1 files.
-3) silver_table_creation : folder to make the managed tables of the derived from the bronze location.
-4) gold_table_creation : folder to make the managed tables of the derived from the silver location.
+Writing above command gives the output without reference code of the credentail and location because Unity catelog internally verified
+the location access and enabled and credential is verified by temporary token.
+As access is enabled on the external location. the schema can also made on the exteral location.
 
+Good Practice: use the external location for both Applicaion own storage ( project tables ,views..etc) 
+               and Application need access to data from other source ( via parquet , delta files )
 
+-----------------------------------------------------------------------------UC Over--------------------------------------------------------------------
 
-dbutils.help()
-output:
-This module provides various utilities for users to interact with the rest of Databricks.
-credentials: DatabricksCredentialUtils -> Utilities for interacting with credentials within notebooks
-data: DataUtils -> Utilities for understanding and interacting with datasets (EXPERIMENTAL)
-fs: DbfsUtils -> Manipulates the Databricks filesystem (DBFS) from the console
-jobs: JobsUtils -> Utilities for leveraging jobs features
-library: LibraryUtils -> Utilities for session isolated libraries
-meta: MetaUtils -> Methods to hook into the compiler (EXPERIMENTAL)
-notebook: NotebookUtils -> Utilities for the control flow of a notebook (EXPERIMENTAL)
-preview: Preview -> Utilities under preview category
-secrets: SecretUtils -> Provides utilities for leveraging secrets within notebooks
-widgets: WidgetsUtils -> Methods to create and get bound value of input widgets inside notebooks
-
-
-dbutils.widgets.help()
-output:
-dbutils.widgets provides utilities for working with notebook widgets. You can create different types of widgets and get their bound value. For more info about a method, use dbutils.widgets.help("methodName").
-combobox(name: String, defaultValue: String, choices: Seq, label: String): void -> Creates a combobox input widget with a given name, default value and choices
-dropdown(name: String, defaultValue: String, choices: Seq, label: String): void -> Creates a dropdown input widget a with given name, default value and choices
-get(name: String): String -> Retrieves current value of an input widget
-getArgument(name: String, optional: String): String -> (DEPRECATED) Equivalent to get
-multiselect(name: String, defaultValue: String, choices: Seq, label: String): void -> Creates a multiselect input widget with a given name, default value and choices
-remove(name: String): void -> Removes an input widget from the notebook
-removeAll: void -> Removes all widgets in the notebook
-text(name: String, defaultValue: String, label: String): void -> Creates a text input widget with a given name and default value
-
-
-dbutils.fs.help()
-output:
-dbutils.fs provides utilities for working with FileSystems. Most methods in this package can take either a DBFS path (e.g., "/foo" or "dbfs:/foo"), or another FileSystem URI. For more info about a method, use dbutils.fs.help("methodName"). In notebooks, you can also use the %fs shorthand to access DBFS. The %fs shorthand maps straightforwardly onto dbutils calls. For example, "%fs head --maxBytes=10000 /file/path" translates into "dbutils.fs.head("/file/path", maxBytes = 10000)".
-fsutils
-cp(from: String, to: String, recurse: boolean = false): boolean -> Copies a file or directory, possibly across FileSystems
-head(file: String, maxBytes: int = 65536): String -> Returns up to the first 'maxBytes' bytes of the given file as a String encoded in UTF-8
-ls(dir: String): Seq -> Lists the contents of a directory
-mkdirs(dir: String): boolean -> Creates the given directory if it does not exist, also creating any necessary parent directories
-mv(from: String, to: String, recurse: boolean = false): boolean -> Moves a file or directory, possibly across FileSystems
-put(file: String, contents: String, overwrite: boolean = false): boolean -> Writes the given String out to a file, encoded in UTF-8
-rm(dir: String, recurse: boolean = false): boolean -> Removes a file or directory
-
-mount
-mount(source: String, mountPoint: String, encryptionType: String = "", owner: String = null, extraConfigs: Map = Map.empty[String, String]): boolean -> Mounts the given source directory into DBFS at the given mount point
-mounts: Seq -> Displays information about what is mounted within DBFS
-refreshMounts: boolean -> Forces all machines in this cluster to refresh their mount cache, ensuring they receive the most recent information
-unmount(mountPoint: String): boolean -> Deletes a DBFS mount point
-updateMount(source: String, mountPoint: String, encryptionType: String = "", owner: String = null, extraConfigs: Map = Map.empty[String, String]): boolean -> Similar to mount(), but updates an existing mount point (if present) instead of creating a new one
-
-dbutils.fs.help('ls')
-output:
-/**
-* Lists the contents of a directory.
-*
-* Example: display(ls("/mnt/my-folder/"))
-*
-* The FileInfo object that is returned has the following helper methods:
-* val files = ls("/mnt/my-folder/")
-* files.map(_.name) // [myFile, myDir/]
-* files.map(_.length) // [1286, 0]
-* files.map(_.path) // [/mnt/my-folder/myFile, /mnt/my-folder/myDir/]
-* files.map(_.isDir) // [false, true]
-* files.map(_.isFile) // [true, false]
-* files.map(_.modificationTime) // [1615937446000, 1615937224000]
-*
-* @param dir FileSystem URI
-* @return Ordered sequence of FileInfos containing the name, size and modification time
-* of each file.
-*/
-ls(dir: java.lang.String): scala.collection.Seq
-
-
-
-
-dbutils.notebook.help()
-output:
-
-exit(value: String): void -> This method lets you exit a notebook with a value
-run(path: String, timeoutSeconds: int, arguments: Map): String -> This method runs a notebook and returns its exit value
+	

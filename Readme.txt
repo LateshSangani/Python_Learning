@@ -38,6 +38,15 @@ data powered by Physical table for the Analyst. Its called the Gold Tables.
 Fact Tables comes here.
 
 
+Data details:
+1) Dimension Tables : The circutis , races , constructor and driveres are the limited master data and its refreshed occatially.
+As races are happening limited events only and cicuites are fixed in the world , team and drivers all most working from many years.
+The full data dumps is fine and fast to reload any times
+2) Fact Tables : The results , pitstops , laptimes , qualifying are the more incremental data where through out the year many data gets coming.
+The incremental data does not overwrite the old data.
+
+
+
 Mini Project on Unity Catalog
 formula1_unity_catalog
 
